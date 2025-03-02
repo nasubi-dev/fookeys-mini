@@ -1,0 +1,21 @@
+{
+  "root": true,
+  "extends": ["plugin:vue/essential", "eslint:recommended"],
+  "plugins": ["@typescript-eslint"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "globals": {},
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-tabs": "off",
+    "no-unused-vars": "off",
+    "vue/multi-word-component-names": "off"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "aaron-bond.better-comments",
+    "bradlc.vscode-tailwindcss",
+    "oderwat.indent-rainbow"
+  ]
+}

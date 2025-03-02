@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn-pop {
+  transition: all 0.3s ease;
+}
+.btn-pop:active {
+  -webkit-transform: translate(0, 2px);
+  -moz-transform: translate(0, 2px);
+  transform: translate(0, 2px);
+  border-bottom: none;
+}
+.overText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gray {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.dropDown {
+  position: relative;
+  display: inline-block;
+  z-index: 10;
+}
+.background {
+  background-image: url(../src/assets/img/ui/background.png);
+  background-position: 50%, 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.backgroundHand {
+  background-image: url(../src/assets/img/ui/backgroundHand.png);
+  background-position: 50%, 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.cardSize {
+  width: 10vw;
+  height: auto;
+}
+.gauge {
+  border: 3px solid #393332;
+  border-radius: 5px;
+  background: #e4b714;
+  display: flex;
+  justify-content: flex-end;
+}
+.gauge .bar {
+  height: 15px;
+  background: #393332;
+  transition: 1s ease;
+}
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+div {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+p {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.text-border {
+  color: #000;
+  text-shadow:
+    2px 2px 0 #fff,
+    -2px -2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px -2px 0 #fff,
+    0px 2px 0 #fff,
+    0-2px 0 #fff,
+    -2px 0 0 #fff,
+    2px 0 0 #fff;
+}
+.text-border-thin {
+  color: #000;
+  text-shadow:
+    1px 1px 0 #fff,
+    -1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px -1px 0 #fff,
+    0px 1px 0 #fff,
+    0-1px 0 #fff,
+    -1px 0 0 #fff,
+    1px 0 0 #fff;
+}
