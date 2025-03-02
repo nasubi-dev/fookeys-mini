@@ -61,6 +61,7 @@ function changeLoadMenu(): void {
 }
 
 onMounted(() => {
+  UseLobbyBGM.stop();
   setTimeout(() => {
     UseLobbyBGM.play();
     loadMenu.value = false;
