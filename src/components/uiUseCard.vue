@@ -52,7 +52,6 @@ watch(battleResult, (newVal) => {
           <div class="flex justify-start items-center font-bold text-[max(2vw,1rem)]">
             <img v-if="characterName" :src="`/img/characters/${characterName}/normal.png`" class="w-1/3 bottom-5 bg-clip-border" />
             <p>{{ "🍖" + p.player.sumFields.hungry }}</p>
-            <p v-if="p.player.sumFields.priority">{{ "🦶" + p.player.sumFields.priority }}</p>
           </div>
         </div>
       </div>

@@ -98,7 +98,6 @@ const allGifts: Gift[] = [
     name: "早食い",
     description: "このラウンド中使用カード枚数分スピードを🦶+1する",
     skill: () => {
-      changeSumCardsValue("priority", 1);
     },
   },
 ];

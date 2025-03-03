@@ -68,7 +68,6 @@ const allCards: Card[] = [
     company: "galdaybee",
     attribute: "atk",
     description: "このラウンド中、スピード🦶-2で行動する。",
-    priority: -2,
     atk: 105,
   },
   {
@@ -129,7 +128,6 @@ const allCards: Card[] = [
     company: "galdaybee",
     attribute: "atk",
     description: "このラウンド中、スピード🦶-2で行動する。",
-    priority: -2,
     atk: 135,
   },
   {
@@ -390,7 +388,6 @@ const allCards: Card[] = [
     company: "norma",
     attribute: "def",
     description: "このラウンド中、スピード🦶+1で行動する。",
-    priority: 1,
     def: 70,
   },
   {
@@ -421,7 +418,6 @@ const allCards: Card[] = [
     company: "norma",
     attribute: "def",
     description: "このラウンド中、スピード🦶+1で行動する。",
-    priority: 1,
     def: 110,
   },
   {
@@ -502,7 +498,6 @@ const allCards: Card[] = [
     company: "hanamie",
     attribute: "sup",
     description: "このラウンド中、スピードを🦶+2で行動する。",
-    priority: 2,
   },
   {
     id: 50,
@@ -557,7 +552,6 @@ const allCards: Card[] = [
     company: "hanamie",
     attribute: "sup",
     description: "このラウンド中、スピードを🦶+3で行動する。",
-    priority: 3,
   },
   {
     id: 56,

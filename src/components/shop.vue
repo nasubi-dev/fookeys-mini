@@ -64,15 +64,6 @@ const returnShop = () => {
           >
             <img :src="drawCardImg" />
           </button>
-          <button
-            @click="
-              use = true;
-              useTap2.play();
-            "
-            style="width: 20vw"
-          >
-            <img :src="useGiftImg" />
-          </button>
         </div>
       </div>
     </transition>

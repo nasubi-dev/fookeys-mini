@@ -7,7 +7,6 @@ type Card = {
   company: string;
   attribute?: Attribute;
   description?: string;
-  priority?: number;
   atk?: number;
   def?: number;
   tech?: number;
@@ -49,7 +48,7 @@ type Phase = "shop" | "battle" | "result" | "none";
 type MatchStatus = "matching" | "nothing" | "waiting" | "battle";
 type PlayerSign = 0 | 1;
 type Status = { hp: number; hungry: number; maxHp: number; maxHungry: number };
-type SumCards = { waste: number; hungry: number; priority: number; atk: number; def: number; tech: number; heal: number };
+type SumCards = { waste: number; hungry: number; atk: number; def: number; tech: number; heal: number };
 type PlayerData = {
   idEnemy: string;
   idGame: string;

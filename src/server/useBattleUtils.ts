@@ -79,7 +79,7 @@ async function everyUtil(params: [string, number]): Promise<void> {
   await wait(1500);
 }
 //指定された､fieldの値を比較する
-async function compareSumField(field: "hungry" | "priority"): Promise<void> {
+async function compareSumField(field: "hungry"): Promise<void> {
   console.log(s, "compareSum", field, "を実行しました");
   const { player, sign } = storeToRefs(playerStore);
   const { idEnemy, sumFields } = toRefs(player.value);
@@ -92,13 +92,9 @@ async function compareSumField(field: "hungry" | "priority"): Promise<void> {
   console.log(i, "enemySum", field, ": ", enemySumFields?.[field]);
   //hungryの値が小さい方が先行//hungryの値が同じならばFirstAtkPlayerの値を変更しない
   if (sumFields.value[field] < (enemySumFields?.[field] ?? 0)) {
-    if (field === "hungry") firstAtkPlayer.value = sign.value;
-    else if (field === "priority") firstAtkPlayer.value = getSwitchedPlayerSign(sign.value);
-    console.log(i, field, "の値が小さいので", firstAtkPlayer.value, "が先行");
+    firstAtkPlayer.value = sign.value;
   } else if (sumFields.value[field] > (enemySumFields?.[field] ?? 0)) {
-    if (field === "hungry") firstAtkPlayer.value = getSwitchedPlayerSign(sign.value);
-    else if (field === "priority") firstAtkPlayer.value = sign.value;
-    console.log(i, field, "の値が大きいので", firstAtkPlayer.value, "が先行");
+    firstAtkPlayer.value = getSwitchedPlayerSign(sign.value);
   } else {
     console.log(i, field, "の値が同じなので");
   }
@@ -141,7 +137,6 @@ async function decideFirstAtkPlayer(): Promise<void> {
   await watchFirstAtkPlayerField();
   await wait(1000);
   await compareSumField("hungry");
-  await compareSumField("priority");
   if (firstAtkPlayer.value === undefined) throw new Error("firstAtkPlayerの値がundefinedです");
 
   await wait(1000);

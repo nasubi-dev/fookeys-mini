@@ -70,7 +70,6 @@ const loadBattleGif = () => {
                 <p>{{ "⚔" + sumCards.atk }}</p>
                 <p>{{ "🛡" + sumCards.def }}</p>
                 <p>{{ "⚡️" + sumCards.tech }}</p>
-                <p>{{ "🦶 " + sumCards.priority }}</p>
                 <p>{{ "💖" + sumCards.heal }}</p>
               </div>
             </div>

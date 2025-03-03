@@ -31,7 +31,6 @@ const usePlayerStore = defineStore("playerData", () => {
     sumFields: {
       waste: 0,
       hungry: 0,
-      priority: 0,
       atk: 0,
       def: 0,
       tech: 0,
@@ -54,7 +53,6 @@ const usePlayerStore = defineStore("playerData", () => {
         (sum: SumCards, card: Card) => {
           sum.waste += card.waste;
           sum.hungry += card.hungry;
-          sum.priority += (card.priority ?? 0) + (player.value.isSelectedGift === 11 ? 1 : 0);
           sum.atk +=
             (card.atk ?? 0) *
             (player.value.isSelectedGift === 8 ? 2 : 1) *
@@ -67,7 +65,6 @@ const usePlayerStore = defineStore("playerData", () => {
         {
           waste: 0,
           hungry: 0,
-          priority: 0,
           atk: 0,
           def: 0,
           tech: 0,
@@ -136,7 +133,6 @@ const usePlayerStore = defineStore("playerData", () => {
       sumFields: {
         waste: 0,
         hungry: 0,
-        priority: 0,
         atk: 0,
         def: 0,
         tech: 0,
@@ -198,7 +194,6 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     sumFields: {
       waste: 0,
       hungry: 0,
-      priority: 0,
       atk: 0,
       def: 0,
       tech: 0,
@@ -229,7 +224,6 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       sumFields: {
         waste: 0,
         hungry: 0,
-        priority: 0,
         atk: 0,
         def: 0,
         tech: 0,
