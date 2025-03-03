@@ -12,7 +12,6 @@ import { drawRandomOneCard } from "@/server/useShopUtils";
 import { startShop } from "@/server/useShop";
 import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
 import UiGifts from "@/components/uiGifts.vue";
-import UiMission from "@/components/uiMissions.vue";
 import UiStatus from "@/components/uiStatus.vue";
 import UiHand from "@/components/uiHand.vue";
 import Battle from "@/components/battle.vue";
@@ -30,7 +29,7 @@ import startGif from "@/assets/gifs/start.gif";
 import winGif from "@/assets/gifs/win.gif";
 import loseGif from "@/assets/gifs/lose.gif";
 import allGifts from "@/assets/allGifts";
-import { tap2, enemyTurn, myTurn, battleStart, missionSort, donate, atk, def, tech, hp, sup, rotten } from "@/assets/sounds";
+import { tap2, enemyTurn, myTurn, battleStart, donate, atk, def, tech, hp, sup, rotten } from "@/assets/sounds";
 import bgm from "@/assets/sounds/bgm.mp3";
 import win from "@/assets/sounds/win.mp3";
 import lose from "@/assets/sounds/lose.mp3";
@@ -48,7 +47,6 @@ const useTap2 = useSound(tap2);
 const useEnemyTurn = useSound(enemyTurn);
 const useMyTurn = useSound(myTurn);
 const useBattleStart = useSound(battleStart);
-const useMissionSort = useSound(missionSort, { volume: 5.0 });
 const useRotten = useSound(rotten, { volume: 0.5 });
 const useDonate = useSound(donate, { volume: 0.5 });
 const useHp = useSound(hp, { volume: 0.5 });
@@ -60,7 +58,7 @@ const useTech = useSound(tech)
 const { id, player, cardLock, phase, offer, sign, log, myLog, enemyLog, sumCards, components, battleResult } = storeToRefs(playerStore);
 const { idGame, idEnemy, match, character, gifts, status, hand, rottenHand, death, field, sumFields, name, check } = toRefs(player.value);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-const { game, missions } = storeToRefs(gameStore);
+const { game } = storeToRefs(gameStore);
 const { players, turn, firstAtkPlayer } = toRefs(game.value);
 
 //log
@@ -123,10 +121,6 @@ watch(battleResult, (newVal) => {
   if (newVal[0] === "atk") useAtk.play();
   if (newVal[0] === "tech") useTech.play();
 });
-//missionが入れ替わったら再生
-watch(missions, (newVal) => {
-  if (newVal) useMissionSort.play();
-});
 //Phaseが変わったら再生
 watch(phase, (newVal) => {
   if (newVal === "shop") {
@@ -164,11 +158,6 @@ onMounted(async () => {
       i,
       "hand: ",
       hand.value.map((card) => card.name)
-    );
-    console.log(
-      i,
-      "mission: ",
-      missions.value?.map((mission) => mission.name)
     );
     console.log(i, "turn: ", turn.value);
   });
@@ -352,7 +341,6 @@ window.addEventListener("resize", () => {
         <div class="flex justify-start" style="width: 95vw">
           <UiStatus :player="player" />
           <UiGifts size="my" :gifts="gifts" :player="player" class="w-1/5" />
-          <UiMission class="ml-auto" />
         </div>
         <UiHand class="pt-5" />
       </div>

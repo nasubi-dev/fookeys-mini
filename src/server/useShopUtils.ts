@@ -8,7 +8,7 @@ import { db } from "./firebase";
 import { collection, deleteField, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { converter } from "@/server/converter";
 import type { Card, GameData, PlayerData, Attribute, Status, SumCards } from "@/types";
-import allMissions from "@/assets/allMissions";
+// import allMissions from "@/assets/allMissions";
 import allCards from "@/assets/allCards";
 
 //Collectionの参照
@@ -115,62 +115,6 @@ async function changeAllHand(): Promise<void> {
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
   log.value = "changeAllHand: " + hand.value.map((card) => card.name);
 }
-//missionを3つセットする
-async function setMissions(): Promise<void> {
-  console.log(i, "setMissionsを実行しました");
-  const { player, sign } = storeToRefs(playerStore);
-  const { idGame } = toRefs(player.value);
-  const { game, missions } = storeToRefs(gameStore);
-  const { missionsNum } = toRefs(game.value);
-
-  const copyAllMissions = _cloneDeep(allMissions);
-  const oldMissions = missions.value;
-  if (!sign.value) {
-    missions.value = [];
-    for (let i = 0; i < 3; i++) {
-      const selectMission = Math.floor(Math.random() * allMissions.length);
-      missionsNum.value[i] = selectMission;
-      //同じmissionがセットされないようにする
-      for (let j = 0; j < i; j++) {
-        if (copyAllMissions[missionsNum.value[i]].id === copyAllMissions[missionsNum.value[j]].id) {
-          i--;
-          missions.value?.pop();
-          break;
-        }
-      }
-    }
-    updateDoc(doc(gamesRef, idGame.value), { missionsNum: missionsNum.value });
-    missions.value = [...missionsNum.value.map((num) => copyAllMissions[num])];
-    console.log(
-      i,
-      missionsNum.value.map((num) => copyAllMissions[num].name)
-    );
-    updateDoc(doc(gamesRef, idGame.value), { firstAtkPlayer: deleteField() });
-  } else {
-    console.log(i, "ミッションを監視します");
-    const unsubscribe = onSnapshot(doc(gamesRef, idGame.value), (snap) => {
-      const updateMissionsNum = snap.data()?.missionsNum as number[] | undefined;
-      const updateMissions = updateMissionsNum?.map((num) => copyAllMissions[num]);
-      if (!updateMissionsNum) return;
-      if (
-        _isEqual(
-          oldMissions?.map((mission) => mission.id),
-          updateMissions?.map((mission) => mission.id)
-        )
-      )
-        return;
-      missionsNum.value = updateMissionsNum;
-      missions.value = updateMissions;
-      console.log(
-        i,
-        updateMissions?.map((mission) => mission.name)
-      );
-      //監視を解除する
-      unsubscribe();
-      console.log(i, "missionsの監視を解除しました");
-    });
-  }
-}
 //SumCardsの値を変更する
 function changeSumCardsValue(key: keyof SumCards, value: number): void {
   console.log(i, "changeSumCardsValueを実行しました");
@@ -226,7 +170,6 @@ export {
   setHand,
   setOffer,
   changeAllHand,
-  setMissions,
   changeSumCardsValue,
   changeHandValue,
   deleteAllRottenCard,

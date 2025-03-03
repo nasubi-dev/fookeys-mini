@@ -8,7 +8,7 @@ import { collection, deleteField, doc, getDoc, onSnapshot, updateDoc } from "fir
 import { converter } from "@/server/converter";
 import { wait } from "@/server/utils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
-import { setMissions, setHand, setOffer } from "@/server/useShopUtils";
+import { setHand, setOffer } from "@/server/useShopUtils";
 import { battle } from "@/server/useBattle";
 import allGifts from "@/assets/allGifts";
 
@@ -19,13 +19,10 @@ const playersRef = collection(db, "players").withConverter(converter<PlayerData>
 async function startShop(): Promise<void> {
   console.log(i, "startShopを実行しました");
   const { phase } = storeToRefs(playerStore);
-  const { game, missions } = storeToRefs(gameStore);
+  const { game } = storeToRefs(gameStore);
 
   phase.value = "shop";
   console.log(i, "phase: ", phase.value);
-  if (game.value.turn % 4 == 1) {
-    setMissions();
-  }
   if (game.value.turn === 1) {
     setHand();
     phase.value = "battle";

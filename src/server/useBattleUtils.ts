@@ -78,37 +78,6 @@ async function everyUtil(params: [string, number]): Promise<void> {
   battleResult.value = params;
   await wait(1500);
 }
-//missionの統括
-async function checkMission(which: "primary" | "second"): Promise<void> {
-  console.log(s, "checkMissionを実行しました");
-  const { id, player, sign, myLog, enemyLog } = storeToRefs(playerStore);
-  const { status } = toRefs(player.value);
-  const { game, missions } = storeToRefs(gameStore);
-  const { firstAtkPlayer } = toRefs(game.value);
-  const { my, enemy } = await syncPlayer(which);
-  const playerAllocation = sign.value === firstAtkPlayer.value;
-
-  if (my.check) return;
-
-  //missionを進捗させる
-  for (let mission of missions.value ?? []) {
-    if (mission.achieved) continue;
-    //Missionを進捗させる
-    mission.nowAchievement += mission.checker?.(my.donate, my.sumFields, my.field, my.hand) ?? 0;
-    //Missionを達成したら報酬を受け取る
-    if (mission.nowAchievement >= mission.goalAchievement) {
-      mission.achieved = true;
-      mission.nowAchievement = mission.goalAchievement;
-      if ((playerAllocation && which === "primary") || (!playerAllocation && which === "second")) {
-        status.value.contribution += mission.reward;
-        myLog.value = "mission: " + mission.name + "を達成したので" + mission.reward + "の貢献度を受け取りました";
-      } else {
-        enemyLog.value = "mission: " + mission.name + "を達成したので" + mission.reward + "の貢献度を受け取りました";
-      }
-      updateDoc(doc(playersRef, id.value), { status: status.value });
-    }
-  }
-}
 //donateの場合､優先度は最上位になる
 async function judgeDonate(): Promise<void> {
   console.log(s, "comparePriorityを実行しました");
@@ -204,4 +173,4 @@ async function decideFirstAtkPlayer(): Promise<void> {
   components.value = "afterDecideFirstAtkPlayer";
 }
 
-export { syncPlayer, reflectStatus, checkDeath, everyUtil, checkMission, decideFirstAtkPlayer };
+export { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer };

@@ -9,7 +9,6 @@ import donate from "./donate.mp3";
 import enemyCardIn from "./enemyCardIn.mp3";
 import enemyTurn from "./enemyTurn.mp3";
 import hp from "./hp.mp3";
-import missionSort from "./missionSort.mp3";
 import myTurn from "./myTurn.mp3";
 import popUp from "./popUp.mp3";
 import rotten from "./rotten.mp3";
@@ -32,7 +31,6 @@ export {
   enemyCardIn,
   enemyTurn,
   hp,
-  missionSort,
   myTurn,
   popUp,
   rotten,

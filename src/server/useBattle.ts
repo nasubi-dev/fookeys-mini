@@ -7,7 +7,7 @@ import { collection, doc, increment, updateDoc } from "firebase/firestore";
 import type { GameData, PlayerData, Card } from "@/types";
 import { converter } from "@/server/converter";
 import { intervalForEach, wait, XOR } from "@/server/utils";
-import { syncPlayer, reflectStatus, checkDeath, everyUtil, checkMission, decideFirstAtkPlayer } from "./useBattleUtils";
+import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer } from "./useBattleUtils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { changeHandValue, changeStatusValue, draw2ExchangedCard, drawRandomOneCard } from "@/server/useShopUtils";
 import { startShop } from "./useShop";
@@ -228,7 +228,8 @@ async function attack(which: "primary" | "second"): Promise<boolean> {
   await reflectStatus();
   console.log(i, "isDeath: ", isDeath);
   if (isDeath) return true;
-  await checkMission(which);
+  // await checkMission(which);
+  //! checkGiftPack
   return false;
 }
 

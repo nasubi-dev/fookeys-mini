@@ -36,16 +36,6 @@ type Gift = {
   skill: () => void;
 };
 
-type Mission = {
-  id: number;
-  name: string;
-  achieved: boolean;
-  description: string;
-  reward: number;
-  goalAchievement: number;
-  nowAchievement: number;
-  checker?: (donate?: boolean, sumFields?: SumCards, field?: Card[], hand?: Card[]) => number | undefined;
-};
 //!使われてるか調べる
 type Phase = "shop" | "battle" | "result" | "none";
 type MatchStatus = "matching" | "nothing" | "waiting" | "battle";
@@ -74,8 +64,7 @@ type PlayerData = {
 type GameData = {
   turn: number;
   players: string[];
-  missionsNum: number[];
   firstAtkPlayer: PlayerSign | undefined;
 };
 
-export type { Attribute, Card, Character, Gift, Mission, Phase, MatchStatus, PlayerSign, Status, PlayerData, SumCards, GameData };
+export type { Attribute, Card, Character, Gift, Phase, MatchStatus, PlayerSign, Status, PlayerData, SumCards, GameData };

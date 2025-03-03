@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import { i } from "@/log";
 import { defineStore } from "pinia";
-import type { Card, GameData, PlayerData, SumCards, Phase, PlayerSign, Mission } from "@/types";
+import type { Card, GameData, PlayerData, SumCards, Phase, PlayerSign } from "@/types";
 import allCards from "@/assets/allCards";
 
 const usePlayerStore = defineStore("playerData", () => {
@@ -254,9 +254,7 @@ const useGameStore = defineStore("gameData", () => {
     turn: 1,
     players: [],
     firstAtkPlayer: undefined,
-    missionsNum: [],
   });
-  const missions = ref<Mission[] | undefined>([]);
   //?Computed/Getter
   ///?function/actions
   //ターン終了時に、turnを1増やす
@@ -269,12 +267,10 @@ const useGameStore = defineStore("gameData", () => {
       turn: 1,
       players: [],
       firstAtkPlayer: undefined,
-      missionsNum: [],
     };
-    missions.value = [];
   };
 
-  return { game, missions, nextTurn, $reset };
+  return { game, nextTurn, $reset };
 });
 
 export { useGameStore, useEnemyPlayerStore, usePlayerStore };
