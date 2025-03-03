@@ -287,10 +287,8 @@ async function postBattle(): Promise<void> {
   const newHandNum = rottenHand.value.length;
   if (newHandNum !== oldHandNum) {
     if (newHandNum > oldHandNum) log.value = newHandNum - oldHandNum + "枚のカードが腐ってしまった！";
-    changeStatusValue("maxHungry", -20 * (newHandNum - oldHandNum), false);
     updateDoc(doc(playersRef, id.value), { hand: hand.value });
     updateDoc(doc(playersRef, id.value), { rottenHand: rottenHand.value });
-    updateDoc(doc(playersRef, id.value), { status: status.value });
   }
 
   //このターン使用したカードの効果を発動する
