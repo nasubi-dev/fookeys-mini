@@ -56,7 +56,6 @@ async function endShop(): Promise<void> {
   const myGift = isSelectedGift.value;
   if (myGift !== undefined) {
     allGifts[myGift].skill();
-    status.value.contribution -= allGifts[myGift].requireContribution;
     myLog.value = allGifts[myGift].name + "を使った！";
   }
   //相手のisSelectedGiftを実行する

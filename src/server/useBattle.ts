@@ -32,8 +32,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   if (my.field.length === 0) return false;
   //寄付をしていた場合､ダメージ計算を行わない
   if (my.donate) {
-    my.status.contribution += my.field.length * 5;
-    if (playerAllocation) updateDoc(doc(playersRef, myId), { "status.contribution": my.status.contribution });
     if (my.isSelectedGift === 8) battleResult.value = ["def", 999];
     await everyUtil(["donate", my.field.length * 5]);
     battleResult.value = ["none", 0];
@@ -182,8 +180,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
           return;
         }
         myLog.value = card.name + "の効果!" + card.description;
-        if (card.id === 17 || card.id === 20) changeStatusValue("contribution", 5);
-        if (card.id === 25) changeStatusValue("contribution", 50);
         if ((card.id === 28 || card.id === 30) && enemy.status.hungry >= 100) {
           my.sumFields.tech += 30;
         }

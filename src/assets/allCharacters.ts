@@ -13,7 +13,6 @@ const allCharacters: Character[] = [
   //   name: "ミューゼ",
   //   company: "bulbull",
   //   description1: "ゲーム開始時に貢献度を🪙+100する。",
-  //   initialContribution: 100,
   //   description2:"獲得貢献度を2倍にする｡",
   //   //?mission作成後に追加
   //   description3:"ギフトを使用したとき、カードを1枚ドローする",

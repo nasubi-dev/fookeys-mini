@@ -13,18 +13,15 @@ const wiggleStatus = (reactionImg: string) => {
 
 const hpClass = ref();
 const hungryClass = ref();
-const contributionClass = ref();
 watch(
   () => p.player.status,
   (newVal, oldVal) => {
     //初期化
-    hpClass.value = hungryClass.value = contributionClass.value = null;
+    hpClass.value = hungryClass.value = null;
     //増えたらshake
     if (newVal.hp > oldVal.hp) hpClass.value = "animate-jump";
     if (newVal.hungry > oldVal.hungry) hungryClass.value = "animate-jump";
-    if (newVal.contribution > oldVal.contribution) contributionClass.value = "animate-jump";
     if (newVal.hungry < oldVal.hungry) hungryClass.value = "animate-shake";
-    if (newVal.contribution < oldVal.contribution) contributionClass.value = "animate-shake";
   },
   { deep: true }
 );
@@ -36,10 +33,11 @@ watch(
     <div class="overText w-full pb-32">
       <div class="flex justify-start w-full transform">
         <Character status="my" @isWiggle="wiggleStatus" class="w-[min(18vw,250px)] mt-10" />
-        <div class="flex justify-start font-bold text-gray-900 w-[calc(max(40vw,500px) - 300px)] text-[min(2vw,3rem)] mt-auto ml-auto mr-8 select-none">
+        <div
+          class="flex justify-start font-bold text-gray-900 w-[calc(max(40vw,500px) - 300px)] text-[min(2vw,3rem)] mt-auto ml-auto mr-8 select-none"
+        >
           <div :class="hpClass">❤:{{ player.status.hp + "/" + player.status.maxHp }}</div>
           <div :class="hungryClass">🍖:{{ player.status.hungry + "/" + player.status.maxHungry }}</div>
-          <div :class="contributionClass">🪙:{{ player.status.contribution }}</div>
         </div>
       </div>
     </div>

@@ -11,7 +11,6 @@ import { tap1, tap2 } from "@/assets/sounds";
 import SelectCharacter from "@/components/selectCharacter.vue";
 import SelectGifts from "@/components/selectGifts.vue";
 import SelectEntry from "@/components/selectEntry.vue";
-import UiGifts from "@/components/uiGifts.vue";
 import myLogImg from "@/components/myLog.vue";
 import enemyLogImg from "@/components/enemyLog.vue";
 //img
@@ -78,8 +77,7 @@ onUnmounted(() => {
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
-    <div v-if="loadMenu"
-      class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
+    <div v-if="loadMenu" class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
       loading....
     </div>
     <div class="h-screen flex flex-col">
@@ -89,12 +87,16 @@ onUnmounted(() => {
             <img :src="back" class="w-32" />
           </button>
         </router-link>
-        <button v-else class="p-4 absolute top-4 left-4 btn-pop" @click="
-          selectCharacter = false;
-        selectGift = false;
-        selectEntry = false;
-        useTap2.play();
-        ">
+        <button
+          v-else
+          class="p-4 absolute top-4 left-4 btn-pop"
+          @click="
+            selectCharacter = false;
+            selectGift = false;
+            selectEntry = false;
+            useTap2.play();
+          "
+        >
           <img :src="back" class="w-32" />
         </button>
       </div>
@@ -104,9 +106,6 @@ onUnmounted(() => {
           <img :src="characterBackground" />
           <div class="overText items-center">
             <img :src="`/img/characters/${character}/normal.png`" />
-            <div class="flex justify-start w-1/2">
-              <UiGifts size="my" :gifts="gifts" :player="player" />
-            </div>
           </div>
         </div>
 
@@ -114,22 +113,31 @@ onUnmounted(() => {
           <div class="relative">
             <img :src="menuBackground" class="h-screen" />
             <div v-if="!selectCharacter && !selectGift && !selectEntry" class="overText w-full">
-              <button @click="
-                selectEntry = !selectEntry;
-              useTap1.play();
-              " class="btn-pop my-4">
+              <button
+                @click="
+                  selectEntry = !selectEntry;
+                  useTap1.play();
+                "
+                class="btn-pop my-4"
+              >
                 <img src="@/assets/img/ui/entry.png" />
               </button>
-              <button @click="
-                selectCharacter = !selectCharacter;
-              useTap1.play();
-              " class="btn-pop my-4">
+              <button
+                @click="
+                  selectCharacter = !selectCharacter;
+                  useTap1.play();
+                "
+                class="btn-pop my-4"
+              >
                 <img src="@/assets/img/ui/changeCharacter.png" />
               </button>
-              <button @click="
-                selectGift = !selectGift;
-              useTap1.play();
-              " class="btn-pop my-4">
+              <button
+                @click="
+                  selectGift = !selectGift;
+                  useTap1.play();
+                "
+                class="btn-pop my-4"
+              >
                 <img src="@/assets/img/ui/changeGift.png" />
               </button>
             </div>

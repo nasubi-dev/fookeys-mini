@@ -24,7 +24,6 @@ type Character = {
   company: string;
   maxHungry?: number;
   maxHp?: number;
-  initialContribution?: number;
   passive?: () => void;
 };
 
@@ -32,15 +31,24 @@ type Gift = {
   id: number;
   name: string;
   description: string;
-  requireContribution: number;
   skill: () => void;
+};
+
+type Mission = {
+  id: number;
+  name: string;
+  achieved: boolean;
+  description: string;
+  reward: number;
+  goalAchievement: number;
+  nowAchievement: number;
 };
 
 //!使われてるか調べる
 type Phase = "shop" | "battle" | "result" | "none";
 type MatchStatus = "matching" | "nothing" | "waiting" | "battle";
 type PlayerSign = 0 | 1;
-type Status = { hp: number; hungry: number; contribution: number; maxHp: number; maxHungry: number };
+type Status = { hp: number; hungry: number; maxHp: number; maxHungry: number };
 type SumCards = { waste: number; hungry: number; priority: number; atk: number; def: number; tech: number; heal: number };
 type PlayerData = {
   idEnemy: string;
@@ -67,4 +75,4 @@ type GameData = {
   firstAtkPlayer: PlayerSign | undefined;
 };
 
-export type { Attribute, Card, Character, Gift, Phase, MatchStatus, PlayerSign, Status, PlayerData, SumCards, GameData };
+export type { Attribute, Card, Character, Gift, Phase, MatchStatus, PlayerSign, Status, PlayerData, SumCards, GameData, Mission };

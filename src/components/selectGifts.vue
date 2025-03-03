@@ -35,7 +35,6 @@ function selectGift(gift: number): void {
       >
         <div class="flex items-center">
           <img :src="`./img/gifts/${gift.id}.png`" class="w-20" />
-          <p class="fixed text-border text-xl font-bold left-0 -bottom-2">{{ gift.requireContribution }}</p>
           <div class="relative w-full">
             <img :src="giftSelectBackground" style="width: 25vw" />
             <div class="overText flex flex-col justify-start text-left align-text-bottom ml-3">
