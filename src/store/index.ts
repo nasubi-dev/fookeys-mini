@@ -28,7 +28,7 @@ const usePlayerStore = defineStore("playerData", () => {
       hungry: 0,
       contribution: 0,
       maxHp: 300,
-      maxHungry: 200,
+      maxHungry: 100,
     },
     sumFields: {
       waste: 0,
@@ -135,7 +135,7 @@ const usePlayerStore = defineStore("playerData", () => {
         hungry: 0,
         contribution: 0,
         maxHp: 300,
-        maxHungry: 200,
+        maxHungry: 100,
       },
       sumFields: {
         waste: 0,
@@ -199,7 +199,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       hungry: 0,
       contribution: 0,
       maxHp: 300,
-      maxHungry: 200,
+      maxHungry: 100,
     },
     sumFields: {
       waste: 0,
@@ -232,7 +232,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
         hungry: 0,
         contribution: 0,
         maxHp: 500,
-        maxHungry: 200,
+        maxHungry: 100,
       },
       sumFields: {
         waste: 0,
