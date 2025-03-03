@@ -45,7 +45,7 @@ function drawRandomOneCard(order?: Attribute | number): void {
   const { player, id } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
-  if (hand.value.length >= 9) return;
+  if (hand.value.length >= 5) return;
   if (typeof order === "number") {
     hand.value.push(structuredClone(allCards[order]));
   } else {
@@ -62,7 +62,7 @@ async function draw2ExchangedCard() {
 
   let selectCards: Card[] = [];
   for (let i = 0; i < 2; i++) {
-    if (hand.value.length >= 9) return;
+    if (hand.value.length >= 5) return;
     let selectCard = drawCard();
     selectCard.waste = 7;
     selectCard.hungry = 0;
@@ -73,14 +73,14 @@ async function draw2ExchangedCard() {
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
   console.log("draw3ExchangedCard: " + selectCards.map((card) => card.name));
 }
-//cardをHandに6枚セットする
+//cardをHandに3枚セットする
 async function setHand(): Promise<void> {
   console.log(i, "setHandを実行しました");
   const { id, player } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
-  for (let i = 0; i < 6; i++) {
-    if (hand.value.length >= 9) {
+  for (let i = 0; i < 3; i++) {
+    if (hand.value.length >= 5) {
       console.log(i, "hand is full");
       return;
     } else {

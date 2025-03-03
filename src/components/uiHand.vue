@@ -32,9 +32,9 @@ watch(
     }
   }
 );
-const isHandSelected = ref([false, false, false, false, false, false, false, false, false]);
+const isHandSelected = ref([false, false, false, false, false]);
 watch(donate, () => {
-  isHandSelected.value = [false, false, false, false, false, false, false, false, false];
+  isHandSelected.value = [false, false, false, false, false];
   field.value = [];
 });
 //WatchでCardLockを監視して､trueになったら使用するカードを手札から削除する
@@ -53,7 +53,7 @@ watch(cardLock, async (newVal) => {
       "hand: ",
       hand.value.map((card) => card.name)
     );
-    isHandSelected.value = [false, false, false, false, false, false, false, false, false];
+    isHandSelected.value = [false, false, false, false, false];
     await watchTurnEnd();
   }
 });

@@ -22,7 +22,7 @@ const isOfferSelected = ref([false, false, false]);
 const pushed = ref(false);
 //カードを選択する
 const offerSelect = (index: number) => {
-  if (hand.value.length + rottenHand.value.length + isOfferSelected.value.filter((bool) => bool).length >= 9) {
+  if (hand.value.length + rottenHand.value.length + isOfferSelected.value.filter((bool) => bool).length >= 5) {
     if (!isOfferSelected.value[index]) {
       log.value = "手札がいっぱいでこれ以上買い物できない！";
       return;
