@@ -56,7 +56,6 @@ type PlayerData = {
   name: string;
   check: boolean;
   death: boolean;
-  donate: boolean;
   match: MatchStatus;
   password: string;
   character: string;

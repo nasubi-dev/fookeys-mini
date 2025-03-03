@@ -30,13 +30,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
   //fieldが空の場合､ダメージ計算を行わない
   if (my.field.length === 0) return false;
-  //寄付をしていた場合､ダメージ計算を行わない
-  if (my.donate) {
-    if (my.isSelectedGift === 8) battleResult.value = ["def", 999];
-    await everyUtil(["donate", my.field.length * 5]);
-    battleResult.value = ["none", 0];
-    return false;
-  }
 
   //自分がこのターン､行動不能の場合､ダメージ計算を行わない
   my.status.hungry += my.sumFields.hungry;
@@ -261,9 +254,9 @@ async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
   const { checkRotten, deleteField } = playerStore;
   const { id, player, sign, log, myLog, enemyLog } = storeToRefs(playerStore);
-  const { check, idGame, isSelectedGift, hand, rottenHand, field, status, donate } = toRefs(player.value);
+  const { check, idGame, isSelectedGift, hand, rottenHand, field, status } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-  const { field: enemyField, donate: enemyDonate, check: enemyCheck } = toRefs(enemyPlayer.value);
+  const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
   const { nextTurn } = gameStore;
   const { game } = storeToRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
@@ -301,13 +294,13 @@ async function postBattle(): Promise<void> {
   }
 
   //このターン使用したカードの効果を発動する
-  if (!enemyCheck.value && !enemyDonate.value) {
+  if (!enemyCheck.value) {
     enemyField.value.forEach((card: Card) => {
       if (judgeDrawCard(card)) return;
       enemyLog.value = card.name + "の効果!" + card.description;
     });
   }
-  if (!check.value && !donate.value) {
+  if (!check.value) {
     field.value.forEach((card: Card) => {
       if (judgeDrawCard(card)) return;
       myLog.value = card.name + "の効果!" + card.description;

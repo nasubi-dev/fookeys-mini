@@ -18,7 +18,6 @@ defineProps<{
   <div class="flex items-center">
     <div v-if="cardLock" class="text-5xl font-bold text-border text-gray-900">
       <p v-if="after === 'hungry'" class="animate-jump animate-once">{{ value ? "行動不能✖" : "行動可能✔" }}</p>
-      <p v-if="after === 'donate' && value" class="animate-jump animate-once">{{ "🪙" + value }}</p>
       <p v-if="after === 'heal' && value" class="animate-jump animate-once">{{ "💖" + value }}</p>
       <p v-if="after === 'def' && value" class="animate-jump animate-once">{{ "🛡" + value }}</p>
       <p v-if="after === 'atk' && value" class="animate-jump animate-once">{{ "💪" + value }}</p>

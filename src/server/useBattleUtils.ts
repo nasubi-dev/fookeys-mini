@@ -78,29 +78,6 @@ async function everyUtil(params: [string, number]): Promise<void> {
   battleResult.value = params;
   await wait(1500);
 }
-//donateの場合､優先度は最上位になる
-async function judgeDonate(): Promise<void> {
-  console.log(s, "comparePriorityを実行しました");
-  const { id, player, sign } = storeToRefs(playerStore);
-  const { idEnemy, donate } = toRefs(player.value);
-  const { game } = storeToRefs(gameStore);
-  const { firstAtkPlayer } = toRefs(game.value);
-
-  //donateの値がtrueの場合､優先度は最上位になる
-  const getSwitchedPlayerSign = (playerSign: PlayerSign): PlayerSign => (playerSign === 0 ? 1 : 0);
-  const isEnemyDonate = (await getDoc(doc(playersRef, idEnemy.value))).data()?.donate;
-  let newFirstAtkPlayer: PlayerSign | undefined = firstAtkPlayer.value;
-
-  if (firstAtkPlayer.value === sign.value) {
-    if (donate.value) newFirstAtkPlayer = sign.value;
-    if (isEnemyDonate) newFirstAtkPlayer = getSwitchedPlayerSign(sign.value);
-  } else {
-    if (isEnemyDonate) newFirstAtkPlayer = getSwitchedPlayerSign(sign.value);
-    if (donate.value) newFirstAtkPlayer = sign.value;
-  }
-  if (newFirstAtkPlayer !== undefined) firstAtkPlayer.value = newFirstAtkPlayer;
-  console.log(i, "donateの値がtrueの場合､優先度は最上位になる");
-}
 //指定された､fieldの値を比較する
 async function compareSumField(field: "hungry" | "priority"): Promise<void> {
   console.log(s, "compareSum", field, "を実行しました");
@@ -165,7 +142,6 @@ async function decideFirstAtkPlayer(): Promise<void> {
   await wait(1000);
   await compareSumField("hungry");
   await compareSumField("priority");
-  await judgeDonate();
   if (firstAtkPlayer.value === undefined) throw new Error("firstAtkPlayerの値がundefinedです");
 
   await wait(1000);

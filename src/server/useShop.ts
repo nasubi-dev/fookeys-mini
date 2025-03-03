@@ -107,7 +107,7 @@ async function watchShopEnd(): Promise<void> {
 async function watchTurnEnd(): Promise<void> {
   console.log(i, "watchTurnEndを実行しました");
   const { id, player, sumCards } = storeToRefs(playerStore);
-  const { check, idEnemy, sumFields, donate, field, hand } = toRefs(player.value);
+  const { check, idEnemy, sumFields, field, hand } = toRefs(player.value);
 
   //checkの値がtrueになっていたら､カード選択終了
   check.value = true;
@@ -115,7 +115,6 @@ async function watchTurnEnd(): Promise<void> {
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
   updateDoc(doc(playersRef, id.value), { field: field.value });
   updateDoc(doc(playersRef, id.value), { check: check.value });
-  updateDoc(doc(playersRef, id.value), { donate: donate.value });
   updateDoc(doc(playersRef, id.value), { sumFields: sumFields.value });
   const enemyCheck = (await getDoc(doc(playersRef, idEnemy.value))).data()?.check;
   if (enemyCheck) {

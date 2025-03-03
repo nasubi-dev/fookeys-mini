@@ -18,7 +18,7 @@ const playersRef = collection(db, "players").withConverter(converter<PlayerData>
 
 const { pushHand, popHand } = playerStore;
 const { player, cardLock, log, sumCards } = storeToRefs(playerStore);
-const { hand, rottenHand, field, idEnemy, status, donate } = toRefs(player.value);
+const { hand, rottenHand, field, idEnemy, status } = toRefs(player.value);
 
 const recoverRottenHand = ref(false);
 watch(
@@ -33,10 +33,6 @@ watch(
   }
 );
 const isHandSelected = ref([false, false, false, false, false]);
-watch(donate, () => {
-  isHandSelected.value = [false, false, false, false, false];
-  field.value = [];
-});
 //WatchでCardLockを監視して､trueになったら使用するカードを手札から削除する
 watch(cardLock, async (newVal) => {
   if (newVal) {
@@ -60,11 +56,7 @@ watch(cardLock, async (newVal) => {
 //HandからFieldへ
 const pushCard = async (index: number) => {
   if (cardLock.value) return;
-  if (field.value.length >= 3 && donate.value) {
-    log.value = "フードバンクがいっぱいでこれ以上寄付できない！";
-    return;
-  }
-  if (!donate.value && status.value.hungry + sumCards.value.hungry + allCards[hand.value[index].id].hungry > status.value.maxHungry) {
+  if (status.value.hungry + sumCards.value.hungry + allCards[hand.value[index].id].hungry > status.value.maxHungry) {
     log.value = "お腹がいっぱいでこれ以上食べれない！";
     return;
   }

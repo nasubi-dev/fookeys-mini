@@ -28,7 +28,7 @@ import startGif from "@/assets/gifs/start.gif";
 import winGif from "@/assets/gifs/win.gif";
 import loseGif from "@/assets/gifs/lose.gif";
 import allGifts from "@/assets/allGifts";
-import { tap2, enemyTurn, myTurn, battleStart, donate, atk, def, tech, hp, sup, rotten } from "@/assets/sounds";
+import { tap2, enemyTurn, myTurn, battleStart, atk, def, tech, hp, sup, rotten } from "@/assets/sounds";
 import bgm from "@/assets/sounds/bgm.mp3";
 import win from "@/assets/sounds/win.mp3";
 import lose from "@/assets/sounds/lose.mp3";
@@ -47,7 +47,6 @@ const useEnemyTurn = useSound(enemyTurn);
 const useMyTurn = useSound(myTurn);
 const useBattleStart = useSound(battleStart);
 const useRotten = useSound(rotten, { volume: 0.5 });
-const useDonate = useSound(donate, { volume: 0.5 });
 const useHp = useSound(hp, { volume: 0.5 });
 const useSup = useSound(sup, { volume: 0.5 });
 const useDef = useSound(def);
@@ -113,7 +112,6 @@ watch(death, (newVal) => {
 
 //カード使用時に再生
 watch(battleResult, (newVal) => {
-  if (newVal[0] === "donate") useDonate.play();
   if (newVal[0] === "heal") useHp.play();
   if (newVal[0] === "sup") useSup.play();
   if (newVal[0] === "def") useDef.play();

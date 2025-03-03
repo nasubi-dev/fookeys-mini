@@ -6,7 +6,6 @@ import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
 import decideImg from "@/assets/img/ui/decide.png";
 import battleImg from "@/assets/img/ui/battle.png";
-import donateImg from "@/assets/img/ui/donate.png";
 import sumFieldImg from "@/assets/img/ui/info.png";
 import eatingGif from "@/assets/gifs/eating.gif";
 import { tap2, battlePhase, swipe } from "@/assets/sounds";
@@ -15,7 +14,7 @@ const useTap2 = useSound(tap2);
 const useBattlePhase = useSound(battlePhase);
 const useSwipe = useSound(swipe);
 const { player, cardLock, phase, sumCards } = storeToRefs(playerStore);
-const { donate, field } = toRefs(player.value);
+const { field } = toRefs(player.value);
 const { game } = storeToRefs(gameStore);
 
 //ターンを終了時
@@ -31,7 +30,6 @@ const battleAnimation = ref(false);
 onMounted(() => {
   if (game.value.turn === 1) return;
   battleAnimation.value = true;
-  donate.value = false;
 });
 const loadBattleGif = () => {
   useBattlePhase.play();
@@ -67,7 +65,7 @@ const loadBattleGif = () => {
           <div class="relative w-[max(30dvw,200px)]">
             <img :src="sumFieldImg" />
             <div class="overText text-lg font-bold">
-              <div v-if="!donate" class="flex text-[max(2vw,1rem)] items-center mb-3 animate-rotate-x animate-duration-300">
+              <div class="flex text-[max(2vw,1rem)] items-center mb-3 animate-rotate-x animate-duration-300">
                 <p>{{ "🍖" + sumCards.hungry }}</p>
                 <p>{{ "⚔" + sumCards.atk }}</p>
                 <p>{{ "🛡" + sumCards.def }}</p>
@@ -75,26 +73,8 @@ const loadBattleGif = () => {
                 <p>{{ "🦶 " + sumCards.priority }}</p>
                 <p>{{ "💖" + sumCards.heal }}</p>
               </div>
-              <div v-else class="flex text-[max(2vw,1rem)] items-center mb-3 animate-rotate-x animate-duration-300">
-                <p>{{ "🪙" + field.length * 5 }}</p>
-              </div>
             </div>
           </div>
-          <button
-            @click="
-              donate = !donate;
-              useSwipe.play();
-            "
-            class="card-pop"
-          >
-            <div class="relative">
-              <div class="p-8 bg-white border-gray-700 rounded-full border-2" />
-              <div class="overText">
-                <img v-if="donate" :src="donateImg" />
-                <img v-else :src="battleImg" />
-              </div>
-            </div>
-          </button>
         </div>
       </div>
     </transition>
