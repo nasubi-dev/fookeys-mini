@@ -220,48 +220,37 @@ window.addEventListener("resize", () => {
 </script>
 
 <template>
-  <div v-if="isMobile">
+  <div>
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
     <div v-cloak class="flex flex-col h-screen w-screen p-5 relative">
-      <img
-        v-if="startAnimation"
-        @load="loadStartGif()"
-        :src="startGif"
-        class="fixed top-0 left-0 right-0 w-screen h-screen z-10 aspect-square"
-      />
+      <img v-if="startAnimation" @load="loadStartGif()" :src="startGif"
+        class="fixed top-0 left-0 right-0 w-screen h-screen z-10 aspect-square" />
       <!-- 死亡時 -->
       <div v-if="death" class="flex flex-col fixed top-0 left-0 right-0 w-screen h-screen z-10">
-        <div
-          v-if="
-            status.hp <= 0 ||
-            hand.reduce((acc, cur) => {
-              if (cur.id === 0) acc++;
-              return acc;
-            }, 0) >= 9
-          "
-          class="flex flex-col items-center justify-center"
-        >
-          <button
-            @click="
-              deleteGame();
-              initPlayer();
-              useTap2.play();
-            "
-          >
+        <div v-if="
+          status.hp <= 0 ||
+          hand.reduce((acc, cur) => {
+            if (cur.id === 0) acc++;
+            return acc;
+          }, 0) >= 9
+        " class="flex flex-col items-center justify-center">
+          <button @click="
+            deleteGame();
+          initPlayer();
+          useTap2.play();
+          ">
             <img @load="loadDeathGif()" :src="deathAnimation ? loseGif : loseImg" />
             <RouterLink to="/"> </RouterLink>
           </button>
         </div>
         <div v-else class="flex flex-col items-center justify-center">
-          <button
-            @click="
-              deleteGame();
-              initPlayer();
-              useTap2.play();
-            "
-          >
+          <button @click="
+            deleteGame();
+          initPlayer();
+          useTap2.play();
+          ">
             <img @load="loadDeathGif()" :src="deathAnimation ? winGif : winImg" />
             <RouterLink to="/"> </RouterLink>
           </button>
@@ -300,13 +289,8 @@ window.addEventListener("resize", () => {
       </div>
 
       <!-- ショップとバトルのアニメーション -->
-      <transition
-        appear
-        enter-from-class="translate-y-[-150%] opacity-0"
-        leave-to-class="translate-y-[150%] opacity-0"
-        leave-active-class="transition duration-300"
-        enter-active-class="transition duration-300"
-      >
+      <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+        leave-active-class="transition duration-300" enter-active-class="transition duration-300">
         <div class="overlay">
           <div v-if="phase === 'shop'">
             <Shop />
@@ -321,46 +305,24 @@ window.addEventListener("resize", () => {
       <!-- このターン両者が使用したカード -->
       <div v-if="components !== 'postBattle'">
         <div style="width: 40vw" class="inset-0 top-1/4 left-0 fixed ml-2">
-          <UiUseCard
-            :player="sign === firstAtkPlayer ? player : enemyPlayer"
-            :firstAtkPlayer="firstAtkPlayer"
-            :components="components"
-            which="primary"
-            v-show="components !== 'secondAtk'"
-          />
-          <UiUseCard
-            :player="sign !== firstAtkPlayer ? player : enemyPlayer"
-            :firstAtkPlayer="firstAtkPlayer"
-            :components="components"
-            which="second"
-          />
+          <UiUseCard :player="sign === firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
+            :components="components" which="primary" v-show="components !== 'secondAtk'" />
+          <UiUseCard :player="sign !== firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
+            :components="components" which="second" />
         </div>
 
         <!-- 戦闘処理中のカード -->
         <div class="overlay">
-          <transition
-            appear
-            enter-from-class="translate-y-[-150%] opacity-0"
-            leave-to-class="translate-y-[150%] opacity-0"
-            leave-active-class="transition duration-300"
-            enter-active-class="transition duration-300"
-            mode="out-in"
-          >
+          <transition appear enter-from-class="translate-y-[-150%] opacity-0"
+            leave-to-class="translate-y-[150%] opacity-0" leave-active-class="transition duration-300"
+            enter-active-class="transition duration-300" mode="out-in">
             <img v-if="myTurnAnimation" @load="loadMyTurnImg()" :src="myTurnImg" style="width: 40vw" />
             <img v-else-if="enemyTurnAnimation" @load="loadEnemyTurnImg()" :src="enemyTurnImg" style="width: 40vw" />
             <div v-else class="flex flex-col">
-              <UiUseCardDisplay
-                v-if="sign === firstAtkPlayer"
-                :after="battleResult[0]"
-                :value="battleResult[1]"
-                :cards="components === 'primaryAtk' ? field : enemyPlayer.field"
-              />
-              <UiUseCardDisplay
-                v-if="sign !== firstAtkPlayer"
-                :after="battleResult[0]"
-                :value="battleResult[1]"
-                :cards="components === 'primaryAtk' ? enemyPlayer.field : field"
-              />
+              <UiUseCardDisplay v-if="sign === firstAtkPlayer" :after="battleResult[0]" :value="battleResult[1]"
+                :cards="components === 'primaryAtk' ? field : enemyPlayer.field" />
+              <UiUseCardDisplay v-if="sign !== firstAtkPlayer" :after="battleResult[0]" :value="battleResult[1]"
+                :cards="components === 'primaryAtk' ? enemyPlayer.field : field" />
             </div>
           </transition>
         </div>
@@ -368,11 +330,8 @@ window.addEventListener("resize", () => {
 
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
       <div class="bottom-0 fixed mb-3">
-        <img
-          v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
-          :src="waitingGif"
-          class="bottom-0 fixed w-[max(50dvw,350px)] -translate-x-[100px] -translate-y-[125px]"
-        />
+        <img v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
+          :src="waitingGif" class="bottom-0 fixed w-[max(50dvw,350px)] -translate-x-[100px] -translate-y-[125px]" />
         <div class="flex justify-start" style="width: 95vw">
           <UiStatus :player="player" />
         </div>
@@ -380,5 +339,4 @@ window.addEventListener("resize", () => {
       </div>
     </div>
   </div>
-  <div v-else class="fixed w-full h-full text-xl text-bold text-white gray">PCやタブレット端末でプレイしてください</div>
 </template>
