@@ -10,6 +10,7 @@ import { getEnemyPlayer, initPlayer } from "@/server/usePlayerData";
 import { deleteGame, watchDeleteGame } from "@/server/useMatchMaking";
 import { drawRandomOneCard } from "@/server/useShopUtils";
 import { startShop } from "@/server/useShop";
+import Expanded from "@/components/Expanded.vue";
 import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
 import UiStatus from "@/components/uiStatus.vue";
 import UiHand from "@/components/uiHand.vue";
@@ -220,7 +221,7 @@ window.addEventListener("resize", () => {
 </script>
 
 <template>
-  <div>
+  <Expanded>
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
@@ -338,5 +339,5 @@ window.addEventListener("resize", () => {
         <UiHand class="pt-5" />
       </div>
     </div>
-  </div>
+  </Expanded>
 </template>
