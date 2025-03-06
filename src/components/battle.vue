@@ -41,31 +41,17 @@ const loadBattleGif = () => {
 
 <template>
   <div>
-    <transition
-      appear
-      enter-from-class="translate-y-[-150%] opacity-0"
-      leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300"
-      enter-active-class="transition duration-300"
-    >
+    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
       <div v-if="battleAnimation" class="overlay">
         <img @load="loadBattleGif()" :src="eatingGif" />
       </div>
       <div v-else>
-        <div v-if="phase === 'battle' && !cardLock" class="flex">
-          <button
-            @click="
-              turnEnd();
-              useTap2.play();
-            "
-          >
-            <img :src="decideImg" class="w-[max(15dvw,200px)]" />
-          </button>
-
-          <div class="relative w-[max(30dvw,200px)]">
-            <img :src="sumFieldImg" />
-            <div class="overText text-lg font-bold">
-              <div class="flex text-[max(2vw,1rem)] items-center mb-3 animate-rotate-x animate-duration-300">
+        <div v-if="phase === 'battle' && !cardLock" class="flex flex-col gap-5 p-20 justify-center items-center">
+          <div class="relative">
+            <img :src="sumFieldImg" class="w-[320px]" />
+            <div class="overText">
+              <div class="text-lg font-bold flex w-full justify-between px-10 items-center content-between">
                 <p>{{ "🍖" + sumCards.hungry }}</p>
                 <p>{{ "⚔" + sumCards.atk }}</p>
                 <p>{{ "🛡" + sumCards.def }}</p>
@@ -74,6 +60,13 @@ const loadBattleGif = () => {
               </div>
             </div>
           </div>
+
+          <button @click="
+            turnEnd();
+          useTap2.play();
+          ">
+            <img :src="decideImg" class="w-[150px]" />
+          </button>
         </div>
       </div>
     </transition>
