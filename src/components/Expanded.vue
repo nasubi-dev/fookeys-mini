@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { playerStore } from "@/main";
+import { storeToRefs } from "pinia";
 
+const { isMobile } = storeToRefs(playerStore);
 </script>
 
 <template>
-  <div class="w-screen h-screen flex justify-center items-center overflow-clip">
-    <div class=" max-w-[480px] w-full h-screen  border-2 border-gray-900">
-      <div class="w-fit grid justify-center items-center">
+  <div class="flex justify-center items-center overflow-clip">
+    <div class=" w-full h-screen border-2 border-gray-900" :class="isMobile ? 'w-full' : 'w-[480px]'">
+      <div class="w-fit h-fit grid justify-center items-center p-1">
         <slot />
       </div>
     </div>

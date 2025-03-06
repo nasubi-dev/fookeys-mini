@@ -54,7 +54,7 @@ const useDef = useSound(def);
 const useAtk = useSound(atk);
 const useTech = useSound(tech);
 
-const { id, player, cardLock, phase, offer, sign, log, myLog, enemyLog, sumCards, components, battleResult } = storeToRefs(playerStore);
+const { id, player, cardLock, phase, offer, sign, log, myLog, enemyLog, sumCards, isMobile, components, battleResult } = storeToRefs(playerStore);
 const { idGame, idEnemy, match, character, gifts, status, hand, rottenHand, death, field, sumFields, name, check } = toRefs(player.value);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { game } = storeToRefs(gameStore);
@@ -213,11 +213,10 @@ const wantCard = ref(); //!test用
 const devMode = ref(false);
 
 //画面サイズがPC､タブレット端末であればバトル画面を表示
-const isMobile = ref(window.innerWidth >= 768);
-
 window.addEventListener("resize", () => {
-  isMobile.value = window.innerWidth >= 984;
+  isMobile.value = window.innerWidth >= 768 ? false : true;
 });
+
 </script>
 
 <template>
@@ -225,11 +224,11 @@ window.addEventListener("resize", () => {
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
-    <div v-cloak class="flex flex-col h-screen w-screen p-5 relative">
+    <div class="w-full">
       <img v-if="startAnimation" @load="loadStartGif()" :src="startGif"
-        class="fixed top-0 left-0 right-0 w-screen h-screen z-10 aspect-square" />
+        class="fixed top-0 left-0 right-0 z-10 aspect-square" />
       <!-- 死亡時 -->
-      <div v-if="death" class="flex flex-col fixed top-0 left-0 right-0 w-screen h-screen z-10">
+      <div v-if="death" class="flex flex-col fixed top-0 left-0 right-0 z-10">
         <div v-if="
           status.hp <= 0 ||
           hand.reduce((acc, cur) => {
@@ -259,34 +258,29 @@ window.addEventListener("resize", () => {
       </div>
 
       <!-- 敵の情報と設定系 -->
-      <div class="flex flex-row-reverse fixed w-full">
-        <UiEnemyInfo :player="enemyPlayer" :sign="sign" class="mr-12" />
-      </div>
-      <div class="flex fixed w-full z-30">
-        <div class="flex flex-col">
+      <div class="flex fixed z-30 w-auto first-letter: justify-between">
+        <div class="flex flex-col w-[140px]">
           <div class="flex justify-start">
             <button @click="devMode = !devMode" class="btn-pop">
-              <img :src="configImg" class="w-12" />
+              <img :src="configImg" class="w-10" />
             </button>
             <button @click="isBGM = !isBGM" class="btn-pop transform -translate-y-2">
-              <img v-if="isBGM" :src="soundOnImg" class="w-20" />
-              <img v-else :src="soundOffImg" class="w-20" />
+              <img v-if="isBGM" :src="soundOnImg" class="w-16" />
+              <img v-else :src="soundOffImg" class="w-16" />
             </button>
             <div class="relative transform -translate-x-3">
-              <img :src="turnBackgroundImg" class="w-16 transform translate-y-3" />
-              <div class="overText text-4xl font-bold text-left">{{ turn }}</div>
+              <img :src="turnBackgroundImg" class="w-12 transform translate-y-3" />
+              <div class="overText text-2xl font-bold text-left">{{ turn }}</div>
             </div>
           </div>
-          <div v-if="devMode">
-            <div class="flex flex-col">
-              <p>{{ "id: " + id }}</p>
-              <p>{{ "sign: " + sign + " phase: " + phase + " turn: " + turn }}</p>
-              <p>{{ components }}</p>
-              <button @click="drawRandomOneCard(wantCard)">drawSelectCard</button>
-              <input v-model="wantCard" type="number" />
-            </div>
+          <div v-if="devMode" class="flex flex-col w-[100px]">
+            <p>{{ "sign: " + sign}}</p>
+            <p>{{ components }}</p>
+            <button @click="drawRandomOneCard(wantCard)">drawSelectCard</button>
+            <input v-model="wantCard" type="number" />
           </div>
         </div>
+        <UiEnemyInfo :player="enemyPlayer" :sign="sign" class="ml-auto" :class="isMobile ? 'w-full' : 'w-[320px]'" />
       </div>
 
       <!-- ショップとバトルのアニメーション -->
@@ -330,10 +324,10 @@ window.addEventListener("resize", () => {
       </div>
 
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
-      <div class="bottom-0 fixed mb-3">
+      <div class="bottom-0 fixed">
         <img v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
           :src="waitingGif" class="bottom-0 fixed w-[max(50dvw,350px)] -translate-x-[100px] -translate-y-[125px]" />
-        <div class="flex justify-start" style="width: 95vw">
+        <div class="flex justify-start">
           <UiStatus :player="player" />
         </div>
         <UiHand class="pt-5" />

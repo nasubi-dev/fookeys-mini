@@ -31,12 +31,12 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col ml-auto">
+  <div class="flex flex-col w-full">
     <div class="flex justify-end">
       <uiCardBehind :cards="player.hand" :rottenCards="player.rottenHand" />
     </div>
 
-    <div class="relative ml-auto w-[400px]" :class="wiggleClass">
+    <div class="relative w-full" :class="wiggleClass">
       <img :src="enemyStatusImg" />
       <div class="overText w-full">
         <div class="flex flex-row-reverse justify-center items-center w-full">

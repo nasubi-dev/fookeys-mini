@@ -45,6 +45,7 @@ const usePlayerStore = defineStore("playerData", () => {
   const enemyLog = ref<string>("");
   const components = ref<string>("postBattle");
   const battleResult = ref<(string | number)[]>(["none", 0]);
+  const isMobile = ref(false);
   //?Computed/Getter
   //Fieldに出ているカードの値を合計する
   const sumCards = computed<SumCards>(
@@ -147,6 +148,7 @@ const usePlayerStore = defineStore("playerData", () => {
     enemyLog.value = "";
     components.value = "postBattle";
     battleResult.value = ["none", 0];
+    isMobile.value = false;
   };
   return {
     id,
@@ -161,6 +163,7 @@ const usePlayerStore = defineStore("playerData", () => {
     components,
     battleResult,
     sumCards,
+    isMobile,
     pushHand,
     popHand,
     deleteField,
