@@ -97,8 +97,7 @@ const allGifts: Gift[] = [
     id: 11,
     name: "早食い",
     description: "このラウンド中使用カード枚数分スピードを🦶+1する",
-    skill: () => {
-    },
+    skill: () => {},
   },
 ];
 export default allGifts;

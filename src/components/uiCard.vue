@@ -84,11 +84,7 @@ watch(
 
           <div
             class="flex font-black text-border-thin transform select-none"
-            :class="
-              size === 'normal'
-                ? `text-[min(70%,1rem)] -translate-x-[10%]`
-                : `text-[min(130%,1.5rem)] -translate-x-[10%]`
-            "
+            :class="size === 'normal' ? `text-[min(70%,1rem)] -translate-x-[10%]` : `text-[min(130%,1.5rem)] -translate-x-[10%]`"
           >
             <p v-if="card.hungry !== undefined && card.id !== 0">{{ "🍖" + card.hungry }}</p>
             <p v-if="card.atk">{{ "💪" + card.atk }}</p>
@@ -97,11 +93,7 @@ watch(
             <p v-if="card.heal">{{ "💖" + card.heal }}</p>
           </div>
         </div>
-        <div
-          v-if="card.description && card.id !== 0"
-          class="absolute"
-          :class="size === 'normal' ? `top-5 right-5` : `top-5 right-5`"
-        >
+        <div v-if="card.description && card.id !== 0" class="absolute" :class="size === 'normal' ? `top-5 right-5` : `top-5 right-5`">
           <img :src="`/img/showSpecial/${card.company}.png`" class="absolute" />
         </div>
       </VDuringPress>

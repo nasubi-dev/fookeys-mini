@@ -219,7 +219,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       rottenHand: [],
       field: [],
       status: {
-        hp: 10,
+        hp: 300,
         hungry: 0,
         maxHp: 500,
         maxHungry: 100,

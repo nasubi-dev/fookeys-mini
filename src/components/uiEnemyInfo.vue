@@ -31,19 +31,20 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col w-full">
+  <div class="flex flex-col">
     <div class="flex justify-end">
       <uiCardBehind :cards="player.hand" :rottenCards="player.rottenHand" />
     </div>
+
     <div class="relative w-full" :class="wiggleClass">
       <img :src="enemyStatusImg" />
       <div class="overText w-full">
-        <div class="flex w-full justify-center">
-          <div class="flex justify-start font-bold h-3/4 self-end text-gray-900 pl-4">
+        <div class="flex flex-row-reverse justify-center items-center w-full">
+          <Character status="enemy" class="ml-auto" @isWiggle="wiggleStatus" />
+          <div class="flex justify-start font-bold text-[min(4vw,1.2rem)] h-3/5 text-gray-900 pl-4">
             <div :class="hpClass">❤{{ player.status.hp + "/" + player.status.maxHp }}</div>
             <div :class="hungryClass">🍖{{ player.status.hungry + "/" + player.status.maxHungry }}</div>
           </div>
-          <Character status="enemy" class="ml-auto max-w-[150px]" @isWiggle="wiggleStatus" />
         </div>
       </div>
     </div>
