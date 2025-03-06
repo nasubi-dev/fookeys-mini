@@ -60,7 +60,7 @@ watch(battleResult, (newVal) => {
 <template>
   <div
     class="relative animate-rotate-y animate-once animate-delay-100"
-    :class="p.status === 'my' ? (characterName === 'nabenabe' ? `left-2 top-7` : `left-2`) : `left-2 top-5`"
+    :class="p.status === 'my' ? (characterName === 'nabenabe' ? `left-2 top-7` : `left-2`) : `null`"
   >
     <img
       v-if="characterName"

@@ -259,7 +259,7 @@ window.addEventListener("resize", () => {
 
       <!-- 敵の情報と設定系 -->
       <div class="flex fixed z-30 w-auto first-letter: justify-between">
-        <div class="flex flex-col w-[140px]">
+        <div class="flex flex-col">
           <div class="flex justify-start">
             <button @click="devMode = !devMode" class="btn-pop">
               <img :src="configImg" class="w-10" />
@@ -273,7 +273,7 @@ window.addEventListener("resize", () => {
               <div class="overText text-2xl font-bold text-left">{{ turn }}</div>
             </div>
           </div>
-          <div v-if="devMode" class="flex flex-col w-[100px]">
+          <div v-if="devMode" class="flex flex-col fixed top-24">
             <p>{{ "sign: " + sign}}</p>
             <p>{{ components }}</p>
             <button @click="drawRandomOneCard(wantCard)">drawSelectCard</button>
