@@ -42,7 +42,7 @@ watch(
 </script>
 
 <template>
-  <div class="min-w-[7rem]">
+  <div class="">
     <div
       v-if="dropDown"
       class="z-20 mx-3 fixed text-gray-900 text-left"
@@ -58,15 +58,15 @@ watch(
     </div>
     <div class="relative">
       <VDuringPress :onKeyDown="onLongPressCallbackHook" :onKeyUp="onKeyUpCallbackHook" :delay="250">
-        <img :src="`/img/companys/${card.company}.png`" class="min-w-[7rem]" />
-        <div class="overText min-w-[7rem]">
+        <img :src="`/img/companys/${card.company}.png`" class="" />
+        <div class="overText">
           <div
             v-if="card.waste"
             class="font-bold text-center select-none"
             :class="[
               size === 'normal'
-                ? `text-[max(2vw,1rem)] -translate-x-[min(3.2vw,220px)] translate-y-[max(2.2vw,0px)] `
-                : `text-[max(3vw,1rem)] -translate-x-[min(4.8vw,100px)] translate-y-[max(3.2vw,0px)]`,
+                ? `text-[min(120%,1.5rem)] -translate-x-[min(11vw,1.9rem)] translate-y-[min(4vw,1.3rem)]`
+                : `text-[min(170%,1.8rem)] -translate-x-[min(11vw,2.7rem)] translate-y-[min(6vw,1.7rem)]`,
               card.waste === 1 ? `-translate-x-[380%]` : null,
             ]"
           >
@@ -74,20 +74,20 @@ watch(
               {{ card.waste }}
             </div>
           </div>
-          <div class="p-6" />
+          <div class="p-2" />
           <img
             v-if="card.waste"
             :src="`/img/foods/${card.id}.png`"
             class="transform"
-            :class="size === 'normal' ? `-translate-x-[10%]` : `-translate-x-[10%] translate-y-[10%]`"
+            :class="size === 'normal' ? `-translate-x-1 translate-y-2` : `-translate-x-[10%] translate-y-[20%]`"
           />
 
           <div
             class="flex font-black text-border-thin transform select-none"
             :class="
               size === 'normal'
-                ? `text-[max(1vw,0.5rem)] -translate-x-[10%]  -translate-y-[60%]`
-                : `text-lg -translate-x-[10%] -translate-y-[40%]`
+                ? `text-[min(70%,1rem)] -translate-x-[10%]`
+                : `text-[min(130%,1.5rem)] -translate-x-[10%]`
             "
           >
             <p v-if="card.hungry !== undefined && card.id !== 0">{{ "🍖" + card.hungry }}</p>
@@ -100,7 +100,7 @@ watch(
         <div
           v-if="card.description && card.id !== 0"
           class="absolute"
-          :class="size === 'normal' ? `top-5 right-5 w-[max(2vw,30px)]` : `top-5 right-5 w-[max(4vw,30px)]`"
+          :class="size === 'normal' ? `top-5 right-5` : `top-5 right-5`"
         >
           <img :src="`/img/showSpecial/${card.company}.png`" class="absolute" />
         </div>
