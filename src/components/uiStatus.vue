@@ -28,11 +28,11 @@ watch(
 </script>
 
 <template>
-  <div class="relative mt-auto w-[max(40vw,500px)]" :class="wiggleClass">
+  <div class="relative mt-auto" :class="wiggleClass">
     <img :src="statusImg" />
     <div class="overText w-full pb-32">
       <div class="flex justify-start w-full transform">
-        <Character status="my" @isWiggle="wiggleStatus" class="w-[min(18vw,250px)] mt-10" />
+        <Character status="my" @isWiggle="wiggleStatus" class="w-[100px] mt-10" />
         <div
           class="flex justify-start font-bold text-gray-900 w-[calc(max(40vw,500px) - 300px)] text-[min(2vw,3rem)] mt-auto ml-auto mr-8 select-none"
         >

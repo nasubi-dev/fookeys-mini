@@ -51,7 +51,7 @@ const loadBattleGif = () => {
           <div class="relative">
             <img :src="sumFieldImg" class="w-[320px]" />
             <div class="overText">
-              <div class="text-lg font-bold flex w-full justify-between px-10 items-center content-between">
+              <div class="text-lg font-bold flex w-full justify-between px-6 items-center content-between">
                 <p>{{ "🍖" + sumCards.hungry }}</p>
                 <p>{{ "⚔" + sumCards.atk }}</p>
                 <p>{{ "🛡" + sumCards.def }}</p>

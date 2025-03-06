@@ -211,12 +211,6 @@ const loadStartGif = () => {
 };
 const wantCard = ref(); //!test用
 const devMode = ref(false);
-
-//画面サイズがPC､タブレット端末であればバトル画面を表示
-window.addEventListener("resize", () => {
-  isMobile.value = window.innerWidth >= 768 ? false : true;
-});
-
 </script>
 
 <template>
@@ -324,11 +318,12 @@ window.addEventListener("resize", () => {
       </div>
 
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
-      <div class="bottom-0 fixed">
+      <div class="bottom-0 fixed flex flex-col w-full">
         <img v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
           :src="waitingGif" class="bottom-0 fixed w-[max(50dvw,350px)] -translate-x-[100px] -translate-y-[125px]" />
-        <div class="flex justify-start">
-          <UiStatus :player="player" />
+        <div class="flex gap-2">
+          <UiStatus :player="player" class="w-full" :class="isMobile ? 'w-full' : 'w-[380px]'" />
+          <div class="w-16 bg-black" />
         </div>
         <UiHand class="pt-5" />
       </div>

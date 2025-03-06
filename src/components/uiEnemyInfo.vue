@@ -35,12 +35,11 @@ watch(
     <div class="flex justify-end">
       <uiCardBehind :cards="player.hand" :rottenCards="player.rottenHand" />
     </div>
-
     <div class="relative w-full" :class="wiggleClass">
       <img :src="enemyStatusImg" />
       <div class="overText w-full">
         <div class="flex w-full justify-center">
-          <div class="flex justify-start font-bold h-3/4 self-end text-gray-900 pt-1 pl-4">
+          <div class="flex justify-start font-bold h-3/4 self-end text-gray-900 pl-4">
             <div :class="hpClass">❤{{ player.status.hp + "/" + player.status.maxHp }}</div>
             <div :class="hungryClass">🍖{{ player.status.hungry + "/" + player.status.maxHungry }}</div>
           </div>
