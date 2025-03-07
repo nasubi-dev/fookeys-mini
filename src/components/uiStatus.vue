@@ -29,11 +29,11 @@ watch(
 
 <template>
   <div class="relative mt-auto" :class="wiggleClass">
-    <img :src="statusImg" class="w-[max(20vw,380px)]" />
+    <img :src="statusImg" class="w-[min(80vw,380px)]" />
     <div class="absolute inset-0 flex align-top justify-start pb-2">
-      <div class="flex justify-start w-[380px]">
-        <Character status="my" @isWiggle="wiggleStatus" class="w-[120px]" />
-        <div class="flex font-bold text-gray-900 text-[min(4vw,1.2rem)] mt-auto select-none">
+      <div class="flex justify-start w-[min(80vw,380px)]">
+        <Character status="my" @isWiggle="wiggleStatus" class="w-[min(20vw,120px)]" />
+        <div class="flex font-bold text-gray-900 text-[min(4vw,1.2rem)] mb-2 mt-auto select-none">
           <div :class="hpClass">❤:{{ player.status.hp + "/" + player.status.maxHp }}</div>
           <div :class="hungryClass">🍖:{{ player.status.hungry + "/" + player.status.maxHungry }}</div>
         </div>

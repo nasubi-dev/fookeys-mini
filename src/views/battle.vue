@@ -358,9 +358,9 @@ const devMode = ref(false);
           :src="waitingGif"
           class="bottom-0 fixed w-[max(50dvw,350px)] -translate-x-[100px] -translate-y-[125px]"
         />
-        <div class="flex gap-2 w-auto justify-between">
-          <UiStatus :player="player" class="w-full" :class="isMobile ? 'w-auto' : 'w-[430px]'" />
-          <div class="w-12 bg-black" />
+        <div class="flex gap-2">
+          <UiStatus :player="player" class="w-full" :class="isMobile ? 'w-auto' : 'w-[min(80vw,380px)]'" />
+          <div class="w-[min(10vw,60px)] bg-black" />
         </div>
         <UiHand class="pt-5" />
       </div>
