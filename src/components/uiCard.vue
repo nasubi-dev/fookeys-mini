@@ -80,10 +80,9 @@ watch(
             <p v-if="card.heal">{{ "💖" + card.heal }}</p>
           </div>
         </div>
-        <div v-if="card.description && card.id !== 0" class="relative"
-          :class="size === 'normal' ? `-top-24 -right-16` : `-top-32 -right-20 w-12`">
+        <div v-if="card.description && card.id !== 0" class="relative">
           <img :src="`/img/showSpecial/${card.company}.png`" class="absolute"
-            :class="size === 'normal' ? `w-6` : `w-8`" />
+            :class="size === 'normal' ? `w-6 -top-20 -right-0` : `w-8 -top-32 right-2`" />
         </div>
       </VDuringPress>
     </div>
