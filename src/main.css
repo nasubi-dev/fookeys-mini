@@ -52,7 +52,8 @@
   background-size: 100% 100%;
 }
 .cardSize {
-  width: 10vw;
+  width: 19.5vw;
+  max-width: 94px;
   height: auto;
 }
 .gauge {
