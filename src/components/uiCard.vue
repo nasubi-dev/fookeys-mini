@@ -58,7 +58,7 @@ watch(
     </div>
     <div class="relative">
       <VDuringPress :onKeyDown="onLongPressCallbackHook" :onKeyUp="onKeyUpCallbackHook" :delay="250">
-        <img :src="`/img/companys/${card.company}.png`" class="" />
+        <img :src="`/img/companys/${card.company}.png`" />
         <div class="overText">
           <div
             v-if="card.waste"

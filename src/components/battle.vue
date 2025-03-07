@@ -54,7 +54,7 @@ const loadBattleGif = () => {
       <div v-else>
         <div v-if="phase === 'battle' && !cardLock" class="flex flex-col gap-5 p-20 justify-center items-center">
           <div class="relative">
-            <img :src="sumFieldImg" class="w-[320px]" />
+            <img :src="sumFieldImg" class="w-[320px] min-w-[248px]" />
             <div class="overText">
               <div class="text-lg font-bold flex w-full justify-between px-6 items-center content-between">
                 <p>{{ "🍖" + sumCards.hungry }}</p>
