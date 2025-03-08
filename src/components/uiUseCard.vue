@@ -6,7 +6,6 @@ import { storeToRefs } from "pinia";
 import type { PlayerData, PlayerSign } from "@/types";
 import uiCardBehind from "./uiCardBehind.vue";
 import infoImg from "@/assets/img/ui/info.png";
-import battleImg from "@/assets/img/ui/battle.png";
 
 const { battleResult } = storeToRefs(playerStore);
 
@@ -45,11 +44,11 @@ watch(battleResult, (newVal) => {
     leave-active-class="transition duration-300"
     enter-active-class="transition duration-300"
   >
-    <div style="width: 20vw">
+    <div class="w-[min(50vw,240px)]">
       <div class="relative flex justify-start">
         <img :src="infoImg" />
         <div class="overText">
-          <div class="flex justify-start items-center font-bold text-[max(2vw,1rem)]">
+          <div class="flex justify-start items-center font-bold text-lg">
             <img v-if="characterName" :src="`/img/characters/${characterName}/normal.png`" class="w-1/3 bottom-5 bg-clip-border" />
             <p>{{ "🍖" + p.player.sumFields.hungry }}</p>
           </div>

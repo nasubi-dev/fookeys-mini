@@ -294,13 +294,6 @@ const devMode = ref(false);
 
       <!-- このターン両者が使用したカード -->
       <div v-if="components !== 'postBattle'">
-        <div style="width: 40vw" class="inset-0 top-1/4 left-0 fixed ml-2">
-          <UiUseCard :player="sign === firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
-            :components="components" which="primary" v-show="components !== 'secondAtk'" />
-          <UiUseCard :player="sign !== firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
-            :components="components" which="second" />
-        </div>
-
         <!-- 戦闘処理中のカード -->
         <div class="overlay">
           <transition appear enter-from-class="translate-y-[-150%] opacity-0"
@@ -318,6 +311,17 @@ const devMode = ref(false);
         </div>
       </div>
 
+      <!-- 使用カードの表示 -->
+      <div v-if="components !== 'postBattle'">
+        <div class=" w-[460px] h-screen justify-center items-center">
+          <div class="w-auto fixed bottom-1/4 ml-2">
+            <UiUseCard :player="sign === firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
+              :components="components" which="primary" v-show="components !== 'secondAtk'" />
+            <UiUseCard :player="sign !== firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
+              :components="components" which="second" />
+          </div>
+        </div>
+      </div>
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
       <div class="bottom-0 fixed flex flex-col" :class="isMobile ? 'w-auto' : 'w-[460px]'">
         <img v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"

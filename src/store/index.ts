@@ -221,7 +221,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       status: {
         hp: 300,
         hungry: 0,
-        maxHp: 500,
+        maxHp: 300,
         maxHungry: 100,
       },
       sumFields: {
