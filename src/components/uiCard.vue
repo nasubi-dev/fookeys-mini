@@ -11,6 +11,7 @@ const p = defineProps<{
   card: Card;
   size: "normal" | "big";
   state?: boolean;
+  index: number;
 }>();
 
 const usePopUp = useSound(popUp);
@@ -43,17 +44,23 @@ watch(
 
 <template>
   <div class="">
-    <div v-if="dropDown" class="z-20 mx-3 fixed text-gray-900 text-left"
-      :class="[card.description ? `w-[max(20vw,340px)] -translate-y-32` : `w-[max(15vw,180px)] -translate-y-24`, state ? `` : `max-w-fit`]">
-      <div :class="[card.description ? `w-[max(20vw,340px)]` : `w-[max(15vw,180px)]`]">
+    <div v-if="dropDown" class="z-20 mx-3 fixed text-gray-900 text-left" :class="[card.description
+      ? `w-[max(20vw,270px)] -translate-y-32`
+      : `w-[max(15vw,180px)] -translate-y-16`
+    ]">
+      <div :class="[card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`]">
         <img :src="bg" class="z-20 absolute" />
-        <div class="z-20 p-4 px-5 absolute">
+        <div v-if="card.description" class="z-20 pb-4 pt-3 px-5 absolute">
           <p class="font-bold">{{ card.company + " : " + card.name }}</p>
           <p>{{ card.description }}</p>
         </div>
+        <div v-else class="z-20 pb-4 pt-2 px-4 absolute">
+          <p class="font-bold">{{ card.company }}</p>
+          <p>{{ card.name }}</p>
+        </div>
       </div>
     </div>
-    <div class="relative">
+    <div class="relative" :class="size === 'normal' ? `w-[min(20vw,100px)]` : `w-[min(30vw,150px)]`">
       <VDuringPress :onKeyDown="onLongPressCallbackHook" :onKeyUp="onKeyUpCallbackHook" :delay="250">
         <img :src="`/img/companys/${card.company}.png`" />
         <div class="overText">

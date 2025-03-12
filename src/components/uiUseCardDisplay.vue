@@ -15,7 +15,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div class="flex flex-col gap-3 items-center">
     <div v-if="cardLock" class="text-5xl font-bold text-border text-gray-900">
       <p v-if="after === 'hungry'" class="animate-jump animate-once">{{ value ? "行動不能✖" : "行動可能✔" }}</p>
       <p v-if="after === 'heal' && value" class="animate-jump animate-once">{{ "💖" + value }}</p>
@@ -23,19 +23,17 @@ defineProps<{
       <p v-if="after === 'atk' && value" class="animate-jump animate-once">{{ "💪" + value }}</p>
       <p v-if="after === 'tech' && value" class="animate-jump animate-once">{{ "⚡️" + value }}</p>
     </div>
-    <div
-      class="flex justify-start"
-      v-for="card in after === 'donate'
+    <div class="flex items-center">
+      <div class="flex justify-start" v-for="(card, index) in after === 'donate'
         ? cards
         : cards.map((card) => {
-            if (card.attribute === after) {
-              return card;
-            }
-          })"
-      :key="card?.id"
-    >
-      <div v-if="card" style="width: 15vw">
-        <UiCard :card="card" size="big" />
+          if (card.attribute === after) {
+            return card;
+          }
+        })" :key="card?.id">
+        <div v-if="card" class="max-w-[400px]">
+          <UiCard :card="card" size="big" :index="index" />
+        </div>
       </div>
     </div>
   </div>

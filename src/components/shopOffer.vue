@@ -70,7 +70,7 @@ const offer2Hand = async () => {
                 class="card-pop"
                 :class="isOfferSelected[index] ? 'transform -translate-y-5' : null"
               >
-                <UiCard :card="card" size="big" />
+                <UiCard :card="card" size="big" :index="index" />
               </button>
             </div>
           </div>
