@@ -241,7 +241,7 @@ const devMode = ref(false);
             "
           >
             <img @load="loadDeathGif()" :src="deathAnimation ? loseGif : loseImg" class="object-contain overlay" />
-            <RouterLink to="/"> </RouterLink>
+            <RouterLink to="/" />
           </button>
         </div>
         <div v-else class="flex flex-col items-center justify-center">
@@ -253,7 +253,7 @@ const devMode = ref(false);
             "
           >
             <img @load="loadDeathGif()" :src="deathAnimation ? winGif : winImg" class="object-contain overlay" />
-            <RouterLink to="/"> </RouterLink>
+            <RouterLink to="/" />
           </button>
         </div>
       </div>
@@ -355,6 +355,7 @@ const devMode = ref(false);
           </div>
         </div>
       </div>
+
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
       <div class="bottom-0 fixed flex flex-col" :class="isMobile ? 'w-auto' : 'w-[460px]'">
         <img

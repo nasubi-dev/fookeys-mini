@@ -45,20 +45,18 @@ async function startPasswordMatch(): Promise<void> {
 </script>
 
 <template>
-  <div class="flex flex-col gap-20 justify-center align-center">
+  <div class="flex flex-col gap-10 justify-center align-center">
     <div>
-      <p class="text-center text-white">入力しなければランダムマッチング</p>
-      <input class="border border-gray-400 m-auto rounded-lg p-2 w-72" type="text" placeholder="あいことばを入力" v-model="password" />
+      <p class="text-center text-white text-ellipsis break-words w-[40vw] max-w-[400px]">入力しなければ<br />ランダムマッチング</p>
+      <input class="border border-gray-400 m-auto rounded-lg p-2 w-[40vw] max-w-[400px]" type="text" placeholder="あいことばを入力"
+        v-model="password" />
     </div>
-    <button
-      @click="
-        useTap1.play();
-        password === '' ? startRandomMatch() : startPasswordMatch();
-      "
-      class="btn-pop transform h-full w-full -my-3"
-    >
+    <button @click="
+      useTap1.play();
+    password === '' ? startRandomMatch() : startPasswordMatch();
+    " class="btn-pop transform h-full w-full -my-3">
       <div class="relative">
-        <img src="@/assets/img/ui/entry.png" />
+        <img src="@/assets/img/ui/entry.png" class="max-w-[400px] w-[40vw]" />
       </div>
     </button>
   </div>

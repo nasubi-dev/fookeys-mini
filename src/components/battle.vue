@@ -5,7 +5,6 @@ import { e, s, i } from "@/log";
 import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
 import decideImg from "@/assets/img/ui/decide.png";
-import battleImg from "@/assets/img/ui/battle.png";
 import sumFieldImg from "@/assets/img/ui/info.png";
 import eatingGif from "@/assets/gifs/eating.gif";
 import { tap2, battlePhase, swipe } from "@/assets/sounds";
