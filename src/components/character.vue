@@ -70,7 +70,7 @@ watch(battleResult, (newVal) => {
     <div
       v-if="retainedDef"
       class="fixed top-3/4 font-bold text-5xl text-border text-red-500"
-      :class="[p.status === 'my' ? `text-3xl` : `text-xl`, reactionImg === 'def' ? `animate-jump` : null]"
+      :class="[p.status === 'my' ? `text-xl` : `text-xl`, reactionImg === 'def' ? `animate-jump` : null]"
     >
       {{ "🛡" + retainedDef }}
     </div>
