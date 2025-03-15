@@ -66,6 +66,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
       my.field,
       100
     );
+    wait(500)
   }
 
   //回復を行う
@@ -74,6 +75,8 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     if (my.status.hp > my.status.maxHp) my.status.hp = my.status.maxHp;
 
     if (playerAllocation) updateDoc(doc(playersRef, myId), { "status.hp": my.status.hp });
+
+    wait(500)
     await everyUtil(["heal", my.sumFields.heal]);
   }
 
@@ -114,6 +117,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
       100
     );
     // await reflectStatus();
+    wait(500)
 
     await everyUtil(["def", my.sumFields.def]);
   }
@@ -144,6 +148,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     else console.log(i, "マッスル攻撃でenemyに", holdingAtk, "のダメージ");
 
     if (playerAllocation) updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
+    wait(500)
     await everyUtil(["atk", my.sumFields.atk]);
 
     //死亡判定
@@ -189,6 +194,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     console.log(i, "テクニック攻撃でenemyに", holdingTech, "のダメージ");
 
     if (playerAllocation) updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
+    wait(500)
     await everyUtil(["tech", holdingTech]);
 
     //死亡判定
