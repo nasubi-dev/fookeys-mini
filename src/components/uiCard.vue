@@ -71,7 +71,7 @@ watch(
             :class="[
               size === 'normal'
                 ? `text-[min(120%,1.5rem)] -translate-x-[min(7vw,1.9rem)] translate-y-[min(4.2vw,1.3rem)]`
-                : `text-[min(170%,1.8rem)] -translate-x-[min(11vw,2.7rem)] translate-y-[min(6vw,1.7rem)]`,
+                : `text-[min(170%,1.8rem)] -translate-x-[min(11vw,2.9rem)] translate-y-[min(7vw,2.2rem)]`,
               card.waste === 1 ? `-translate-x-[380%]` : null,
             ]"
           >
