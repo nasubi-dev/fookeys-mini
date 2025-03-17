@@ -15,6 +15,7 @@ import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
 import UiStatus from "@/components/uiStatus.vue";
 import UiHand from "@/components/uiHand.vue";
 import Battle from "@/components/battle.vue";
+import GiftPackMy from "@/components/GiftPackMy.vue";
 import backImg from "@/assets/img/ui/back.png";
 import winImg from "@/assets/img/ui/win.png";
 import loseImg from "@/assets/img/ui/lose.png";
@@ -365,7 +366,7 @@ const devMode = ref(false);
         />
         <div class="flex gap-2">
           <UiStatus :player="player" :class="isMobile ? 'w-auto' : 'w-[min(80vw,380px)]'" />
-          <div class="w-[min(10vw,60px)] bg-black" />
+          <GiftPackMy class=" w-[min(15vw,80px)]" />
         </div>
         <UiHand class="pt-5" />
       </div>

@@ -61,10 +61,11 @@
   border-radius: 5px;
   background: #e4b714;
   display: flex;
+  direction: column;
   justify-content: flex-end;
 }
 .gauge .bar {
-  height: 15px;
+  width: 20px;
   background: #393332;
   transition: 1s ease;
 }
