@@ -66,7 +66,7 @@
   justify-content: flex-end;
 }
 .gauge .bar {
-  width: 20px;
+  width: 25px;
   background: #393332;
   transition: 1s ease;
 }
@@ -79,7 +79,7 @@
   justify-content: flex-end;
 }
 .gauge-enemy .bar-enemy {
-  height: 15px;
+  height: 17px;
   background: #393332;
   transition: 1s ease;
 }

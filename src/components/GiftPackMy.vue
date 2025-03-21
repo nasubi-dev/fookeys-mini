@@ -64,7 +64,7 @@ import giftPackIcon from "@/assets/img/ui/giftPackIcon.png"
   <div class="relative">
     <img :src="giftPackMyBackground" class="absolute" />
 
-    <div class="gauge h-[min(23vw,110px)] absolute right-3 top-1">
+    <div class="gauge h-[min(23vw,130px)] absolute right-3 top-1">
       <div class="bar" :style="{ height: 100 - (120 / 120) * 100 + '%' }">
       </div>
     </div>
