@@ -27,10 +27,10 @@ function drawCard(attribute?: Attribute): Card {
       //すでに同じカードがある場合は引き直す
       if (hand.value.find((card) => card.id === pickCard.id)) continue;
       if (offer.value.find((card) => card.id === pickCard.id)) continue;
-      if (attribute === "atk" && pickCard.id >= 1 && pickCard.id <= 16) selectCard = pickCard;
-      if (attribute === "tech" && pickCard.id >= 17 && pickCard.id <= 32) selectCard = pickCard;
-      if (attribute === "def" && pickCard.id >= 33 && pickCard.id <= 49) selectCard = pickCard;
-      if (attribute === "sup" && pickCard.id >= 50) selectCard = pickCard;
+      // if (attribute === "atk" && pickCard.id >= 1 && pickCard.id <= 16) selectCard = pickCard;
+      // if (attribute === "tech" && pickCard.id >= 17 && pickCard.id <= 32) selectCard = pickCard;
+      // if (attribute === "def" && pickCard.id >= 33 && pickCard.id <= 49) selectCard = pickCard;
+      // if (attribute === "sup" && pickCard.id >= 50) selectCard = pickCard;
     } else {
       let pickCard = structuredClone(allCards[Math.floor(Math.random() * allCards.length)]);
       if (hand.value.find((card) => card.id === pickCard.id)) continue;
@@ -159,7 +159,7 @@ function changeStatusValue(key: keyof Status, value: number, isBreak?: boolean):
   status.value[key] += value;
   if (key === "hp" && status.value.hp > status.value.maxHp && !isBreak) status.value.hp = status.value.maxHp;
   if (key === "hungry" && status.value.hungry < 0 && !isBreak) status.value.hungry = 0;
-  if (key === "maxHp" && status.value.maxHp > 500 && !isBreak) status.value.maxHp = 500;
+  if (key === "maxHp" && status.value.maxHp > 300 && !isBreak) status.value.maxHp = 300;
   if (key === "maxHungry" && status.value.maxHungry > 200 && !isBreak) status.value.maxHungry = 200;
   updateDoc(doc(playersRef, id.value), { status: status.value });
   console.log(i, "changeStatusValue: ", key, status.value[key]);
