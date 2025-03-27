@@ -50,7 +50,7 @@ async function register() {
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
     <div class="flex flex-col items-center justify-center h-screen">
-      <img src="@/assets/img/ui/fookeys.png" class="w-[min(40vw,700px)] mb-auto mt-32" />
+      <img src="@/assets/img/ui/fookeys-mini.png" class="w-[min(40vw,700px)] mb-auto mt-32" />
       <div class="absolute top-2/3 flex flex-col">
         <form class="flex flex-col items-center">
           <a href="https://minimi-323.hatenablog.com/entry/2023/05/26/222715" target="_blank" class="text-yellow-300"> 説明書リンク </a>
