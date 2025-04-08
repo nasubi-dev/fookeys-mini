@@ -25,8 +25,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   const { myId, enemyId, my, enemy } = await syncPlayer(which);
   // playerAllocation: 0=後攻, 1=先攻
   const playerAllocation = firstAtkPlayer.value === sign.value ? 1 : 0;
-  // attackOrder: true=先攻, false=後攻
-  const attackOrder = XOR(playerAllocation === 0, which === "primary");
 
   //fieldが空の場合､ダメージ計算を行わない
   if (my.field.length === 0) return false;
@@ -43,24 +41,26 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     if (enemySumHungry > enemy.status.maxHungry) enemySumHungry = enemy.status.maxHungry;
   }
 
+  if (!firstAtkPlayer.value) await wait(1000);
+
   //支援を行う
   if (my.field.map((card) => card.attribute).includes("sup")) {
     // intervalForEach(
-      //   (card: Card) => {
-        //     if (!(card.id === 56 || card.id === 57 || card.id === 58 || card.id === 62)) return;
-        //     if (!attackOrder) {
-          //       enemyLog.value = card.name + "の効果!" + card.description;
-          //       return;
-          //     }
-          //     myLog.value = card.name + "の効果!" + card.description;
-          //     if (card.id === 56) changeHandValue("atk", 10, "atk");
-          //     if (card.id === 57) changeHandValue("def", 20, "def");
-          //     if (card.id === 58) {
-            //       changeHandValue("hungry", -20, "def");
-            //       changeHandValue("waste", 2, "def");
-            //       changeHandValue("def", 50, "def");
-            //     }
-            //     if (card.id === 62) changeStatusValue("maxHungry", 20, true);
+    //   (card: Card) => {
+    //     if (!(card.id === 56 || card.id === 57 || card.id === 58 || card.id === 62)) return;
+    //     if (!attackOrder) {
+    //       enemyLog.value = card.name + "の効果!" + card.description;
+    //       return;
+    //     }
+    //     myLog.value = card.name + "の効果!" + card.description;
+    //     if (card.id === 56) changeHandValue("atk", 10, "atk");
+    //     if (card.id === 57) changeHandValue("def", 20, "def");
+    //     if (card.id === 58) {
+    //       changeHandValue("hungry", -20, "def");
+    //       changeHandValue("waste", 2, "def");
+    //       changeHandValue("def", 50, "def");
+    //     }
+    //     if (card.id === 62) changeStatusValue("maxHungry", 20, true);
     //   },
     //   my.field,
     //   100
@@ -77,7 +77,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     if (playerAllocation) updateDoc(doc(playersRef, myId), { "status.hp": my.status.hp });
 
     await everyUtil(["heal", my.sumFields.heal]);
-    wait(500);
+    wait(1000);
   }
 
   //敵の防御力を計算する
@@ -86,6 +86,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     if (which === "primary") console.log(i, "先行なので防御できない");
     else if (enemy.check) console.log(i, "敵は行動不能なので防御できない");
     else defense = enemy.sumFields.def;
+    wait(1000);
   }
 
   //自分の防御を行う//?エフェクトのみ
@@ -148,7 +149,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
     if (playerAllocation) updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
     await everyUtil(["atk", my.sumFields.atk]);
-    wait(500);
+    wait(1000);
 
     //死亡判定
     const isEnemyDeath = await checkDeath(enemy);
@@ -242,7 +243,7 @@ async function battle() {
   const isPrimaryDeath = await attack("primary");
   if (isPrimaryDeath) return;
 
-  wait(500)
+  wait(500);
 
   console.log(i, "後攻の攻撃");
   const isSecondDeath = await attack("second");
