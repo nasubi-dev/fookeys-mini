@@ -149,11 +149,12 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
     if (playerAllocation) updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
     await everyUtil(["atk", my.sumFields.atk]);
-    wait(1000);
+    enemy.status.hp -= my.sumFields.atk;
+    await wait(1000);
 
     //死亡判定
-    const isEnemyDeath = await checkDeath(enemy);
     const isMyDeath = await checkDeath(my);
+    const isEnemyDeath = await checkDeath(enemy);
     console.log(i, "死亡判定: ", isEnemyDeath, isMyDeath);
     if (isEnemyDeath || isMyDeath) {
       battleResult.value = ["none", 0];
@@ -161,50 +162,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     }
   }
 
-  //テクニック攻撃を行う
-  if (my.field.map((card) => card.attribute).includes("tech")) {
-    console.log(i, "テクニック攻撃!!!");
-    battleResult.value = ["none", 0]; //DamageAnimationのための処理
-    //特殊効果を発動する
-    // intervalForEach(
-    //   (card: Card) => {
-    //     if (!(card.id === 17 || card.id === 20 || card.id === 25 || ((card.id === 28 || card.id === 30) && enemy.status.hungry >= 100)))
-    //       return;
-    //     if (!attackOrder) {
-    //       enemyLog.value = card.name + "の効果!" + card.description;
-    //       if ((card.id === 28 || card.id === 30) && enemy.status.hungry >= 100) {
-    //         my.sumFields.tech += 30;
-    //       }
-    //       return;
-    //     }
-    //     myLog.value = card.name + "の効果!" + card.description;
-    //     if ((card.id === 28 || card.id === 30) && enemy.status.hungry >= 100) {
-    //       my.sumFields.tech += 30;
-    //     }
-    //   },
-    //   my.field,
-    //   100
-    // );
-
-    let holdingTech = my.sumFields.tech;
-    if (playerAllocation) enemy.status.hp -= holdingTech;
-    console.log(i, "mySumFields.tech: ", my.sumFields.tech);
-    if (enemy.status.hp < 0) enemy.status.hp = 0;
-    console.log(i, "テクニック攻撃でenemyに", holdingTech, "のダメージ");
-
-    if (playerAllocation) updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
-    await everyUtil(["tech", holdingTech]);
-    wait(500);
-
-    //死亡判定
-    const isEnemyDeath = await checkDeath(enemy);
-    const isMyDeath = await checkDeath(my);
-    console.log(i, "死亡判定: ", isEnemyDeath, isMyDeath);
-    if (isEnemyDeath || isMyDeath) {
-      battleResult.value = ["none", 0];
-      return true;
-    }
-  }
 
   battleResult.value = ["none", 0];
   return false;
@@ -223,7 +180,6 @@ async function attack(which: "primary" | "second"): Promise<boolean> {
   console.log(i, "isDeath: ", isDeath);
   if (isDeath) return true;
   // await checkMission(which);
-  //! checkGiftPack
   return false;
 }
 
