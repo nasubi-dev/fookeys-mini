@@ -12,12 +12,27 @@ import { getEnemyPlayer } from "@/server/usePlayerData";
 const p = defineProps<{ status: "my" | "enemy" }>();
 
 const { player } = storeToRefs(playerStore);
-const { giftPackGauge } = toRefs(player.value);
+const { giftPackGauge, giftPackCounter: myGiftPackCounter } = toRefs(player.value);
 
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-const { giftPackGauge: enemyGiftPackGauge } = toRefs(enemyPlayer.value);
+const { giftPackGauge: enemyGiftPackGauge, giftPackCounter: enemyGiftPackCounter } = toRefs(enemyPlayer.value);
 
 const gauge = ref(100 - ((p.status === `my` ? giftPackGauge.value : enemyGiftPackGauge.value) / 100) * 100);
+const giftPackCounter = ref(p.status === `my` ? myGiftPackCounter.value : enemyGiftPackCounter.value);
+
+watch(
+  () => p.status === `my` ? giftPackGauge.value : enemyGiftPackGauge.value,
+  (newValue) => {
+    gauge.value = 100 - ((newValue / 100) * 100);
+    giftPackCounter.value = p.status === `my` ? myGiftPackCounter.value : enemyGiftPackCounter.value;
+  },
+);
+watch(
+  () => p.status === `my` ? myGiftPackCounter.value : enemyGiftPackCounter.value,
+  (newValue) => {
+    giftPackCounter.value = newValue;
+  },
+);
 
 </script>
 
