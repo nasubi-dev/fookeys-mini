@@ -59,6 +59,13 @@ type PlayerData = {
   password: string;
   character: string;
   giftPackGauge: number;
+  giftPackCounter: {
+    usedCard: number;
+    usedSaleCard: number;
+    used3CompanyCard: number;
+    rottenCard: number;
+    haveRottenCard: number;
+  };
   hand: Card[];
   rottenHand: Card[];
   field: Card[];
