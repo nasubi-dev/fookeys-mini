@@ -162,7 +162,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     }
   }
 
-
   battleResult.value = ["none", 0];
   return false;
 }
