@@ -32,7 +32,7 @@ async function startShop(): Promise<void> {
 async function endShop(): Promise<void> {
   console.log(i, "endShopを実行しました");
   const { id, player, phase, myLog, enemyLog, cardLock } = storeToRefs(playerStore);
-  const { isSelectedGift, status, check, idEnemy, hand, death } = toRefs(player.value);
+  const { status, check, idEnemy, hand, death } = toRefs(player.value);
 
   //腐ったカードが9枚の場合、ゲームを終了する
   if (hand.value.length === 9) {
@@ -52,15 +52,6 @@ async function endShop(): Promise<void> {
       death.value = deathData;
     }, 100);
   }
-  //自分のisSelectedGiftを実行する
-  const myGift = isSelectedGift.value;
-  if (myGift !== undefined) {
-    allGifts[myGift].skill();
-    myLog.value = allGifts[myGift].name + "を使った！";
-  }
-  //相手のisSelectedGiftを実行する
-  const enemyGift = (await getDoc(doc(playersRef, idEnemy.value))).data()?.isSelectedGift as number | undefined;
-  if (enemyGift !== undefined) enemyLog.value = allGifts[enemyGift].name + "を使った！";
 
   //終了時処理
   phase.value = "battle";
@@ -68,7 +59,6 @@ async function endShop(): Promise<void> {
   cardLock.value = false;
   updateDoc(doc(playersRef, id.value), { check: check.value });
   updateDoc(doc(playersRef, id.value), { status: status.value });
-  updateDoc(doc(playersRef, id.value), { isSelectedGift: isSelectedGift.value });
   console.log(i, "check: " + check.value);
   getEnemyPlayer(); //!
 }
@@ -76,12 +66,8 @@ async function endShop(): Promise<void> {
 async function watchShopEnd(): Promise<void> {
   console.log(i, "watchShopEndを実行しました");
   const { id, player } = storeToRefs(playerStore);
-  const { check, idEnemy, isSelectedGift, hand } = toRefs(player.value);
+  const { check, idEnemy, hand } = toRefs(player.value);
 
-  //Firestoreに保存する
-  updateDoc(doc(playersRef, id.value), { isSelectedGift: isSelectedGift.value });
-  if (isSelectedGift.value === undefined) updateDoc(doc(playersRef, id.value), { isSelectedGift: deleteField() });
-  updateDoc(doc(playersRef, id.value), { hand: hand.value });
 
   //checkの値がtrueになっていたら､shopフェーズを終了する
   check.value = true;

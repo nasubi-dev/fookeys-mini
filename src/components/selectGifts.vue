@@ -8,31 +8,16 @@ import allGifts from "@/assets/allGifts";
 import giftSelectBackground from "@/assets/img/ui/giftSelectBackground.png";
 
 const { player } = storeToRefs(playerStore);
-const { gifts } = toRefs(player.value);
 
 const useTap1 = useSound(tap1);
 
-function selectGift(gift: number): void {
-  //GiftがGiftsに含まれている数値だった場合､Return
-  if (gifts.value.includes(gift)) return;
-  if (gifts.value.length > 3) return;
-  gifts.value.unshift(gift);
-  gifts.value = gifts.value.slice(0, 3);
-  console.log("gifts: " + allGifts[gifts.value[0]].name, allGifts[gifts.value[1]].name, allGifts[gifts.value[2]].name);
-}
 </script>
 
 <template>
   <div class="flex flex-wrap">
     <div v-for="(gift, index) in allGifts" :key="gift.name">
-      <button
-        @click="
-          selectGift(gift.id);
-          useTap1.play();
-        "
-        class="btn-pop transform h-full w-full -my-3"
-        :class="index % 2 ? `-translate-x-[30%]` : `translate-x-[30%]`"
-      >
+      <button @click="useTap1.play();" class="btn-pop transform h-full w-full -my-3"
+        :class="index % 2 ? `-translate-x-[30%]` : `translate-x-[30%]`">
         <div class="flex items-center">
           <img :src="`./img/gifts/${gift.id}.png`" class="w-20" />
           <div class="relative w-full">

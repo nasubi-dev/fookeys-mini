@@ -60,15 +60,6 @@ const pushCard = async (index: number) => {
     log.value = "お腹がいっぱいでこれ以上食べれない！";
     return;
   }
-  const enemyGift = (await getDoc(doc(playersRef, idEnemy.value))).data()?.isSelectedGift as number | undefined;
-  if (enemyGift === 4 && field.value.length >= 1) {
-    log.value = "相手のギフトの効果により､このラウンド中1枚しか使えない";
-    return;
-  }
-  if (enemyGift === 2 && allCards[hand.value[index].id].attribute !== "atk") {
-    log.value = "相手のギフトの効果により､このラウンド中マッスルカードしか使えない";
-    return;
-  }
 
   if (isHandSelected.value[index]) throw new Error("failed to pushCard");
   isHandSelected.value[index] = !isHandSelected.value[index];

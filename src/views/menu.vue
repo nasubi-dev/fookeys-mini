@@ -31,7 +31,7 @@ const customIcons = {
 const push = usePush();
 
 const { player, log } = storeToRefs(playerStore);
-const { gifts, character } = toRefs(player.value);
+const { character } = toRefs(player.value);
 
 watch(log, () => {
   if (log.value === "") return;

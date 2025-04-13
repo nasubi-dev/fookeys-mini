@@ -18,8 +18,6 @@ const usePlayerStore = defineStore("playerData", () => {
     password: "",
     character: "blankiss",
     giftPackGauge: 0,
-    gifts: [4, 5, 6],
-    isSelectedGift: undefined,
     hand: [],
     rottenHand: [],
     field: [],
@@ -55,11 +53,8 @@ const usePlayerStore = defineStore("playerData", () => {
         (sum: SumCards, card: Card) => {
           sum.waste += card.waste;
           sum.hungry += card.hungry;
-          sum.atk +=
-            (card.atk ?? 0) *
-            (player.value.isSelectedGift === 8 ? 2 : 1) *
-            (player.value.field.map((card) => card.id).includes(64) ? 2 : 1);
-          sum.def += (card.def ?? 0) + (player.value.isSelectedGift === 9 ? 100 : 0);
+          sum.atk += (card.atk ?? 0) * (player.value.field.map((card) => card.id).includes(64) ? 2 : 1);
+          sum.def += card.def ?? 0;
           sum.tech += card.tech ?? 0;
           sum.heal += card.heal ?? 0;
           return sum;
@@ -121,8 +116,6 @@ const usePlayerStore = defineStore("playerData", () => {
       match: "nothing",
       password: "",
       character: "blankiss",
-      gifts: [4, 5, 6],
-      isSelectedGift: undefined,
       giftPackGauge: 0,
       hand: [],
       rottenHand: [],
@@ -185,8 +178,6 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     match: "nothing",
     password: "",
     character: "blankiss",
-    gifts: [4, 5, 6],
-    isSelectedGift: undefined,
     giftPackGauge: 0,
     hand: [],
     rottenHand: [],
@@ -216,8 +207,6 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       match: "nothing",
       password: "",
       character: "blankiss",
-      gifts: [4, 5, 6],
-      isSelectedGift: undefined,
       giftPackGauge: 0,
       hand: [],
       rottenHand: [],

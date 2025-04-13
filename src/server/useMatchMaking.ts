@@ -100,13 +100,12 @@ async function addGame(): Promise<string> {
 //マッチングを開始する
 async function startRandomMatchmaking(): Promise<void> {
   const { id, player, log } = storeToRefs(playerStore);
-  const { idEnemy, idGame, match, gifts, character } = toRefs(player.value);
+  const { idEnemy, idGame, match, character } = toRefs(player.value);
 
   //プレイヤーのマッチング状況を更新する
   match.value = "waiting";
   updatePlayerFields(id.value, [
     { field: "match", value: match.value },
-    { field: "gifts", value: gifts.value },
     { field: "character", value: character.value },
   ]);
   // マッチング待機中のユーザーを検索する
@@ -139,11 +138,10 @@ async function startRandomMatchmaking(): Promise<void> {
 
 async function startPasswordMatchmaking(): Promise<void> {
   const { id, player, log } = storeToRefs(playerStore);
-  const { idEnemy, idGame, gifts, character, password } = toRefs(player.value);
+  const { idEnemy, idGame, character, password } = toRefs(player.value);
 
   updatePlayerFields(id.value, [
     { field: "password", value: password.value },
-    { field: "gifts", value: gifts.value },
     { field: "character", value: character.value },
   ]);
   // マッチング待機中のユーザーを検索する

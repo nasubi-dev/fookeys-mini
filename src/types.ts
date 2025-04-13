@@ -58,8 +58,6 @@ type PlayerData = {
   match: MatchStatus;
   password: string;
   character: string;
-  gifts: number[];
-  isSelectedGift: number | undefined;
   giftPackGauge: number;
   hand: Card[];
   rottenHand: Card[];

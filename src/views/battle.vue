@@ -57,7 +57,7 @@ const useTech = useSound(tech);
 
 const { id, player, cardLock, phase, offer, sign, log, myLog, enemyLog, sumCards, isMobile, components, battleResult } =
   storeToRefs(playerStore);
-const { idGame, idEnemy, match, character, gifts, status, hand, rottenHand, death, field, sumFields, name, check } = toRefs(player.value);
+const { idGame, idEnemy, match, character, status, hand, rottenHand, death, field, sumFields, name, check } = toRefs(player.value);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { game } = storeToRefs(gameStore);
 const { players, turn, firstAtkPlayer } = toRefs(game.value);
@@ -148,11 +148,6 @@ onMounted(async () => {
     console.log(i, "player1: ", players.value[0], "player2: ", players.value[1]);
     console.log(i, "your id: ", id.value, "your sign: ", sign.value);
     console.log(i, "character: ", character.value);
-    console.log(
-      i,
-      "gift: ",
-      gifts.value.map((gift) => allGifts[gift].name)
-    );
     console.log(i, "status: ", "hp: ", status.value.hp, "hungry: ", status.value.hungry);
     console.log(
       i,
@@ -224,7 +219,6 @@ const devMode = ref(false);
       <img v-if="startAnimation" @load="loadStartGif()" :src="startGif"
         class="overlay object-contain aspect-square z-10" />
       <!-- 死亡時 -->
-
       <router-link v-if="death &&
         status.hp <= 0 ||
         hand.reduce((acc, cur) => {

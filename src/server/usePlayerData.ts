@@ -40,7 +40,6 @@ async function initPlayer(): Promise<void> {
   let keepId = id.value;
   let keepName = player.value.name;
   let keepCharacter = player.value.character;
-  let keepGifts = player.value.gifts;
 
   playerStore.$reset();
   enemyPlayerStore.$reset();
@@ -49,7 +48,6 @@ async function initPlayer(): Promise<void> {
   id.value = keepId;
   player.value.name = keepName;
   player.value.character = keepCharacter;
-  player.value.gifts = keepGifts;
   await updateDoc(doc(playersRef, id.value), player.value);
   await updateDoc(doc(gamesRef, idGame.value), game.value);
   console.log(i, "Player initialized: ", id.value, player.value);
