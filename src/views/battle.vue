@@ -231,7 +231,7 @@ const devMode = ref(false);
           if (cur.id === 0) acc++;
           return acc;
         }, 0) >= 9
-      " to="/menu" class="fixed z-50 flex items-center pt-[250px] w-auto">
+      " to="/menu" class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto">
         <button @click="
           deleteGame();
         initPlayer();
@@ -241,7 +241,7 @@ const devMode = ref(false);
             class="object-contain max-w-[480px] w-auto" />
         </button>
       </router-link>
-      <router-link v-else-if="death" to="/menu" class="fixed z-50 flex items-center pt-[250px] w-auto">
+      <router-link v-else-if="death" to="/menu" class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto">
         <button @click="
           deleteGame();
         initPlayer();
