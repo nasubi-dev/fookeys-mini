@@ -60,6 +60,7 @@ type PlayerData = {
   character: string;
   gifts: number[];
   isSelectedGift: number | undefined;
+  giftPackGauge: number;
   hand: Card[];
   rottenHand: Card[];
   field: Card[];

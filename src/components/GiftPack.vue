@@ -1,23 +1,21 @@
 <script setup lang="ts">
+import giftPackEnemyBackground from "@/assets/img/ui/giftPackEnemyBackground.png"
 import giftPackMyBackground from "@/assets/img/ui/giftPackMyBackground.png"
 import giftPackIcon from "@/assets/img/ui/giftPackIcon.png"
 
-// import { ref, toRefs, watch, onMounted } from "vue";
-// import { playerStore, gameStore, enemyPlayerStore } from "@/main";
-// import { wait, XOR } from "@/server/utils";
-// import { storeToRefs } from "pinia";
-// import { getEnemyPlayer } from "@/server/usePlayerData";
+import { ref, toRefs, watch, onMounted } from "vue";
+import { playerStore, gameStore, enemyPlayerStore } from "@/main";
+import { wait, XOR } from "@/server/utils";
+import { storeToRefs } from "pinia";
+import { getEnemyPlayer } from "@/server/usePlayerData";
 
-// const p = defineProps<{ status: "my" | "enemy" }>();
-// const emit = defineEmits<{
-//   (event: "isWiggle", reactionImg: string): void;
-// }>();
+const p = defineProps<{ status: "my" | "enemy" }>();
 
-// const { components, battleResult, sign, player } = storeToRefs(playerStore);
-// const { character } = toRefs(player.value);
-// const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-// const { game } = storeToRefs(gameStore);
-// const { firstAtkPlayer } = toRefs(game.value);
+const { components, battleResult, sign, player } = storeToRefs(playerStore);
+const { character } = toRefs(player.value);
+const { enemyPlayer } = storeToRefs(enemyPlayerStore);
+const { game } = storeToRefs(gameStore);
+const { firstAtkPlayer } = toRefs(game.value);
 
 // const characterName = ref();
 // onMounted(async () => {
@@ -62,13 +60,17 @@ import giftPackIcon from "@/assets/img/ui/giftPackIcon.png"
 
 <template>
   <div class="relative">
-    <img :src="giftPackMyBackground" class="absolute" />
+    <img class="absolute" :class="status === `my` ? `null` : `-top-8`"
+      :src="status === `my` ? giftPackMyBackground : giftPackEnemyBackground" />
 
-    <div class="gauge h-[min(23vw,130px)] absolute right-3 top-1">
-      <div class="bar" :style="{ height: 100 - (120 / 120) * 100 + '%' }">
+    <div class="absolute"
+      :class="status === `my` ? `gauge h-[min(23vw,130px)] right-3 top-1` : `gauge-enemy w-[100px] -top-7`">
+      <div
+        :style="status === `my` ? { height: 100 - (120 / 120) * 100 + '%' } : { width: 100 - (100 / 100) * 100 + '%' }"
+        :class="status === `my` ? `bar` : `bar-enemy`">
       </div>
     </div>
 
-    <img :src="giftPackIcon" class="absolute w-[70%] bottom-1" />
+    <img :src="giftPackIcon" class="absolute" :class="status === `my` ? `w-[70%] bottom-1` : `w-[40%] -top-4`" />
   </div>
 </template>

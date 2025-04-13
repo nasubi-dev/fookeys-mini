@@ -4,7 +4,7 @@ import type { PlayerData } from "@/types";
 import Character from "./character.vue";
 import uiCardBehind from "./uiCardBehind.vue";
 import enemyStatusImg from "@/assets/img/ui/enemyStatus.png";
-import GiftPackEnemy from "./GiftPackEnemy.vue";
+import GiftPack from "./GiftPack.vue";
 
 const p = defineProps<{ player: PlayerData }>();
 
@@ -48,7 +48,7 @@ watch(
           </div>
         </div>
       </div>
-      <GiftPackEnemy class="w-[min(100vw,100px)] pt-10" />
+      <GiftPack class="w-[min(100vw,100px)] pt-10" :status="`enemy`" />
     </div>
   </div>
 </template>

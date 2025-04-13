@@ -15,7 +15,7 @@ import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
 import UiStatus from "@/components/uiStatus.vue";
 import UiHand from "@/components/uiHand.vue";
 import Battle from "@/components/battle.vue";
-import GiftPackMy from "@/components/GiftPackMy.vue";
+import GiftPack from "@/components/GiftPack.vue";
 import backImg from "@/assets/img/ui/back.png";
 import winImg from "@/assets/img/ui/win.png";
 import loseImg from "@/assets/img/ui/lose.png";
@@ -330,7 +330,7 @@ const devMode = ref(false);
           :src="waitingGif" class="w-[max(70vw,400px)] -translate-x-[80px] translate-y-[130px]" />
         <div class="flex gap-2">
           <UiStatus :player="player" :class="isMobile ? 'w-auto' : 'w-[min(80vw,380px)]'" />
-          <GiftPackMy class=" w-[min(15vw,80px)]" />
+          <GiftPack class=" w-[min(15vw,80px)]" :status="`my`" />
         </div>
         <UiHand class="pt-5" />
       </div>
