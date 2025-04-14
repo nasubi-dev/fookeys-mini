@@ -38,6 +38,7 @@ watch(
 
 <template>
   <div class="relative">
+    {{ giftPackGauge }}
     <img class="absolute" :class="status === `my` ? `null` : `-top-8`"
       :src="status === `my` ? giftPackMyBackground : giftPackEnemyBackground" />
 

@@ -82,7 +82,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
   //敵の防御力を計算する
   let defense = 0;
-  if (enemy.field.map((card) => card.attribute).includes("def") ) {
+  if (enemy.field.map((card) => card.attribute).includes("def")) {
     if (which === "primary") console.log(i, "先行なので防御できない");
     else if (enemy.check) console.log(i, "敵は行動不能なので防御できない");
     else defense = enemy.sumFields.def;
@@ -216,7 +216,7 @@ async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
   const { checkRotten, deleteField } = playerStore;
   const { id, player, sign, log, myLog, enemyLog } = storeToRefs(playerStore);
-  const { check, idGame, hand, rottenHand, field, status } = toRefs(player.value);
+  const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
   const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
   const { nextTurn } = gameStore;
@@ -249,6 +249,10 @@ async function postBattle(): Promise<void> {
   const newHandNum = rottenHand.value.length;
   if (newHandNum !== oldHandNum) {
     if (newHandNum > oldHandNum) log.value = newHandNum - oldHandNum + "枚のカードが腐ってしまった！";
+    //ギフトパック処理
+    giftPackGauge.value += (newHandNum - oldHandNum) * 50;
+    giftPackCounter.value.rottenCard += newHandNum - oldHandNum;
+    log.value = "カードを" + (newHandNum - oldHandNum) + "枚腐らせたので" + (newHandNum - oldHandNum) * 50 + "pt獲得した！";
     updateDoc(doc(playersRef, id.value), { hand: hand.value });
     updateDoc(doc(playersRef, id.value), { rottenHand: rottenHand.value });
   }
@@ -272,11 +276,30 @@ async function postBattle(): Promise<void> {
       // if (card.id === 7 || card.id === 24 || card.id === 41) status.value.hungry >= 100 ? (status.value.hungry -= 25) : null;
     });
   }
+
+  if (hand.value.length === 0) {
+    //ギフトパック処理
+    giftPackGauge.value += 30;
+    giftPackCounter.value.hand0Card += 1;
+    log.value = "手札が0枚になったので、ギフトパックを30pt獲得した！";
+    console.log(i, "giftPackGauge: ", giftPackGauge.value);
+  }
+
   //手札にあるカードの効果を発動する
   hand.value.forEach((card: Card) => {
-    if (!(card.id === 6)) return;
+    if (card.id === 6) changeHandValue("hungry", -5);
     myLog.value = card.name + "の効果!" + card.description;
-    changeHandValue("hungry", -5);
+  });
+
+  // 腐ったカードの枚数だけgiftPackGaugeを増やす
+  rottenHand.value.forEach((card: Card) => {
+    // ギフトパック処理
+    giftPackGauge.value += rottenHand.value.length * 10;
+    giftPackCounter.value.haveRottenCard += rottenHand.value.length;
+    myLog.value =
+      rottenHand.value.length + "枚の腐ったカードを持っているので、ギフトパックを" + rottenHand.value.length * 10 + "pt獲得した！";
+    console.log(i, "giftPackGauge: ", giftPackGauge.value);
+    console.log(i, hand.value, rottenHand.value);
   });
 
   //満腹値を減らす
@@ -285,6 +308,8 @@ async function postBattle(): Promise<void> {
   nextTurn();
   check.value = false;
   firstAtkPlayer.value = undefined;
+  updateDoc(doc(playersRef, id.value), { giftPackGauge: giftPackGauge.value });
+  updateDoc(doc(playersRef, id.value), { giftPackCounter: giftPackCounter.value });
   updateDoc(doc(playersRef, id.value), { check: check.value });
   if (sign.value) updateDoc(doc(gamesRef, idGame.value), { turn: increment(1) });
 
