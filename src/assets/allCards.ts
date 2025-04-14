@@ -6,7 +6,8 @@ const allCards: Card[] = [
     "name": "腐ったカード",
     "waste": 0,
     "hungry": 0,
-    "company": "nothing"
+    "company": "nothing",
+    "rotten": true,
   },
   {
     "id": 1,

@@ -65,6 +65,7 @@ type PlayerData = {
     used3CompanyCard: number;
     rottenCard: number;
     haveRottenCard: number;
+    hand0Card: number;
   };
   hand: Card[];
   rottenHand: Card[];
