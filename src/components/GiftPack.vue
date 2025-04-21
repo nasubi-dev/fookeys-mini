@@ -2,53 +2,72 @@
 import giftPackEnemyBackground from "@/assets/img/ui/giftPackEnemyBackground.png"
 import giftPackMyBackground from "@/assets/img/ui/giftPackMyBackground.png"
 import giftPackIcon from "@/assets/img/ui/giftPackIcon.png"
+import characterBackground from "@/assets/img/ui/characterBackground.png";
+import VDuringPress from "./VDuringPress.vue";
 
-import { ref, toRefs, watch, onMounted } from "vue";
+import { ref, toRefs, watch, onMounted, computed } from "vue";
 import { playerStore, gameStore, enemyPlayerStore } from "@/main";
 import { wait, XOR } from "@/server/utils";
 import { storeToRefs } from "pinia";
-import { getEnemyPlayer } from "@/server/usePlayerData";
 
 const p = defineProps<{ status: "my" | "enemy" }>();
 
 const { player } = storeToRefs(playerStore);
-const { giftPackGauge, giftPackCounter: myGiftPackCounter } = toRefs(player.value);
+const { giftPackGauge: myGiftPackGauge, giftPackCounter: myGiftPackCounter } = toRefs(player.value);
 
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-const { giftPackGauge: enemyGiftPackGauge, giftPackCounter: enemyGiftPackCounter } = toRefs(enemyPlayer.value);
 
-const gauge = ref(100 - ((p.status === `my` ? giftPackGauge.value : enemyGiftPackGauge.value) / 100) * 100);
-const giftPackCounter = ref(p.status === `my` ? myGiftPackCounter.value : enemyGiftPackCounter.value);
 
-watch(
-  () => p.status === `my` ? giftPackGauge.value : enemyGiftPackGauge.value,
-  (newValue) => {
-    gauge.value = 100 - ((newValue / 100) * 100);
-    giftPackCounter.value = p.status === `my` ? myGiftPackCounter.value : enemyGiftPackCounter.value;
-  },
+
+const isMyStatus = computed(() => p.status === "my");
+const currentGiftPackGauge = computed(() =>
+  isMyStatus.value ? myGiftPackGauge.value : enemyPlayer.value.giftPackGauge
 );
-watch(
-  () => p.status === `my` ? myGiftPackCounter.value : enemyGiftPackCounter.value,
-  (newValue) => {
-    giftPackCounter.value = newValue;
-  },
+const currentGiftPackCounter = computed(() =>
+  isMyStatus.value ? myGiftPackCounter.value : enemyPlayer.value.giftPackCounter
+);
+const currentBackground = computed(() =>
+  isMyStatus.value ? giftPackMyBackground : giftPackEnemyBackground
+);
+const currentGaugeStyle = computed(() =>
+  isMyStatus.value
+    ? { height: `${100 - currentGiftPackGauge.value}%` }
+    : { width: `${100 - currentGiftPackGauge.value}%` }
 );
 
+const dropDown = ref(false);
+const toggleDropDown = (value: boolean): void => {
+  dropDown.value = value;
+};
 </script>
 
 <template>
-  <div class="relative">
-    {{ giftPackGauge }}
-    <img class="absolute" :class="status === `my` ? `null` : `-top-8`"
-      :src="status === `my` ? giftPackMyBackground : giftPackEnemyBackground" />
-
-    <div class="absolute"
-      :class="status === `my` ? `gauge h-[min(23vw,130px)] right-3 top-1` : `gauge-enemy w-[100px] -top-7`">
-      <div :style="status === `my` ? { height: gauge + '%' } : { width: gauge + '%' }"
-        :class="status === `my` ? `bar` : `bar-enemy`">
+  <div>
+    <div class="relative">
+      <div v-if="dropDown"
+        class="z-20 fixed  pr-10 text-gray-900 text-left w-50 transform -translate-x-72 -translate-y-32">
+        <div class="w-[max(20vw,270px)]">
+          <img :src="characterBackground" class=" absolute transform -scale-x-100" />
+          <div class="z-30  pb-8 pt-8 px-12 relative">
+            {{ currentGiftPackGauge }}
+            {{ currentGiftPackCounter }}
+          </div>
+        </div>
       </div>
-    </div>
 
-    <img :src="giftPackIcon" class="absolute" :class="status === `my` ? `w-[70%] bottom-1` : `w-[40%] -top-4`" />
+      <VDuringPress :onKeyDown="() => toggleDropDown(true)" :onKeyUp="() => toggleDropDown(false)" :delay="250">
+        <div>
+          {{ currentGiftPackGauge }}
+          <img class="absolute" :class="isMyStatus ? `top-0` : `-top-16`" :src="currentBackground" />
+
+          <div class="absolute"
+            :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
+            <div :style="currentGaugeStyle" :class="isMyStatus ? `bar` : `bar-enemy`">
+            </div>
+          </div>
+          <img :src="giftPackIcon" class="absolute" :class="isMyStatus ? `w-[70%] -bottom-24` : `w-[40%] -top-12`" />
+        </div>
+      </VDuringPress>
+    </div>
   </div>
 </template>

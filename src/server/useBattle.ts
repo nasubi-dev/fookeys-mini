@@ -244,15 +244,18 @@ async function postBattle(): Promise<void> {
   changeHandValue("waste", -1);
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
   //腐っているカードにする
-  const oldHandNum = rottenHand.value.length;
+  const oldRotHandNum = rottenHand.value.length;
   checkRotten();
-  const newHandNum = rottenHand.value.length;
-  if (newHandNum !== oldHandNum) {
-    if (newHandNum > oldHandNum) log.value = newHandNum - oldHandNum + "枚のカードが腐ってしまった！";
-    //ギフトパック処理
-    giftPackGauge.value += (newHandNum - oldHandNum) * 50;
-    giftPackCounter.value.rottenCard += newHandNum - oldHandNum;
-    log.value = "カードを" + (newHandNum - oldHandNum) + "枚腐らせたので" + (newHandNum - oldHandNum) * 50 + "pt獲得した！";
+  const newRotHandNum = rottenHand.value.length;
+  let rottenCardsCount = newRotHandNum - oldRotHandNum;
+  if (newRotHandNum !== oldRotHandNum) {
+    if (newRotHandNum > oldRotHandNum) {
+      log.value = rottenCardsCount + "枚のカードが腐ってしまった！";
+      //ギフトパック処理
+      giftPackGauge.value += rottenCardsCount * 50;
+      giftPackCounter.value.rottenCard += rottenCardsCount;
+      log.value = "カードを" + rottenCardsCount + "枚腐らせたので" + rottenCardsCount * 50 + "pt獲得した！";
+    }
     updateDoc(doc(playersRef, id.value), { hand: hand.value });
     updateDoc(doc(playersRef, id.value), { rottenHand: rottenHand.value });
   }
@@ -277,12 +280,26 @@ async function postBattle(): Promise<void> {
     });
   }
 
-  if (hand.value.length === 0) {
+  //手札が0枚になる
+  if (hand.value.length === 0 && rottenHand.value.length === 0) {
     //ギフトパック処理
     giftPackGauge.value += 30;
     giftPackCounter.value.hand0Card += 1;
     log.value = "手札が0枚になったので、ギフトパックを30pt獲得した！";
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
+  }
+
+  //同じ会社のカードが手札にない
+  if (hand.value.length !== 0) {
+    const uniqueCompanyList = [...new Set(hand.value.map((card) => card.company))];
+    if (uniqueCompanyList.length === hand.value.length) {
+      //ギフトパック処理
+      giftPackGauge.value += 10;
+      giftPackCounter.value.haveNotSameCompanyCard += 1;
+      log.value = "手札に同じ会社のカードがないので、ギフトパックを10pt獲得した！";
+      console.log(i, "giftPackGauge: ", giftPackGauge.value);
+      console.log(i, hand.value, rottenHand.value);
+    }
   }
 
   //手札にあるカードの効果を発動する
@@ -291,16 +308,17 @@ async function postBattle(): Promise<void> {
     myLog.value = card.name + "の効果!" + card.description;
   });
 
-  // 腐ったカードの枚数だけgiftPackGaugeを増やす
-  rottenHand.value.forEach((card: Card) => {
+  // 腐ったカードの枚数だけgiftPackGaugeを増加
+  // このターンで腐ったカードの枚数を取得
+  let nowRottenCardsCount = rottenHand.value.length - rottenCardsCount;
+  if (nowRottenCardsCount !== 0) {
     // ギフトパック処理
-    giftPackGauge.value += rottenHand.value.length * 10;
-    giftPackCounter.value.haveRottenCard += rottenHand.value.length;
-    myLog.value =
-      rottenHand.value.length + "枚の腐ったカードを持っているので、ギフトパックを" + rottenHand.value.length * 10 + "pt獲得した！";
+    giftPackGauge.value += nowRottenCardsCount * 10;
+    giftPackCounter.value.haveRottenCard += nowRottenCardsCount;
+    myLog.value = nowRottenCardsCount + "枚の腐ったカードを持っているので、ギフトパックを" + nowRottenCardsCount * 10 + "pt獲得した！";
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
     console.log(i, hand.value, rottenHand.value);
-  });
+  }
 
   //満腹値を減らす
   changeStatusValue("hungry", -40);

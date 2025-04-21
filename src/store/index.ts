@@ -24,6 +24,7 @@ const usePlayerStore = defineStore("playerData", () => {
       used3CompanyCard: 0,
       rottenCard: 0,
       haveRottenCard: 0,
+      haveNotSameCompanyCard: 0,
       hand0Card: 0,
     },
     hand: [],
@@ -77,6 +78,17 @@ const usePlayerStore = defineStore("playerData", () => {
         }
       ) //!ギフトで999のときにバグる
   );
+  const giftPackGauge = computed(() => {
+    const { giftPackGauge } = player.value;
+    const maxGauge = 100;
+    const minGauge = 0;
+    const gauge = Math.max(minGauge, Math.min(maxGauge, giftPackGauge));
+    const gaugePercentage = (gauge / maxGauge) * 100;
+    return {
+      gauge,
+      gaugePercentage,
+    };
+  });
   //?function/actions
   //Handのカードをクリックしたら、そのカードをFieldに出す
   const pushHand = (index: number): void => {
@@ -131,6 +143,7 @@ const usePlayerStore = defineStore("playerData", () => {
         used3CompanyCard: 0,
         rottenCard: 0,
         haveRottenCard: 0,
+        haveNotSameCompanyCard: 0,
         hand0Card: 0,
       },
       hand: [],
@@ -201,6 +214,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       used3CompanyCard: 0,
       rottenCard: 0,
       haveRottenCard: 0,
+      haveNotSameCompanyCard: 0,
       hand0Card: 0,
     },
     hand: [],
@@ -238,6 +252,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
         used3CompanyCard: 0,
         rottenCard: 0,
         haveRottenCard: 0,
+        haveNotSameCompanyCard: 0,
         hand0Card: 0,
       },
       hand: [],

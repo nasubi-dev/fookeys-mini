@@ -5,7 +5,6 @@ import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
 import { playerStore } from "@/main";
 import { e, s, i } from "@/log";
-import { startMatchmaking } from "@/server/useMatchMaking";
 import { tap1, tap2 } from "@/assets/sounds";
 //components
 import SelectCharacter from "@/components/selectCharacter.vue";
