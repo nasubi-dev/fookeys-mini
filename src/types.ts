@@ -60,6 +60,7 @@ type PlayerData = {
   character: string;
   giftPackGauge: number;
   giftPackCounter: {
+    giftActiveCount: number;
     usedCard: number;
     usedSaleCard: number;
     used3CompanyCard: number;

@@ -17,8 +17,6 @@ const { giftPackGauge: myGiftPackGauge, giftPackCounter: myGiftPackCounter } = t
 
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 
-
-
 const isMyStatus = computed(() => p.status === "my");
 const currentGiftPackGauge = computed(() =>
   isMyStatus.value ? myGiftPackGauge.value : enemyPlayer.value.giftPackGauge

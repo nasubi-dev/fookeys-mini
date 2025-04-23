@@ -19,6 +19,7 @@ const usePlayerStore = defineStore("playerData", () => {
     character: "blankiss",
     giftPackGauge: 0,
     giftPackCounter: {
+      giftActiveCount: 0,
       usedCard: 0,
       usedSaleCard: 0,
       used3CompanyCard: 0,
@@ -56,38 +57,39 @@ const usePlayerStore = defineStore("playerData", () => {
   const isMobile = ref(false);
   //?Computed/Getter
   //Fieldに出ているカードの値を合計する
-  const sumCards = computed<SumCards>(
-    () =>
-      player.value.field.reduce(
-        (sum: SumCards, card: Card) => {
-          sum.waste += card.waste;
-          sum.hungry += card.hungry;
-          sum.atk += (card.atk ?? 0) * (player.value.field.map((card) => card.id).includes(64) ? 2 : 1);
-          sum.def += card.def ?? 0;
-          sum.tech += card.tech ?? 0;
-          sum.heal += card.heal ?? 0;
-          return sum;
-        },
-        {
-          waste: 0,
-          hungry: 0,
-          atk: 0,
-          def: 0,
-          tech: 0,
-          heal: 0,
-        }
-      ) //!ギフトで999のときにバグる
+  const sumCards = computed<SumCards>(() =>
+    player.value.field.reduce(
+      (sum: SumCards, card: Card) => {
+        sum.waste += card.waste;
+        sum.hungry += card.hungry;
+        sum.atk += (card.atk ?? 0) * (player.value.field.map((card) => card.id).includes(64) ? 2 : 1);
+        sum.def += card.def ?? 0;
+        sum.tech += card.tech ?? 0;
+        sum.heal += card.heal ?? 0;
+        return sum;
+      },
+      {
+        waste: 0,
+        hungry: 0,
+        atk: 0,
+        def: 0,
+        tech: 0,
+        heal: 0,
+      }
+    )
   );
-  const giftPackGauge = computed(() => {
-    const { giftPackGauge } = player.value;
+  const giftPackTotalPoint = computed(() => {
     const maxGauge = 100;
     const minGauge = 0;
-    const gauge = Math.max(minGauge, Math.min(maxGauge, giftPackGauge));
-    const gaugePercentage = (gauge / maxGauge) * 100;
-    return {
-      gauge,
-      gaugePercentage,
-    };
+    while (player.value.giftPackGauge >= maxGauge) {
+      player.value.giftPackCounter.giftActiveCount += 1;
+      player.value.giftPackGauge -= maxGauge;
+    }
+    if (player.value.giftPackGauge < minGauge) {
+      player.value.giftPackGauge = minGauge;
+    }
+
+    return player.value.giftPackCounter.giftActiveCount * 100 + player.value.giftPackGauge;
   });
   //?function/actions
   //Handのカードをクリックしたら、そのカードをFieldに出す
@@ -118,7 +120,7 @@ const usePlayerStore = defineStore("playerData", () => {
     });
     const num = hand.filter((card) => card.waste === 0).length;
     for (let i = 0; i < num; i++) {
-      //handの中からallCards[0]を削除する //!こうしないと不具合が出る
+      //handの中からallCards[0]を削除する
       hand.splice(hand.indexOf(allCards[0]), 1);
       //numの数だけrottenHandにallCards[0]をpushする
       rottenHand.push(allCards[0]);
@@ -138,6 +140,7 @@ const usePlayerStore = defineStore("playerData", () => {
       character: "blankiss",
       giftPackGauge: 0,
       giftPackCounter: {
+        giftActiveCount: 0,
         usedCard: 0,
         usedSaleCard: 0,
         used3CompanyCard: 0,
@@ -187,6 +190,7 @@ const usePlayerStore = defineStore("playerData", () => {
     components,
     battleResult,
     sumCards,
+    giftPackTotalPoint,
     isMobile,
     pushHand,
     popHand,
@@ -209,6 +213,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     character: "blankiss",
     giftPackGauge: 0,
     giftPackCounter: {
+      giftActiveCount: 0,
       usedCard: 0,
       usedSaleCard: 0,
       used3CompanyCard: 0,
@@ -235,6 +240,21 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       heal: 0,
     },
   });
+  //?Computed/Getter
+  const enemyGiftPackTotalPoint = computed(() => {
+    const maxGauge = 100;
+    const minGauge = 0;
+    // 100以上であるとき､100ずつ引く
+    while (enemyPlayer.value.giftPackGauge >= maxGauge) {
+      enemyPlayer.value.giftPackCounter.giftActiveCount += 1;
+      enemyPlayer.value.giftPackGauge -= maxGauge;
+    }
+    // 0未満であるとき､0にする
+    if (enemyPlayer.value.giftPackGauge < minGauge) {
+      enemyPlayer.value.giftPackGauge = minGauge;
+    }
+    return enemyPlayer.value.giftPackCounter.giftActiveCount * 100 + enemyPlayer.value.giftPackGauge;
+  });
   const $reset = () => {
     enemyPlayer.value = {
       idEnemy: "",
@@ -247,6 +267,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       character: "blankiss",
       giftPackGauge: 0,
       giftPackCounter: {
+        giftActiveCount: 0,
         usedCard: 0,
         usedSaleCard: 0,
         used3CompanyCard: 0,
@@ -274,7 +295,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       },
     };
   };
-  return { enemyPlayer, $reset };
+  return { enemyPlayer, enemyGiftPackTotalPoint, $reset };
 });
 
 const useGameStore = defineStore("gameData", () => {
