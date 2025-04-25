@@ -304,8 +304,8 @@ async function postBattle(): Promise<void> {
 
   //手札にあるカードの効果を発動する
   hand.value.forEach((card: Card) => {
-    if (card.id === 6) changeHandValue("hungry", -5);
-    myLog.value = card.name + "の効果!" + card.description;
+    // if (card.id === 6) changeHandValue("hungry", -5);
+    // myLog.value = card.name + "の効果!" + card.description;
   });
 
   // 腐ったカードの枚数だけgiftPackGaugeを増加

@@ -159,7 +159,6 @@ const allCards: Card[] = [
     "hungry": 15,
     "company": "rapidpot",
     "attribute": "def",
-    "description": "未定未定未定未定未定未定未定未定",
     "def": 30
   },
   {
@@ -262,7 +261,6 @@ const allCards: Card[] = [
     "hungry": 30,
     "company": "hanamie",
     "attribute": "heal",
-    "description": "自分のHPを❤️+50する。",
     "heal": 50
   }
 ]
