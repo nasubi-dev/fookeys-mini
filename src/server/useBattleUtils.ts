@@ -46,6 +46,7 @@ async function reflectStatus(): Promise<void> {
   let myPlayerSumFields = (await getDoc(doc(playersRef, id.value))).data()?.sumFields as SumCards;
   let myPlayerCheck = (await getDoc(doc(playersRef, id.value))).data()?.check as boolean;
   let myPlayerDeath = (await getDoc(doc(playersRef, id.value))).data()?.death as boolean;
+  let myPlayer;
   if (!myPlayerStatus) throw Error("myStatusが取得できませんでした");
   if (!myPlayerSumFields) throw Error("mySumFieldsが取得できませんでした");
   if (myPlayerCheck === undefined) throw Error("myCheckが取得できませんでした");

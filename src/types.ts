@@ -12,6 +12,7 @@ type Card = {
   tech?: number;
   heal?: number;
   rotten?: boolean; //腐ってるかのフラグ
+  isSale?: boolean;
 };
 
 type Character = {

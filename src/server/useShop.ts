@@ -68,7 +68,6 @@ async function watchShopEnd(): Promise<void> {
   const { id, player } = storeToRefs(playerStore);
   const { check, idEnemy, hand } = toRefs(player.value);
 
-
   //checkの値がtrueになっていたら､shopフェーズを終了する
   check.value = true;
   updateDoc(doc(playersRef, id.value), { check: check.value });

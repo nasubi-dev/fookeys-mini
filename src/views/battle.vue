@@ -71,13 +71,14 @@ const customIcons = {
   promise: filledIcons.promise,
 };
 const push = usePush();
-watch(log, (newVal, oldVal) => {
-  if (newVal === oldVal) return;
+watch(log, () => {
+  if (log.value === "") return;
   push.info({
-    message: newVal,
+    message: log.value,
     duration: 8000,
   });
   if (log.value.includes("枚のカードが腐ってしまった！")) useRotten.play();
+  log.value = "";
 });
 watch(myLog, () => {
   if (myLog.value === "") return;
@@ -215,36 +216,40 @@ const devMode = ref(false);
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
     <div class="w-full">
-      <img v-if="startAnimation" @load="loadStartGif()" :src="startGif"
-        class="overlay object-contain aspect-square z-10" />
+      <img v-if="startAnimation" @load="loadStartGif()" :src="startGif" class="overlay object-contain aspect-square z-10" />
       <!-- 死亡時 -->
-      <router-link v-if="death &&
-        status.hp <= 0 ||
-        hand.reduce((acc, cur) => {
-          if (cur.id === 0) acc++;
-          return acc;
-        }, 0) >= 9
-      " to="/menu" class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto">
-        <button @click="
-          deleteGame();
-        initPlayer();
-        useTap2.play();
-        ">
-          <img @load="loadDeathGif()" :src="deathAnimation ? loseGif : loseImg"
-            class="object-contain max-w-[480px] w-auto" />
+      <router-link
+        v-if="
+          (death && status.hp <= 0) ||
+          hand.reduce((acc, cur) => {
+            if (cur.id === 0) acc++;
+            return acc;
+          }, 0) >= 9
+        "
+        to="/menu"
+        class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto"
+      >
+        <button
+          @click="
+            deleteGame();
+            initPlayer();
+            useTap2.play();
+          "
+        >
+          <img @load="loadDeathGif()" :src="deathAnimation ? loseGif : loseImg" class="object-contain max-w-[480px] w-auto" />
         </button>
       </router-link>
       <router-link v-else-if="death" to="/menu" class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto">
-        <button @click="
-          deleteGame();
-        initPlayer();
-        useTap2.play();
-        ">
-          <img @load="loadDeathGif()" :src="deathAnimation ? winGif : winImg"
-            class="object-contain max-w-[480px] w-auto" />
+        <button
+          @click="
+            deleteGame();
+            initPlayer();
+            useTap2.play();
+          "
+        >
+          <img @load="loadDeathGif()" :src="deathAnimation ? winGif : winImg" class="object-contain max-w-[480px] w-auto" />
         </button>
       </router-link>
-
 
       <!-- 敵の情報と設定系 -->
       <div class="flex fixed z-30 w-auto first-letter: justify-between">
@@ -273,8 +278,13 @@ const devMode = ref(false);
       </div>
 
       <!-- ショップとバトルのアニメーション -->
-      <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
-        leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+      <transition
+        appear
+        enter-from-class="translate-y-[-150%] opacity-0"
+        leave-to-class="translate-y-[150%] opacity-0"
+        leave-active-class="transition duration-300"
+        enter-active-class="transition duration-300"
+      >
         <div class="overlay">
           <div v-if="phase === 'shop'">
             <Shop />
@@ -290,16 +300,29 @@ const devMode = ref(false);
       <div v-if="components !== 'postBattle'">
         <!-- 戦闘処理中のカード -->
         <div class="overlay">
-          <transition appear enter-from-class="translate-y-[-150%] opacity-0"
-            leave-to-class="translate-y-[150%] opacity-0" leave-active-class="transition duration-300"
-            enter-active-class="transition duration-300" mode="out-in">
+          <transition
+            appear
+            enter-from-class="translate-y-[-150%] opacity-0"
+            leave-to-class="translate-y-[150%] opacity-0"
+            leave-active-class="transition duration-300"
+            enter-active-class="transition duration-300"
+            mode="out-in"
+          >
             <img v-if="myTurnAnimation" @load="loadMyTurnImg()" :src="myTurnImg" style="width: 40vw" />
             <img v-else-if="enemyTurnAnimation" @load="loadEnemyTurnImg()" :src="enemyTurnImg" style="width: 40vw" />
             <div v-else class="flex flex-col">
-              <UiUseCardDisplay v-if="sign === firstAtkPlayer" :after="battleResult[0]" :value="battleResult[1]"
-                :cards="components === 'primaryAtk' ? field : enemyPlayer.field" />
-              <UiUseCardDisplay v-if="sign !== firstAtkPlayer" :after="battleResult[0]" :value="battleResult[1]"
-                :cards="components === 'primaryAtk' ? enemyPlayer.field : field" />
+              <UiUseCardDisplay
+                v-if="sign === firstAtkPlayer"
+                :after="battleResult[0]"
+                :value="battleResult[1]"
+                :cards="components === 'primaryAtk' ? field : enemyPlayer.field"
+              />
+              <UiUseCardDisplay
+                v-if="sign !== firstAtkPlayer"
+                :after="battleResult[0]"
+                :value="battleResult[1]"
+                :cards="components === 'primaryAtk' ? enemyPlayer.field : field"
+              />
             </div>
           </transition>
         </div>
@@ -309,21 +332,33 @@ const devMode = ref(false);
       <div v-if="components !== 'postBattle'">
         <div class="w-[460px] h-screen justify-center items-center">
           <div class="w-auto fixed bottom-1/4 ml-2">
-            <UiUseCard :player="sign === firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
-              :components="components" which="primary" v-show="components !== 'secondAtk'" />
-            <UiUseCard :player="sign !== firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
-              :components="components" which="second" />
+            <UiUseCard
+              :player="sign === firstAtkPlayer ? player : enemyPlayer"
+              :firstAtkPlayer="firstAtkPlayer"
+              :components="components"
+              which="primary"
+              v-show="components !== 'secondAtk'"
+            />
+            <UiUseCard
+              :player="sign !== firstAtkPlayer ? player : enemyPlayer"
+              :firstAtkPlayer="firstAtkPlayer"
+              :components="components"
+              which="second"
+            />
           </div>
         </div>
       </div>
 
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
       <div class="bottom-0 fixed flex flex-col" :class="isMobile ? 'w-auto' : 'w-[460px]'">
-        <img v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
-          :src="waitingGif" class="w-[max(70vw,400px)] -translate-x-[80px] translate-y-[130px]" />
+        <img
+          v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
+          :src="waitingGif"
+          class="w-[max(70vw,400px)] -translate-x-[80px] translate-y-[130px]"
+        />
         <div class="flex gap-2">
           <UiStatus :player="player" :class="isMobile ? 'w-auto' : 'w-[min(80vw,380px)]'" />
-          <GiftPack class=" w-[min(15vw,80px)]" :status="`my`" />
+          <GiftPack class="w-[min(15vw,80px)]" :status="`my`" />
         </div>
         <UiHand class="pt-5" />
       </div>

@@ -20,14 +20,43 @@ const gamesRef = collection(db, "games").withConverter(converter<GameData>());
 async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   console.log(s, "calcDamageを実行しました");
   const { sign, battleResult, log, myLog, enemyLog } = storeToRefs(playerStore);
+  const { checkGiftPackAchieved } = playerStore;
   const { game } = toRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
   const { myId, enemyId, my, enemy } = await syncPlayer(which);
   // playerAllocation: 0=後攻, 1=先攻
   const playerAllocation = firstAtkPlayer.value === sign.value ? 1 : 0;
+  const attackPlayer = XOR(which === "primary", playerAllocation === 0);
 
   //fieldが空の場合､ダメージ計算を行わない
   if (my.field.length === 0) return false;
+
+  // giftPackGaugeの値の増減
+  let fieldNormalCard = my.field.filter((card) => !card.isSale);
+  let fieldSaleCard = my.field.filter((card) => card.isSale);
+  let uniqueCardCompanies = [...new Set(my.field.map((card) => card.company))];
+  // カードを使用
+  if (attackPlayer) {
+    if (fieldNormalCard.length !== 0) {
+      my.giftPackGauge += fieldNormalCard.length * 5;
+      my.giftPackCounter.usedCard += fieldNormalCard.length;
+      log.value = "カードを" + fieldNormalCard.length + "枚使用したので" + fieldNormalCard.length * 5 + "pt獲得した！";
+    }
+    // セールカードを使用
+    if (fieldSaleCard.length !== 0) {
+      my.giftPackGauge += fieldSaleCard.length * 15;
+      my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
+      log.value = "セールカードを" + fieldSaleCard.length + "枚使用したので" + fieldSaleCard.length * 15 + "pt獲得した！";
+    }
+    if (uniqueCardCompanies.length >= 3) {
+      my.giftPackGauge += 20;
+      my.giftPackCounter.used3CompanyCard += 1;
+      log.value = "異なる会社のカードを3枚以上使用した！";
+    }
+    checkGiftPackAchieved();
+
+    //! データ反映はできてないよ!!!!
+  }
 
   //自分がこのターン､行動不能の場合､ダメージ計算を行わない
   my.status.hungry += my.sumFields.hungry;
@@ -143,7 +172,6 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     if (holdingAtk < 0) holdingAtk = 0;
     console.log(i, "mySumFields.atk: ", my.sumFields.atk);
     if (playerAllocation) enemy.status.hp -= holdingAtk;
-    if (enemy.status.hp < 0) enemy.status.hp = 0;
     if (defense !== 0) console.log(i, "相手のdefが", enemy.sumFields.def, "なので", holdingAtk, "のダメージ");
     else console.log(i, "マッスル攻撃でenemyに", holdingAtk, "のダメージ");
 
@@ -214,7 +242,7 @@ async function battle() {
 //戦闘後の処理
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
-  const { checkRotten, deleteField,checkGiftPackAchieved } = playerStore;
+  const { checkRotten, deleteField, checkGiftPackAchieved } = playerStore;
   const { id, player, sign, log, myLog, enemyLog } = storeToRefs(playerStore);
   const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
@@ -250,7 +278,6 @@ async function postBattle(): Promise<void> {
   let rottenCardsCount = newRotHandNum - oldRotHandNum;
   if (newRotHandNum !== oldRotHandNum) {
     if (newRotHandNum > oldRotHandNum) {
-      log.value = rottenCardsCount + "枚のカードが腐ってしまった！";
       //ギフトパック処理
       giftPackGauge.value -= rottenCardsCount * 50;
       giftPackCounter.value.rottenCard += rottenCardsCount;
