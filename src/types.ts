@@ -59,6 +59,7 @@ type PlayerData = {
   password: string;
   character: string;
   giftPackGauge: number;
+  giftPackTotal: number;
   giftPackCounter: {
     giftActiveCount: number;
     usedCard: number;

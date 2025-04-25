@@ -71,14 +71,13 @@ const customIcons = {
   promise: filledIcons.promise,
 };
 const push = usePush();
-watch(log, () => {
-  if (log.value === "") return;
+watch(log, (newVal, oldVal) => {
+  if (newVal === oldVal) return;
   push.info({
-    message: log.value,
+    message: newVal,
     duration: 8000,
   });
   if (log.value.includes("枚のカードが腐ってしまった！")) useRotten.play();
-  log.value = "";
 });
 watch(myLog, () => {
   if (myLog.value === "") return;

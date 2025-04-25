@@ -18,6 +18,7 @@ const usePlayerStore = defineStore("playerData", () => {
     password: "",
     character: "blankiss",
     giftPackGauge: 0,
+    giftPackTotal: 0,
     giftPackCounter: {
       giftActiveCount: 0,
       usedCard: 0,
@@ -78,19 +79,6 @@ const usePlayerStore = defineStore("playerData", () => {
       }
     )
   );
-  const giftPackTotalPoint = computed(() => {
-    const maxGauge = 100;
-    const minGauge = 0;
-    while (player.value.giftPackGauge >= maxGauge) {
-      player.value.giftPackCounter.giftActiveCount += 1;
-      player.value.giftPackGauge -= maxGauge;
-    }
-    if (player.value.giftPackGauge < minGauge) {
-      player.value.giftPackGauge = minGauge;
-    }
-
-    return player.value.giftPackCounter.giftActiveCount * 100 + player.value.giftPackGauge;
-  });
   //?function/actions
   //Handのカードをクリックしたら、そのカードをFieldに出す
   const pushHand = (index: number): void => {
@@ -126,6 +114,21 @@ const usePlayerStore = defineStore("playerData", () => {
       rottenHand.push(allCards[0]);
     }
   };
+  const checkGiftPackAchieved = (): void => {
+    const { giftPackCounter } = player.value;
+    let giftPackGauge = player.value.giftPackGauge;
+    const maxGauge = 100;
+    const minGauge = 0;
+    while (giftPackGauge >= maxGauge) {
+      giftPackCounter.giftActiveCount += 1;
+      giftPackGauge -= maxGauge;
+    }
+    if (giftPackGauge < minGauge) {
+      giftPackGauge = minGauge;
+    }
+    player.value.giftPackGauge = giftPackGauge;
+    player.value.giftPackTotal = giftPackCounter.giftActiveCount * 100 + giftPackGauge;
+  };
   const $reset = () => {
     id.value = "";
     sign.value = 0;
@@ -139,6 +142,7 @@ const usePlayerStore = defineStore("playerData", () => {
       password: "",
       character: "blankiss",
       giftPackGauge: 0,
+      giftPackTotal: 0,
       giftPackCounter: {
         giftActiveCount: 0,
         usedCard: 0,
@@ -190,12 +194,12 @@ const usePlayerStore = defineStore("playerData", () => {
     components,
     battleResult,
     sumCards,
-    giftPackTotalPoint,
     isMobile,
     pushHand,
     popHand,
     deleteField,
     checkRotten,
+    checkGiftPackAchieved,
     $reset,
   };
 });
@@ -212,6 +216,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     password: "",
     character: "blankiss",
     giftPackGauge: 0,
+    giftPackTotal: 0,
     giftPackCounter: {
       giftActiveCount: 0,
       usedCard: 0,
@@ -266,6 +271,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       password: "",
       character: "blankiss",
       giftPackGauge: 0,
+      giftPackTotal: 0,
       giftPackCounter: {
         giftActiveCount: 0,
         usedCard: 0,

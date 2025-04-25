@@ -214,7 +214,7 @@ async function battle() {
 //戦闘後の処理
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
-  const { checkRotten, deleteField } = playerStore;
+  const { checkRotten, deleteField,checkGiftPackAchieved } = playerStore;
   const { id, player, sign, log, myLog, enemyLog } = storeToRefs(playerStore);
   const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
@@ -252,9 +252,9 @@ async function postBattle(): Promise<void> {
     if (newRotHandNum > oldRotHandNum) {
       log.value = rottenCardsCount + "枚のカードが腐ってしまった！";
       //ギフトパック処理
-      giftPackGauge.value += rottenCardsCount * 50;
+      giftPackGauge.value -= rottenCardsCount * 50;
       giftPackCounter.value.rottenCard += rottenCardsCount;
-      log.value = "カードを" + rottenCardsCount + "枚腐らせたので" + rottenCardsCount * 50 + "pt獲得した！";
+      log.value = "カードを" + rottenCardsCount + "枚腐らせたので" + rottenCardsCount * 50 + "pt失った！";
     }
     updateDoc(doc(playersRef, id.value), { hand: hand.value });
     updateDoc(doc(playersRef, id.value), { rottenHand: rottenHand.value });
@@ -313,14 +313,14 @@ async function postBattle(): Promise<void> {
   let nowRottenCardsCount = rottenHand.value.length - rottenCardsCount;
   if (nowRottenCardsCount !== 0) {
     // ギフトパック処理
-    giftPackGauge.value += nowRottenCardsCount * 10;
+    giftPackGauge.value -= nowRottenCardsCount * 10;
     giftPackCounter.value.haveRottenCard += nowRottenCardsCount;
-    myLog.value = nowRottenCardsCount + "枚の腐ったカードを持っているので、ギフトパックを" + nowRottenCardsCount * 10 + "pt獲得した！";
+    log.value = nowRottenCardsCount + "枚の腐ったカードを持っているので、ギフトパックを" + nowRottenCardsCount * 10 + "ptを失った！";
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
     console.log(i, hand.value, rottenHand.value);
   }
 
-  //満腹値を減らす
+  checkGiftPackAchieved();
   changeStatusValue("hungry", -40);
   deleteField();
   nextTurn();
