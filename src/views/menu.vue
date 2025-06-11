@@ -18,6 +18,7 @@ import menuBackground from "@/assets/img/ui/menuBackground.png";
 import back from "@/assets/img/ui/back.png";
 //bgm
 import lobbyBGM from "@/assets/sounds/lobby.mp3";
+import { registerPlayer, reNamePlayer } from "@/server/usePlayerData";
 
 const customIcons = {
   success: myLogImg,
@@ -29,8 +30,8 @@ const customIcons = {
 };
 const push = usePush();
 
-const { player, log } = storeToRefs(playerStore);
-const { character } = toRefs(player.value);
+const { id, player, log } = storeToRefs(playerStore);
+const { character, name } = toRefs(player.value);
 
 watch(log, () => {
   if (log.value === "") return;
@@ -69,6 +70,22 @@ onMounted(() => {
 onUnmounted(() => {
   UseLobbyBGM.stop();
 });
+
+const newName = ref("");
+onMounted(() => {
+  newName.value = name.value;
+});
+//アプリが起動したらユーザーIDを取得する ユーザー名が空の場合はNo name
+async function register() {
+  newName.value === "" ? (name.value = "No name") : (name.value = newName.value);
+  await reNamePlayer(name.value);
+  id.value == "" ? await registerPlayer() : (log.value = "idは既に登録されています");
+}
+onMounted(() => {
+  if (import.meta.env.VITE_DEBUG_MODE) {
+    register();
+  }
+});
 </script>
 
 <template>
@@ -76,7 +93,8 @@ onUnmounted(() => {
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
-    <div v-if="loadMenu" class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
+    <div v-if="loadMenu"
+      class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
       loading....
     </div>
     <div class="h-screen flex flex-col">
@@ -86,16 +104,12 @@ onUnmounted(() => {
             <img :src="back" class="w-32" />
           </button>
         </router-link>
-        <button
-          v-else
-          class="p-4 absolute top-4 left-4 btn-pop"
-          @click="
-            selectCharacter = false;
-            selectGift = false;
-            selectEntry = false;
-            useTap2.play();
-          "
-        >
+        <button v-else class="p-4 absolute top-4 left-4 btn-pop" @click="
+          selectCharacter = false;
+        selectGift = false;
+        selectEntry = false;
+        useTap2.play();
+        ">
           <img :src="back" class="w-32" />
         </button>
       </div>
@@ -112,31 +126,22 @@ onUnmounted(() => {
           <div class="relative">
             <img :src="menuBackground" class="h-screen" />
             <div v-if="!selectCharacter && !selectGift && !selectEntry" class="overText w-full">
-              <button
-                @click="
-                  selectEntry = !selectEntry;
-                  useTap1.play();
-                "
-                class="btn-pop my-4"
-              >
+              <button @click="
+                selectEntry = !selectEntry;
+              useTap1.play();
+              " class="btn-pop my-4">
                 <img src="@/assets/img/ui/entry.png" />
               </button>
-              <button
-                @click="
-                  selectCharacter = !selectCharacter;
-                  useTap1.play();
-                "
-                class="btn-pop my-4"
-              >
+              <button @click="
+                selectCharacter = !selectCharacter;
+              useTap1.play();
+              " class="btn-pop my-4">
                 <img src="@/assets/img/ui/changeCharacter.png" />
               </button>
-              <button
-                @click="
-                  selectGift = !selectGift;
-                  useTap1.play();
-                "
-                class="btn-pop my-4"
-              >
+              <button @click="
+                selectGift = !selectGift;
+              useTap1.play();
+              " class="btn-pop my-4">
                 <img src="@/assets/img/ui/changeGift.png" />
               </button>
             </div>
