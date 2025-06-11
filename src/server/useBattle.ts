@@ -9,9 +9,9 @@ import { converter } from "@/server/converter";
 import { intervalForEach, wait, XOR } from "@/server/utils";
 import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer } from "./useBattleUtils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
-import { changeHandValue, changeStatusValue, draw2ExchangedCard, drawRandomOneCard } from "@/server/useShopUtils";
+import { changeHandValue, changeStatusValue } from "@/server/useShopUtils";
 import { startShop } from "./useShop";
-import { GIFT_PACK_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES } from "@/consts";
+import { GIFT_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES } from "@/consts";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -34,22 +34,22 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
 
   // カードを使用
   if (fieldNormalCard.length !== 0) {
-    my.giftPackGauge += fieldNormalCard.length * GIFT_PACK_POINTS.NORMAL_CARD;
+    my.giftPackGauge += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
     my.giftPackCounter.usedCard += fieldNormalCard.length;
-    log.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_PACK_POINTS.NORMAL_CARD);
+    log.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD);
   }
 
   // セールカードを使用
   if (fieldSaleCard.length !== 0) {
-    my.giftPackGauge += fieldSaleCard.length * GIFT_PACK_POINTS.SALE_CARD;
+    my.giftPackGauge += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
     my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
-    log.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_PACK_POINTS.SALE_CARD);
+    log.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_POINTS.SALE_CARD);
   }
 
   if (uniqueCardCompanies.length >= BATTLE_CONSTANTS.UNIQUE_COMPANIES_THRESHOLD) {
-    my.giftPackGauge += GIFT_PACK_POINTS.THREE_COMPANIES;
+    my.giftPackGauge += GIFT_POINTS.THREE_COMPANIES;
     my.giftPackCounter.used3CompanyCard += 1;
-    log.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_PACK_POINTS.THREE_COMPANIES);
+    log.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_POINTS.THREE_COMPANIES);
   }
 
   checkGiftPackAchieved();
@@ -273,9 +273,9 @@ async function processCardRotting(
 
   if (newRotHandNum !== oldRotHandNum && newRotHandNum > oldRotHandNum) {
     // ギフトパック処理
-    giftPackGauge.value -= rottenCardsCount * GIFT_PACK_POINTS.ROTTEN_CARD_PENALTY;
+    giftPackGauge.value -= rottenCardsCount * GIFT_POINTS.ROTTEN_CARD_PENALTY;
     giftPackCounter.value.rottenCard += rottenCardsCount;
-    log.value = LOG_MESSAGES.ROTTEN_CARD_PENALTY(rottenCardsCount, rottenCardsCount * GIFT_PACK_POINTS.ROTTEN_CARD_PENALTY);
+    log.value = LOG_MESSAGES.ROTTEN_CARD_PENALTY(rottenCardsCount, rottenCardsCount * GIFT_POINTS.ROTTEN_CARD_PENALTY);
 
     await updateDoc(doc(playersRef, id), { hand: hand });
     await updateDoc(doc(playersRef, id), { rottenHand: rottenHand });
@@ -322,9 +322,9 @@ function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { 
 
   // 手札が0枚になる
   if (hand.length === 0 && rottenHand.length === 0) {
-    giftPackGauge.value += GIFT_PACK_POINTS.EMPTY_HAND;
+    giftPackGauge.value += GIFT_POINTS.EMPTY_HAND;
     giftPackCounter.value.hand0Card += 1;
-    log.value = LOG_MESSAGES.EMPTY_HAND_BONUS(GIFT_PACK_POINTS.EMPTY_HAND);
+    log.value = LOG_MESSAGES.EMPTY_HAND_BONUS(GIFT_POINTS.EMPTY_HAND);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
   }
 
@@ -332,9 +332,9 @@ function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { 
   if (hand.length !== 0) {
     const uniqueCompanyList = [...new Set(hand.map((card) => card.company))];
     if (uniqueCompanyList.length === hand.length) {
-      giftPackGauge.value += GIFT_PACK_POINTS.UNIQUE_COMPANIES;
+      giftPackGauge.value += GIFT_POINTS.UNIQUE_COMPANIES;
       giftPackCounter.value.haveNotSameCompanyCard += 1;
-      log.value = LOG_MESSAGES.UNIQUE_COMPANIES_BONUS(GIFT_PACK_POINTS.UNIQUE_COMPANIES);
+      log.value = LOG_MESSAGES.UNIQUE_COMPANIES_BONUS(GIFT_POINTS.UNIQUE_COMPANIES);
       console.log(i, "giftPackGauge: ", giftPackGauge.value);
       console.log(i, hand, rottenHand);
     }
@@ -353,9 +353,9 @@ function processRottenCardPenalty(
   // このターンで腐ったカードの枚数を取得
   const nowRottenCardsCount = rottenHand.length - rottenCardsCount;
   if (nowRottenCardsCount !== 0) {
-    giftPackGauge.value -= nowRottenCardsCount * GIFT_PACK_POINTS.HAVE_ROTTEN_PENALTY;
+    giftPackGauge.value -= nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY;
     giftPackCounter.value.haveRottenCard += nowRottenCardsCount;
-    log.value = LOG_MESSAGES.HAVE_ROTTEN_PENALTY(nowRottenCardsCount, nowRottenCardsCount * GIFT_PACK_POINTS.HAVE_ROTTEN_PENALTY);
+    log.value = LOG_MESSAGES.HAVE_ROTTEN_PENALTY(nowRottenCardsCount, nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
     console.log(i, rottenHand);
   }

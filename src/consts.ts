@@ -1,5 +1,5 @@
-// 定数定義
-const GIFT_PACK_POINTS = {
+// ギフトパックのポイント定数
+const GIFT_POINTS = {
   NORMAL_CARD: 5,
   SALE_CARD: 15,
   THREE_COMPANIES: 20,
@@ -10,7 +10,7 @@ const GIFT_PACK_POINTS = {
 } as const;
 
 // 特殊効果を持つカードのID
-const SPECIAL_CARD_IDS = [7, 24, 41, 50, 51, 52, 53, 60] as const;
+const SPECIAL_CARD_IDS = [1, 3, 5, 6, 7, 9, 14, 15, 17, 19, 21, 23, 24, 25, 26] as const;
 
 // postBattle関連の定数
 const POST_BATTLE_CONSTANTS = {
@@ -56,11 +56,11 @@ const BATTLE_CONSTANTS = {
 const LOG_MESSAGES = {
   CARD_USED: (count: number, points: number) => `カードを${count}枚使用したので${points}pt獲得した！`,
   SALE_CARD_USED: (count: number, points: number) => `セールカードを${count}枚使用したので${points}pt獲得した！`,
-  THREE_COMPANIES_USED: (company:number, points: number) => `手札に会社カードが${company}枚あるので、ギフトパックを${points}pt獲得した！`,
+  THREE_COMPANIES_USED: (company: number, points: number) => `手札に会社カードが${company}枚あるので、ギフトパックを${points}pt獲得した！`,
   EMPTY_HAND_BONUS: (points: number) => `手札が0枚になったので、ギフトパックを${points}pt獲得した！`,
   UNIQUE_COMPANIES_BONUS: (points: number) => `手札に同じ会社のカードがないので、ギフトパックを${points}pt獲得した！`,
   ROTTEN_CARD_PENALTY: (count: number, points: number) => `カードを${count}枚腐らせたので${points}pt失った！`,
   HAVE_ROTTEN_PENALTY: (count: number, points: number) => `${count}枚の腐ったカードを持っているので、ギフトパックを${points}ptを失った！`,
 } as const;
 
-export { GIFT_PACK_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES };
+export { GIFT_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES };
