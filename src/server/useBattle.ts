@@ -24,7 +24,8 @@ const judgeDrawCard = (card: Card): boolean => {
 
 // ギフトパック処理を行う
 async function processGiftPack(my: PlayerData, myId: string, playerAllocation: number): Promise<void> {
-  const { log } = storeToRefs(playerStore);
+  const { log, player, id } = storeToRefs(playerStore);
+  const { giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { checkGiftPackAchieved } = playerStore;
 
   // cardの属性ごとに集計する
@@ -34,21 +35,27 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
 
   // カードを使用
   if (fieldNormalCard.length > 0) {
-    my.giftPackGauge += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
-    my.giftPackCounter.usedCard += fieldNormalCard.length;
+    if (id.value === myId) {
+      giftPackCounter.value.usedCard += fieldNormalCard.length;
+      giftPackGauge.value += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
+    }
     log.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD);
   }
 
   // セールカードを使用
   if (fieldSaleCard.length > 0) {
-    my.giftPackGauge += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
-    my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
+    if (id.value === myId) {
+      giftPackCounter.value.usedSaleCard += fieldSaleCard.length;
+      giftPackGauge.value += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
+    }
     log.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_POINTS.SALE_CARD);
   }
 
   if (uniqueCardCompanies.length >= BATTLE_CONSTANTS.UNIQUE_COMPANIES_THRESHOLD) {
-    my.giftPackGauge += GIFT_POINTS.THREE_COMPANIES;
-    my.giftPackCounter.used3CompanyCard += 1;
+    if (id.value === myId) {
+      giftPackCounter.value.haveNotSameCompanyCard++;
+      giftPackGauge.value += GIFT_POINTS.THREE_COMPANIES;
+    }
     log.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_POINTS.THREE_COMPANIES);
   }
 
