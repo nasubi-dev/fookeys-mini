@@ -31,32 +31,35 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   //fieldが空の場合､ダメージ計算を行わない
   if (my.field.length === 0) return false;
 
-  // giftPackGaugeの値の増減
-  let fieldNormalCard = my.field.filter((card) => !card.isSale);
-  let fieldSaleCard = my.field.filter((card) => card.isSale);
-  let uniqueCardCompanies = [...new Set(my.field.map((card) => card.company))];
-  // カードを使用
-  if (attackPlayer) {
-    if (fieldNormalCard.length !== 0) {
-      my.giftPackGauge += fieldNormalCard.length * 5;
-      my.giftPackCounter.usedCard += fieldNormalCard.length;
-      log.value = "カードを" + fieldNormalCard.length + "枚使用したので" + fieldNormalCard.length * 5 + "pt獲得した！";
-    }
-    // セールカードを使用
-    if (fieldSaleCard.length !== 0) {
-      my.giftPackGauge += fieldSaleCard.length * 15;
-      my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
-      log.value = "セールカードを" + fieldSaleCard.length + "枚使用したので" + fieldSaleCard.length * 15 + "pt獲得した！";
-    }
-    if (uniqueCardCompanies.length >= 3) {
-      my.giftPackGauge += 20;
-      my.giftPackCounter.used3CompanyCard += 1;
-      log.value = "異なる会社のカードを3枚以上使用した！";
-    }
-    checkGiftPackAchieved();
+  // // giftPackGaugeの値の増減
+  // let fieldNormalCard = my.field.filter((card) => !card.isSale);
+  // let fieldSaleCard = my.field.filter((card) => card.isSale);
+  // let uniqueCardCompanies = [...new Set(my.field.map((card) => card.company))];
+  // // カードを使用
+  // my.giftPackGauge += 100;
 
-    //! データ反映はできてないよ!!!!
-  }
+  // if (fieldNormalCard.length !== 0) {
+  //   my.giftPackGauge += fieldNormalCard.length * 5;
+  //   my.giftPackCounter.usedCard += fieldNormalCard.length;
+  //   log.value = "カードを" + fieldNormalCard.length + "枚使用したので" + fieldNormalCard.length * 5 + "pt獲得した！";
+  // }
+  // // セールカードを使用
+  // if (fieldSaleCard.length !== 0) {
+  //   my.giftPackGauge += fieldSaleCard.length * 15;
+  //   my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
+  //   log.value = "セールカードを" + fieldSaleCard.length + "枚使用したので" + fieldSaleCard.length * 15 + "pt獲得した！";
+  // }
+  // if (uniqueCardCompanies.length >= 3) {
+  //   my.giftPackGauge += 20;
+  //   my.giftPackCounter.used3CompanyCard += 1;
+  //   log.value = "異なる会社のカードを3枚以上使用した！";
+  // }
+  // checkGiftPackAchieved();
+
+  // if (playerAllocation) {
+  //   updateDoc(doc(playersRef, myId), { giftPackGauge: my.giftPackGauge });
+  //   updateDoc(doc(playersRef, myId), { giftPackCounter: my.giftPackCounter });
+  // }
 
   //自分がこのターン､行動不能の場合､ダメージ計算を行わない
   my.status.hungry += my.sumFields.hungry;

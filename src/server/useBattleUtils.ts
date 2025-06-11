@@ -22,13 +22,20 @@ async function syncPlayer(which: "primary" | "second"): Promise<{ myId: string; 
   //自分と相手のidを取得する
   let myId, enemyId;
   const playerAllocation = firstAtkPlayer.value === sign.value ? 1 : 0;
-  if (playerAllocation) {
-    myId = which === "primary" ? id.value : idEnemy.value;
-    enemyId = which === "primary" ? idEnemy.value : id.value;
-  } else {
-    myId = which === "primary" ? idEnemy.value : id.value;
-    enemyId = which === "primary" ? id.value : idEnemy.value;
-  }
+  // 自分が先行なら1,後攻なら0
+  const isCurrentPlayerFirstAttacker = playerAllocation === 1;
+  const isPrimarySync = which === "primary";
+
+  // Use XOR to determine which IDs to use:
+  // - If player is first attacker and sync is primary, use own ID
+  // - If player is first attacker and sync is second, use enemy ID
+  // - If player is second attacker and sync is primary, use enemy ID
+  // - If player is second attacker and sync is second, use own ID
+  const shouldUseEnemyIdAsMyId = XOR(isCurrentPlayerFirstAttacker, isPrimarySync);
+
+  // myIdとenemyIdを決定する
+  myId = shouldUseEnemyIdAsMyId ? idEnemy.value : id.value;
+  enemyId = shouldUseEnemyIdAsMyId ? id.value : idEnemy.value;
   //statusを取得する
   let my = (await getDoc(doc(playersRef, myId))).data() as PlayerData;
   let enemy = (await getDoc(doc(playersRef, enemyId))).data() as PlayerData;
