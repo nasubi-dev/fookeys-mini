@@ -23,7 +23,8 @@ const isOfferSelected = ref(Array(BATTLE_CONSTANTS.SHOP_OFFER_COUNT).fill(false)
 const pushed = ref(false);
 //カードを選択する
 const offerSelect = (index: number) => {
-  if (hand.value.length + rottenHand.value.length + isOfferSelected.value.filter((bool) => bool).length >= BATTLE_CONSTANTS.MAX_HAND_SIZE) {
+  const selectedCount = isOfferSelected.value.reduce((count, selected) => count + (selected ? 1 : 0), 0);
+  if (hand.value.length + rottenHand.value.length + selectedCount >= BATTLE_CONSTANTS.MAX_HAND_SIZE) {
     if (!isOfferSelected.value[index]) {
       log.value = "手札がいっぱいでこれ以上買い物できない！";
       return;

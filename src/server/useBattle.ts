@@ -33,14 +33,14 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
   const uniqueCardCompanies = [...new Set(my.field.map((card) => card.company))];
 
   // カードを使用
-  if (fieldNormalCard.length !== 0) {
+  if (fieldNormalCard.length > 0) {
     my.giftPackGauge += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
     my.giftPackCounter.usedCard += fieldNormalCard.length;
     log.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD);
   }
 
   // セールカードを使用
-  if (fieldSaleCard.length !== 0) {
+  if (fieldSaleCard.length > 0) {
     my.giftPackGauge += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
     my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
     log.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_POINTS.SALE_CARD);
@@ -73,9 +73,7 @@ async function processHungry(my: PlayerData, enemy: PlayerData, myId: string, pl
   if (enemySumHungry > enemy.status.maxHungry) {
     enemy.check = false;
     //hungryの値が上限を超えていた場合､上限値にする
-    if (enemySumHungry > enemy.status.maxHungry) {
-      enemySumHungry = enemy.status.maxHungry;
-    }
+    enemySumHungry = enemy.status.maxHungry;
   }
 }
 
@@ -151,7 +149,7 @@ async function processAttack(
       await updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
     }
 
-    if (defense !== 0) {
+    if (defense > 0) {
       console.log(i, "相手のdefが", enemy.sumFields.def, "なので", holdingAtk, "のダメージ");
     } else {
       console.log(i, "マッスル攻撃でenemyに", holdingAtk, "のダメージ");
@@ -271,7 +269,7 @@ async function processCardRotting(
   const newRotHandNum = rottenHand.length;
   const rottenCardsCount = newRotHandNum - oldRotHandNum;
 
-  if (newRotHandNum !== oldRotHandNum && newRotHandNum > oldRotHandNum) {
+  if (rottenCardsCount > 0) {
     // ギフトパック処理
     giftPackGauge.value -= rottenCardsCount * GIFT_POINTS.ROTTEN_CARD_PENALTY;
     giftPackCounter.value.rottenCard += rottenCardsCount;
@@ -329,7 +327,7 @@ function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { 
   }
 
   // 同じ会社のカードが手札にない
-  if (hand.length !== 0) {
+  if (hand.length > 0) {
     const uniqueCompanyList = [...new Set(hand.map((card) => card.company))];
     if (uniqueCompanyList.length === hand.length) {
       giftPackGauge.value += GIFT_POINTS.UNIQUE_COMPANIES;
@@ -352,7 +350,7 @@ function processRottenCardPenalty(
 
   // このターンで腐ったカードの枚数を取得
   const nowRottenCardsCount = rottenHand.length - rottenCardsCount;
-  if (nowRottenCardsCount !== 0) {
+  if (nowRottenCardsCount > 0) {
     giftPackGauge.value -= nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY;
     giftPackCounter.value.haveRottenCard += nowRottenCardsCount;
     log.value = LOG_MESSAGES.HAVE_ROTTEN_PENALTY(nowRottenCardsCount, nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY);

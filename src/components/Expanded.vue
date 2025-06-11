@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const isMobile = ref(window.innerWidth <= 480 ? true : false);
+const isMobile = ref(window.innerWidth <= 480);
 </script>
 
 <template>
