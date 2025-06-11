@@ -10,6 +10,7 @@ import { getEnemyPlayer, initPlayer } from "@/server/usePlayerData";
 import { deleteGame, watchDeleteGame } from "@/server/useMatchMaking";
 import { drawRandomOneCard } from "@/server/useShopUtils";
 import { startShop } from "@/server/useShop";
+import { BATTLE_CONSTANTS } from "@/consts";
 import Expanded from "@/components/Expanded.vue";
 import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
 import UiStatus from "@/components/uiStatus.vue";
@@ -109,7 +110,7 @@ watch(death, (newVal) => {
   if (!newVal || !isBGM.value) return;
   useBGM.stop();
 
-  const isLose = status.value.hp <= 0 || hand.value.filter((card) => card.id === 0).length >= 9;
+  const isLose = status.value.hp <= 0 || hand.value.filter((card) => card.id === 0).length >= BATTLE_CONSTANTS.MAX_HAND_SIZE;
   isLose ? useLose.play() : useWin.play();
 });
 
@@ -126,7 +127,7 @@ watch(phase, (newVal) => {
   if (newVal === "shop") {
     setTimeout(async () => {
       await getEnemyPlayer();
-    }, 2000);
+    }, BATTLE_CONSTANTS.WAIT_TIME.SHOP_DELAY);
   }
 });
 
@@ -142,7 +143,7 @@ onMounted(async () => {
     log.value = "マッチ成功!相手:" + enemyPlayer.value.name;
     loadGame.value = false;
     isBGM.value = true;
-  }, 1700);
+  }, BATTLE_CONSTANTS.WAIT_TIME.BATTLE_ANIMATION);
   await startShop().then(() => {
     console.log(i, "gameId: ", idGame.value);
     console.log(i, "player1: ", players.value[0], "player2: ", players.value[1]);
@@ -182,12 +183,12 @@ watch(components, (newVal) => {
 const loadMyTurnImg = () => {
   setTimeout(() => {
     myTurnAnimation.value = false;
-  }, 1000);
+  }, BATTLE_CONSTANTS.WAIT_TIME.TURN_ANIMATION);
 };
 const loadEnemyTurnImg = () => {
   setTimeout(() => {
     enemyTurnAnimation.value = false;
-  }, 1000);
+  }, BATTLE_CONSTANTS.WAIT_TIME.TURN_ANIMATION);
 };
 const deathAnimation = ref(false);
 watch(death, (newVal) => {
@@ -198,13 +199,13 @@ watch(death, (newVal) => {
 const loadDeathGif = () => {
   setTimeout(() => {
     deathAnimation.value = false;
-  }, 1200);
+  }, BATTLE_CONSTANTS.WAIT_TIME.DEATH_ANIMATION);
 };
 const startAnimation = ref(true);
 const loadStartGif = () => {
   setTimeout(() => {
     startAnimation.value = false;
-  }, 1700);
+  }, BATTLE_CONSTANTS.WAIT_TIME.BATTLE_ANIMATION);
 };
 const wantCard = ref(); //!test用
 const devMode = ref(false);
@@ -224,7 +225,7 @@ const devMode = ref(false);
           hand.reduce((acc, cur) => {
             if (cur.id === 0) acc++;
             return acc;
-          }, 0) >= 9
+          }, 0) >= BATTLE_CONSTANTS.MAX_HAND_SIZE
         "
         to="/menu"
         class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto"

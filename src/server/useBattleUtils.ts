@@ -8,6 +8,7 @@ import type { GameData, PlayerData, PlayerSign, Status, SumCards, Card } from "@
 import { converter } from "@/server/converter";
 import { intervalForEach, wait, XOR } from "@/server/utils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
+import { BATTLE_CONSTANTS } from "@/consts";
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
 const gamesRef = collection(db, "games").withConverter(converter<GameData>());
@@ -21,9 +22,10 @@ async function syncPlayer(which: "primary" | "second"): Promise<{ myId: string; 
 
   //自分と相手のidを取得する
   let myId, enemyId;
-  const playerAllocation = firstAtkPlayer.value === sign.value ? 1 : 0;
+  const playerAllocation =
+    firstAtkPlayer.value === sign.value ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST : BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND;
   // 自分が先行なら1,後攻なら0
-  const isCurrentPlayerFirstAttacker = playerAllocation === 1;
+  const isCurrentPlayerFirstAttacker = playerAllocation === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST;
   const isPrimarySync = which === "primary";
 
   // Use XOR to determine which IDs to use:
@@ -84,7 +86,7 @@ async function everyUtil(params: [string, number]): Promise<void> {
   await reflectStatus();
   await getEnemyPlayer(); //!
   battleResult.value = params;
-  await wait(1500);
+  await wait(BATTLE_CONSTANTS.WAIT_TIME.BATTLE_PHASE);
 }
 //指定された､fieldの値を比較する
 async function compareSumField(field: "hungry"): Promise<void> {
@@ -130,7 +132,10 @@ async function watchFirstAtkPlayerField(): Promise<void> {
     });
   } else {
     //先行後攻を決める//0か1をランダムに生成
-    firstAtkPlayer.value = Math.random() < 0.5 ? 0 : 1;
+    firstAtkPlayer.value =
+      Math.random() < 0.5
+        ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND
+        : BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST;
     console.log(i, "ランダムで決まったplayer: ", firstAtkPlayer.value);
     updateDoc(doc(gamesRef, idGame.value), { firstAtkPlayer: firstAtkPlayer.value });
   }
@@ -143,11 +148,11 @@ async function decideFirstAtkPlayer(): Promise<void> {
   const { firstAtkPlayer } = toRefs(game.value);
 
   await watchFirstAtkPlayerField();
-  await wait(1000);
+  await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   await compareSumField("hungry");
   if (firstAtkPlayer.value === undefined) throw new Error("firstAtkPlayerの値がundefinedです");
 
-  await wait(1000);
+  await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   await getEnemyPlayer();
   components.value = "afterDecideFirstAtkPlayer";
 }

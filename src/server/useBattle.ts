@@ -11,7 +11,7 @@ import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer 
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { changeHandValue, changeStatusValue, draw2ExchangedCard, drawRandomOneCard } from "@/server/useShopUtils";
 import { startShop } from "./useShop";
-import { GIFT_PACK_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS } from "@/consts";
+import { GIFT_PACK_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES } from "@/consts";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -36,20 +36,20 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
   if (fieldNormalCard.length !== 0) {
     my.giftPackGauge += fieldNormalCard.length * GIFT_PACK_POINTS.NORMAL_CARD;
     my.giftPackCounter.usedCard += fieldNormalCard.length;
-    log.value = `カードを${fieldNormalCard.length}枚使用したので${fieldNormalCard.length * GIFT_PACK_POINTS.NORMAL_CARD}pt獲得した！`;
+    log.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_PACK_POINTS.NORMAL_CARD);
   }
 
   // セールカードを使用
   if (fieldSaleCard.length !== 0) {
     my.giftPackGauge += fieldSaleCard.length * GIFT_PACK_POINTS.SALE_CARD;
     my.giftPackCounter.usedSaleCard += fieldSaleCard.length;
-    log.value = `セールカードを${fieldSaleCard.length}枚使用したので${fieldSaleCard.length * GIFT_PACK_POINTS.SALE_CARD}pt獲得した！`;
+    log.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_PACK_POINTS.SALE_CARD);
   }
 
-  if (uniqueCardCompanies.length >= 3) {
+  if (uniqueCardCompanies.length >= BATTLE_CONSTANTS.UNIQUE_COMPANIES_THRESHOLD) {
     my.giftPackGauge += GIFT_PACK_POINTS.THREE_COMPANIES;
     my.giftPackCounter.used3CompanyCard += 1;
-    log.value = "異なる会社のカードを3枚以上使用した！";
+    log.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_PACK_POINTS.THREE_COMPANIES);
   }
 
   checkGiftPackAchieved();
@@ -83,7 +83,7 @@ async function processHungry(my: PlayerData, enemy: PlayerData, myId: string, pl
 async function processSupport(my: PlayerData): Promise<void> {
   if (my.field.map((card) => card.attribute).includes("sup")) {
     await everyUtil(["sup", 0]);
-    await wait(1000);
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
 }
 
@@ -100,7 +100,7 @@ async function processHeal(my: PlayerData, myId: string, playerAllocation: numbe
     }
 
     await everyUtil(["heal", my.sumFields.heal]);
-    await wait(1000);
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
 }
 
@@ -117,14 +117,14 @@ async function processDefense(my: PlayerData, enemy: PlayerData, which: "primary
     } else {
       defense = enemy.sumFields.def;
     }
-    await wait(1000);
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
 
   //自分の防御を行う
   if (my.field.map((card) => card.attribute).includes("def")) {
     console.log(i, "防御!!!");
     await everyUtil(["def", my.sumFields.def]);
-    await wait(1000);
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
 
   return defense;
@@ -159,7 +159,7 @@ async function processAttack(
 
     await everyUtil(["atk", my.sumFields.atk]);
     enemy.status.hp -= my.sumFields.atk;
-    await wait(1000);
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
     //死亡判定
     const isMyDeath = await checkDeath(my);
@@ -182,7 +182,8 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   const { myId, enemyId, my, enemy } = await syncPlayer(which);
 
   // playerAllocation: 0=後攻, 1=先攻
-  const playerAllocation = firstAtkPlayer.value === sign.value ? 1 : 0;
+  const playerAllocation =
+    firstAtkPlayer.value === sign.value ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST : BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND;
 
   //fieldが空の場合､ダメージ計算を行わない
   if (my.field.length === 0) return false;
@@ -191,13 +192,13 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   await processGiftPack(my, myId, playerAllocation);
   await processHungry(my, enemy, myId, playerAllocation);
 
-  if (!firstAtkPlayer.value) await wait(1000);
+  if (!firstAtkPlayer.value) await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
   await processSupport(my);
   await processHeal(my, myId, playerAllocation);
 
   const defense = await processDefense(my, enemy, which);
-  const isDeath = await processAttack(my, enemy, defense, myId, enemyId, playerAllocation);
+  const isDeath = await processAttack(my, enemy, defense, enemyId, playerAllocation);
 
   battleResult.value = ["none", 0];
   return isDeath;
@@ -232,17 +233,17 @@ async function battle() {
   await decideFirstAtkPlayer();
 
   console.log(i, "先行の攻撃");
-  const isPrimaryDeath = await attack("primary");
+  const isPrimaryDeath = await attack(BATTLE_CONSTANTS.PRIMARY);
   if (isPrimaryDeath) return;
 
-  wait(500);
+  wait(BATTLE_CONSTANTS.WAIT_TIME.SHORT);
 
   console.log(i, "後攻の攻撃");
-  const isSecondDeath = await attack("second");
+  const isSecondDeath = await attack(BATTLE_CONSTANTS.SECOND);
   if (isSecondDeath) return;
 
   getEnemyPlayer(); //!
-  await wait(1000);
+  await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   components.value = "postBattle";
 
   //戦後処理
@@ -274,7 +275,7 @@ async function processCardRotting(
     // ギフトパック処理
     giftPackGauge.value -= rottenCardsCount * GIFT_PACK_POINTS.ROTTEN_CARD_PENALTY;
     giftPackCounter.value.rottenCard += rottenCardsCount;
-    log.value = `カードを${rottenCardsCount}枚腐らせたので${rottenCardsCount * GIFT_PACK_POINTS.ROTTEN_CARD_PENALTY}pt失った！`;
+    log.value = LOG_MESSAGES.ROTTEN_CARD_PENALTY(rottenCardsCount, rottenCardsCount * GIFT_PACK_POINTS.ROTTEN_CARD_PENALTY);
 
     await updateDoc(doc(playersRef, id), { hand: hand });
     await updateDoc(doc(playersRef, id), { rottenHand: rottenHand });
@@ -323,7 +324,7 @@ function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { 
   if (hand.length === 0 && rottenHand.length === 0) {
     giftPackGauge.value += GIFT_PACK_POINTS.EMPTY_HAND;
     giftPackCounter.value.hand0Card += 1;
-    log.value = `手札が0枚になったので、ギフトパックを${GIFT_PACK_POINTS.EMPTY_HAND}pt獲得した！`;
+    log.value = LOG_MESSAGES.EMPTY_HAND_BONUS(GIFT_PACK_POINTS.EMPTY_HAND);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
   }
 
@@ -333,7 +334,7 @@ function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { 
     if (uniqueCompanyList.length === hand.length) {
       giftPackGauge.value += GIFT_PACK_POINTS.UNIQUE_COMPANIES;
       giftPackCounter.value.haveNotSameCompanyCard += 1;
-      log.value = `手札に同じ会社のカードがないので、ギフトパックを${GIFT_PACK_POINTS.UNIQUE_COMPANIES}pt獲得した！`;
+      log.value = LOG_MESSAGES.UNIQUE_COMPANIES_BONUS(GIFT_PACK_POINTS.UNIQUE_COMPANIES);
       console.log(i, "giftPackGauge: ", giftPackGauge.value);
       console.log(i, hand, rottenHand);
     }
@@ -354,7 +355,7 @@ function processRottenCardPenalty(
   if (nowRottenCardsCount !== 0) {
     giftPackGauge.value -= nowRottenCardsCount * GIFT_PACK_POINTS.HAVE_ROTTEN_PENALTY;
     giftPackCounter.value.haveRottenCard += nowRottenCardsCount;
-    log.value = `${nowRottenCardsCount}枚の腐ったカードを持っているので、ギフトパックを${nowRottenCardsCount * GIFT_PACK_POINTS.HAVE_ROTTEN_PENALTY}ptを失った！`;
+    log.value = LOG_MESSAGES.HAVE_ROTTEN_PENALTY(nowRottenCardsCount, nowRottenCardsCount * GIFT_PACK_POINTS.HAVE_ROTTEN_PENALTY);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
     console.log(i, rottenHand);
   }

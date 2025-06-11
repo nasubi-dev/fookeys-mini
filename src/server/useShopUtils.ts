@@ -10,6 +10,7 @@ import { converter } from "@/server/converter";
 import type { Card, GameData, PlayerData, Attribute, Status, SumCards } from "@/types";
 // import allMissions from "@/assets/allMissions";
 import allCards from "@/assets/allCards";
+import { BATTLE_CONSTANTS } from "@/consts";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -79,8 +80,8 @@ async function setHand(): Promise<void> {
   const { id, player } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
-  for (let i = 0; i < 3; i++) {
-    if (hand.value.length >= 5) {
+  for (let i = 0; i < BATTLE_CONSTANTS.SHOP_OFFER_COUNT; i++) {
+    if (hand.value.length >= BATTLE_CONSTANTS.MAX_HAND_SIZE) {
       console.log(i, "hand is full");
       return;
     } else {
@@ -96,7 +97,7 @@ async function setOffer(): Promise<void> {
   const { offer } = storeToRefs(playerStore);
 
   offer.value = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < BATTLE_CONSTANTS.SHOP_OFFER_COUNT; i++) {
     offer.value.push(drawCard());
     offer.value = offer.value.slice().sort((a, b) => a.id - b.id);
   }

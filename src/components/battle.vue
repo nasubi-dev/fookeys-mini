@@ -8,6 +8,7 @@ import decideImg from "@/assets/img/ui/decide.png";
 import sumFieldImg from "@/assets/img/ui/info.png";
 import eatingGif from "@/assets/gifs/eating.gif";
 import { tap2, battlePhase, swipe } from "@/assets/sounds";
+import { BATTLE_CONSTANTS } from "@/consts";
 
 const useTap2 = useSound(tap2);
 const useBattlePhase = useSound(battlePhase);
@@ -34,19 +35,14 @@ const loadBattleGif = () => {
   useBattlePhase.play();
   setTimeout(() => {
     battleAnimation.value = false;
-  }, 1500);
+  }, BATTLE_CONSTANTS.WAIT_TIME.BATTLE_PHASE);
 };
 </script>
 
 <template>
   <div>
-    <transition
-      appear
-      enter-from-class="translate-y-[-150%] opacity-0"
-      leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300"
-      enter-active-class="transition duration-300"
-    >
+    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
       <div v-if="battleAnimation" class="overlay">
         <img @load="loadBattleGif()" :src="eatingGif" />
       </div>
@@ -64,12 +60,10 @@ const loadBattleGif = () => {
             </div>
           </div>
 
-          <button
-            @click="
-              turnEnd();
-              useTap2.play();
-            "
-          >
+          <button @click="
+            turnEnd();
+          useTap2.play();
+          ">
             <img :src="decideImg" class="w-[150px]" />
           </button>
         </div>
