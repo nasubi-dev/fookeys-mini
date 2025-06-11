@@ -132,10 +132,7 @@ async function watchFirstAtkPlayerField(): Promise<void> {
     });
   } else {
     //先行後攻を決める//0か1をランダムに生成
-    firstAtkPlayer.value =
-      Math.random() < 0.5
-        ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND
-        : BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST;
+    firstAtkPlayer.value = Math.random() < 0.5 ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND : BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST;
     console.log(i, "ランダムで決まったplayer: ", firstAtkPlayer.value);
     updateDoc(doc(gamesRef, idGame.value), { firstAtkPlayer: firstAtkPlayer.value });
   }

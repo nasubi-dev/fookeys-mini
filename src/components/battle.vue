@@ -41,8 +41,13 @@ const loadBattleGif = () => {
 
 <template>
   <div>
-    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+    <transition
+      appear
+      enter-from-class="translate-y-[-150%] opacity-0"
+      leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300"
+      enter-active-class="transition duration-300"
+    >
       <div v-if="battleAnimation" class="overlay">
         <img @load="loadBattleGif()" :src="eatingGif" />
       </div>
@@ -60,10 +65,12 @@ const loadBattleGif = () => {
             </div>
           </div>
 
-          <button @click="
-            turnEnd();
-          useTap2.play();
-          ">
+          <button
+            @click="
+              turnEnd();
+              useTap2.play();
+            "
+          >
             <img :src="decideImg" class="w-[150px]" />
           </button>
         </div>

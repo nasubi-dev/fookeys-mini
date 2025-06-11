@@ -58,12 +58,20 @@ watch(battleResult, (newVal) => {
 </script>
 
 <template>
-  <div class="relative animate-rotate-y animate-once animate-delay-100"
-    :class="p.status === 'my' ? (characterName === 'nabenabe' ? `left-2 top-7` : `left-2`) : `null`">
-    <img v-if="characterName" :src="`/img/characters/${characterName}/${reactionImg}.png`"
-      :class="status === 'my' ? `scale-150` : `scale-150 scale-x-[-1.5]`" />
-    <div v-if="retainedDef" class="fixed top-3/4 font-bold text-xl text-border text-red-500"
-      :class="reactionImg === 'def' ? 'animate-jump' : null">
+  <div
+    class="relative animate-rotate-y animate-once animate-delay-100"
+    :class="p.status === 'my' ? (characterName === 'nabenabe' ? `left-2 top-7` : `left-2`) : `null`"
+  >
+    <img
+      v-if="characterName"
+      :src="`/img/characters/${characterName}/${reactionImg}.png`"
+      :class="status === 'my' ? `scale-150` : `scale-150 scale-x-[-1.5]`"
+    />
+    <div
+      v-if="retainedDef"
+      class="fixed top-3/4 font-bold text-xl text-border text-red-500"
+      :class="reactionImg === 'def' ? 'animate-jump' : null"
+    >
       {{ "🛡" + retainedDef }}
     </div>
   </div>
