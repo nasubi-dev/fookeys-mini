@@ -15,11 +15,7 @@ const useTap1 = useSound(tap1);
 <template>
   <div class="flex flex-wrap">
     <div v-for="(gift, index) in allGifts" :key="gift.name">
-      <button
-        @click="useTap1.play()"
-        class="btn-pop transform h-full w-full -my-3"
-        :class="index % 2 ? `-translate-x-[30%]` : `translate-x-[30%]`"
-      >
+      <div :class="index % 2 ? `-translate-x-[30%]` : `translate-x-[30%]`">
         <div class="flex items-center">
           <img :src="`./img/gifts/${gift.id}.png`" class="w-20" />
           <div class="relative w-full">
@@ -30,7 +26,7 @@ const useTap1 = useSound(tap1);
             </div>
           </div>
         </div>
-      </button>
+      </div>
     </div>
   </div>
 </template>

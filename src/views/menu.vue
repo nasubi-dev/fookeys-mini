@@ -154,7 +154,7 @@ onMounted(() => {
                 "
                 class="btn-pop my-4"
               >
-                <img src="@/assets/img/ui/changeGift.png" />
+                <img src="@/assets/img/ui/giftList.png" />
               </button>
             </div>
             <div v-else-if="selectEntry" class="overText w-full">
