@@ -89,7 +89,7 @@ watch(
           <img :src="`/img/showSpecial/${card.company}.png`" class="absolute"
             :class="size === 'normal' ? `w-6 -top-20 left-16` : `w-8 -top-32 right-2`" />
         </div>
-        <div v-if="!card.isSale" class="relative">
+        <div v-if="card.isSale" class="relative">
           <img :src="`/img/sale/${card.company}.png`" class="absolute"
             :class="size === 'normal' ? `w-7 -top-24 left-0` : `w-10 -top-36 left-0`" />
         </div>

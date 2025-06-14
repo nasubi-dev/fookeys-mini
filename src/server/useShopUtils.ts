@@ -10,7 +10,8 @@ import { converter } from "@/server/converter";
 import type { Card, GameData, PlayerData, Attribute, Status, SumCards } from "@/types";
 // import allMissions from "@/assets/allMissions";
 import allCards from "@/assets/allCards";
-import { BATTLE_CONSTANTS } from "@/consts";
+import { BATTLE_CONSTANTS, SALE_RATE } from "@/consts";
+import SelectCharacter from "@/components/selectCharacter.vue";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -28,10 +29,6 @@ function drawCard(attribute?: Attribute): Card {
       //すでに同じカードがある場合は引き直す
       if (hand.value.find((card) => card.id === pickCard.id)) continue;
       if (offer.value.find((card) => card.id === pickCard.id)) continue;
-      // if (attribute === "atk" && pickCard.id >= 1 && pickCard.id <= 16) selectCard = pickCard;
-      // if (attribute === "tech" && pickCard.id >= 17 && pickCard.id <= 32) selectCard = pickCard;
-      // if (attribute === "def" && pickCard.id >= 33 && pickCard.id <= 49) selectCard = pickCard;
-      // if (attribute === "sup" && pickCard.id >= 50) selectCard = pickCard;
     } else {
       let pickCard = structuredClone(allCards[Math.floor(Math.random() * allCards.length)]);
       if (hand.value.find((card) => card.id === pickCard.id)) continue;
@@ -39,10 +36,15 @@ function drawCard(attribute?: Attribute): Card {
       if (pickCard.id !== 0) selectCard = pickCard;
     }
   }
+  // 確率でセールカードにする
+  if (Math.random() < SALE_RATE) {
+    selectCard.waste = 1;
+    selectCard.isSale = true;
+  }
   return selectCard;
 }
-//cardをランダムに1枚引く//!最終Verでは属性のみにする
-function drawRandomOneCard(order?: Attribute | number): void {
+//cardをランダムに1枚引く
+function drawOneCard(order?: Attribute | number): void {
   const { player, id } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
@@ -166,7 +168,7 @@ function changeStatusValue(key: keyof Status, value: number, isBreak?: boolean):
   console.log(i, "changeStatusValue: ", key, status.value[key]);
 }
 export {
-  drawRandomOneCard,
+  drawOneCard as drawRandomOneCard,
   draw2ExchangedCard,
   setHand,
   setOffer,

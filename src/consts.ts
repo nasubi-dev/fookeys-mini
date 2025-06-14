@@ -21,6 +21,9 @@ const POST_BATTLE_CONSTANTS = {
   HUNGRY_REDUCTION: 40,
 } as const;
 
+// セールカードの確率
+const SALE_RATE = 0.3;
+
 // 戦闘関連の定数
 const BATTLE_CONSTANTS = {
   // 会社数の閾値
@@ -66,4 +69,4 @@ const LOG_MESSAGES = {
   HAVE_ROTTEN_PENALTY: (count: number, points: number) => `${count}枚の腐ったカードを持っているので、ギフトパックを${points}ptを失った！`,
 } as const;
 
-export { GIFT_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES };
+export { GIFT_POINTS, SPECIAL_CARD_IDS, SALE_RATE, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES };
