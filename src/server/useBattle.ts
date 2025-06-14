@@ -24,7 +24,7 @@ const judgeDrawCard = (card: Card): boolean => {
 
 // ギフトパック処理を行う
 async function processGiftPack(my: PlayerData, myId: string, playerAllocation: number): Promise<void> {
-  const { log, player, id } = storeToRefs(playerStore);
+  const { log, player, id, myLog } = storeToRefs(playerStore);
   const { giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { checkGiftPackAchieved } = playerStore;
 
@@ -38,8 +38,8 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
     if (id.value === myId) {
       giftPackCounter.value.usedCard += fieldNormalCard.length;
       giftPackGauge.value += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
+      myLog.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD);
     }
-    log.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD);
   }
 
   // セールカードを使用
@@ -47,16 +47,16 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
     if (id.value === myId) {
       giftPackCounter.value.usedSaleCard += fieldSaleCard.length;
       giftPackGauge.value += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
+      myLog.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_POINTS.SALE_CARD);
     }
-    log.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_POINTS.SALE_CARD);
   }
 
   if (uniqueCardCompanies.length >= BATTLE_CONSTANTS.UNIQUE_COMPANIES_THRESHOLD) {
     if (id.value === myId) {
       giftPackCounter.value.haveNotSameCompanyCard++;
       giftPackGauge.value += GIFT_POINTS.THREE_COMPANIES;
+      myLog.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_POINTS.THREE_COMPANIES);
     }
-    log.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_POINTS.THREE_COMPANIES);
   }
 
   checkGiftPackAchieved();
@@ -263,7 +263,7 @@ async function processCardRotting(
   giftPackGauge: { value: number },
   giftPackCounter: { value: any }
 ): Promise<number> {
-  const { log } = storeToRefs(playerStore);
+  const { log, myLog } = storeToRefs(playerStore);
   const { checkRotten } = playerStore;
 
   // handの腐り値を減らす
@@ -280,7 +280,7 @@ async function processCardRotting(
     // ギフトパック処理
     giftPackGauge.value -= rottenCardsCount * GIFT_POINTS.ROTTEN_CARD_PENALTY;
     giftPackCounter.value.rottenCard += rottenCardsCount;
-    log.value = LOG_MESSAGES.ROTTEN_CARD_PENALTY(rottenCardsCount, rottenCardsCount * GIFT_POINTS.ROTTEN_CARD_PENALTY);
+    myLog.value = LOG_MESSAGES.ROTTEN_CARD_PENALTY(rottenCardsCount, rottenCardsCount * GIFT_POINTS.ROTTEN_CARD_PENALTY);
 
     await updateDoc(doc(playersRef, id), { hand: hand });
     await updateDoc(doc(playersRef, id), { rottenHand: rottenHand });
@@ -323,13 +323,13 @@ function processCardEffects(
 
 // 手札ボーナス処理を行う
 function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { value: number }, giftPackCounter: { value: any }): void {
-  const { log } = storeToRefs(playerStore);
+  const { log, myLog } = storeToRefs(playerStore);
 
   // 手札が0枚になる
   if (hand.length === 0 && rottenHand.length === 0) {
     giftPackGauge.value += GIFT_POINTS.EMPTY_HAND;
     giftPackCounter.value.hand0Card += 1;
-    log.value = LOG_MESSAGES.EMPTY_HAND_BONUS(GIFT_POINTS.EMPTY_HAND);
+    myLog.value = LOG_MESSAGES.EMPTY_HAND_BONUS(GIFT_POINTS.EMPTY_HAND);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
   }
 
@@ -339,7 +339,7 @@ function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { 
     if (uniqueCompanyList.length === hand.length) {
       giftPackGauge.value += GIFT_POINTS.UNIQUE_COMPANIES;
       giftPackCounter.value.haveNotSameCompanyCard += 1;
-      log.value = LOG_MESSAGES.UNIQUE_COMPANIES_BONUS(GIFT_POINTS.UNIQUE_COMPANIES);
+      myLog.value = LOG_MESSAGES.UNIQUE_COMPANIES_BONUS(GIFT_POINTS.UNIQUE_COMPANIES);
       console.log(i, "giftPackGauge: ", giftPackGauge.value);
       console.log(i, hand, rottenHand);
     }
