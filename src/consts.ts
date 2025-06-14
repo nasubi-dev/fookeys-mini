@@ -10,7 +10,10 @@ const GIFT_POINTS = {
 } as const;
 
 // 特殊効果を持つカードのID
-const SPECIAL_CARD_IDS = [1, 3, 5, 6, 7, 9, 14, 15, 17, 19, 21, 23, 24, 25, 26] as const;
+const SPECIAL_ATK_CARD_IDS = [1, 3, 5, 6, 7, 9] as const;
+const SPECIAL_DEF_CARD_IDS = [14, 15, 17, 19, 21] as const;
+const SPECIAL_SUP_CARD_IDS = [23, 24, 25, 26] as const;
+const SPECIAL_CARD_IDS = [...SPECIAL_ATK_CARD_IDS, ...SPECIAL_DEF_CARD_IDS, ...SPECIAL_SUP_CARD_IDS] as const;
 
 // postBattle関連の定数
 const POST_BATTLE_CONSTANTS = {
