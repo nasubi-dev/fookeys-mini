@@ -1,103 +1,56 @@
 import { e, s, i } from "@/log";
 import type { Gift } from "@/types";
-import {
-  changeAllHand,
-  changeHandValue,
-  changeStatusValue,
-  setHand,
-  deleteAllRottenCard,
-  changeSumCardsValue,
-} from "@/server/useShopUtils";
+import { changeHandValue, changeStatusValue, drawChangedCard } from "@/server/useShopUtils";
 
 const allGifts: Gift[] = [
   {
     id: 0,
-    name: "マジック",
-    description: "手札を全て入れ替える",
-    skill: () => {
-      changeAllHand();
-    },
+    name: "栄養バランス",
+    description: "自分のHPを❤️+50回復する。",
+    effect: () => changeStatusValue("hp", 50),
   },
   {
     id: 1,
-    name: "つまみ食い",
-    description: "手札のカードの満腹度を🍖-20する",
-    skill: () => {
-      changeHandValue("hungry", -20);
-    },
+    name: "リサーチ",
+    description: "自分の満腹度を🍖-25する。",
+    effect: () => changeStatusValue("hungry", -25),
   },
   {
     id: 2,
-    name: "飯テロ",
-    description: "このラウンド中相手はマッスルカードしか使えない",
-    skill: () => {},
+    name: "冷凍保存",
+    description: "自分の手札にあるカードの消費期限を🦠+1する。",
+    effect: () => changeHandValue("waste", -1),
   },
   {
     id: 3,
-    name: "冷凍保存",
-    description: "手札の消費期限を🦠+2する",
-    skill: () => {
-      changeHandValue("waste", 2);
-    },
+    name: "つまみ食い",
+    description: "自分の手札にあるカードの満腹度を🍖-10する。",
+    effect: () => changeHandValue("hungry", -10),
   },
-  {
-    id: 4,
-    name: "ドクターストップ",
-    description: "このラウンド中相手は1枚しかカードを使用できない",
-    skill: () => {},
-  },
-  {
-    id: 5,
-    name: "リサイクル",
-    description: "腐ったカードを手札から全部消す",
-    skill: () => {
-      const num = deleteAllRottenCard();
-      changeStatusValue("maxHungry", num * 20);
-    },
-  },
-  {
-    id: 6,
-    name: "栄養バランス",
-    description: "HPを❤️+150する",
-    skill: () => {
-      changeStatusValue("hp", 150);
-    },
-  },
+  // {
+  //   id: 4,
+  //   name: "早食い",
+  //   description: "次のラウンドで必ず先行になる。",
+  //   effect: () => setHand(),
+  // },
+  // {
+  //   id: 5,
+  //   name: "筋トレ",
+  //   description: "次のラウンド開始時、自分のマッスルダメージを💪+30する。",
+  //   effect: () => changeAllHand("atk", 30),
+  // },
+  // {
+  //   id: 6,
+  //   name: "おなべのふた",
+  //   description: "次のラウンド開始時、自分のシールドを🛡️+30する。",
+  //   effect: () => changeAllHand("shield", 30),
+  // },
   {
     id: 7,
-    name: "リサーチ",
-    description: "自身の満腹度を🍖-100する",
-    skill: () => {
-      changeStatusValue("hungry", -100);
-    },
-  },
-  {
-    id: 8,
-    name: "筋トレ",
-    description: "このラウンド中マッスルダメージを2倍にする",
-    skill: () => {},
-  },
-  {
-    id: 9,
-    name: "おなべのふた",
-    description: "このラウンド中使用カード枚数分防御を🛡+100する",
-    skill: () => {
-      changeSumCardsValue("def", 100);
-    },
-  },
-  {
-    id: 10,
     name: "福袋",
-    description: "カードを6枚ドローする",
-    skill: () => {
-      setHand();
-    },
-  },
-  {
-    id: 11,
-    name: "早食い",
-    description: "このラウンド中使用カード枚数分スピードを🦶+1する",
-    skill: () => {},
+    description: "ラウンド終了時、満腹度を🍖0で固定したランダムなカードを1枚ドローする。",
+    effect: () => drawChangedCard([{ key: "hungry", value: 0 }]),
   },
 ];
+
 export default allGifts;

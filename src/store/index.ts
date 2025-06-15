@@ -17,7 +17,8 @@ const usePlayerStore = defineStore("playerData", () => {
     match: "nothing",
     password: "",
     character: "blankiss",
-    giftPackGauge: 0,
+    giftActive: false,
+    giftPackGauge: 90,
     giftPackTotal: 0,
     giftPackCounter: {
       giftActiveCount: 0,
@@ -122,6 +123,7 @@ const usePlayerStore = defineStore("playerData", () => {
     while (giftPackGauge >= maxGauge) {
       giftPackCounter.giftActiveCount += 1;
       giftPackGauge -= maxGauge;
+      player.value.giftActive = true;
     }
     if (giftPackGauge < minGauge) {
       giftPackGauge = minGauge;
@@ -141,7 +143,8 @@ const usePlayerStore = defineStore("playerData", () => {
       match: "nothing",
       password: "",
       character: "blankiss",
-      giftPackGauge: 0,
+      giftActive: false,
+      giftPackGauge: 90,
       giftPackTotal: 0,
       giftPackCounter: {
         giftActiveCount: 0,
@@ -215,7 +218,8 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     match: "nothing",
     password: "",
     character: "blankiss",
-    giftPackGauge: 0,
+    giftActive: false,
+    giftPackGauge: 90,
     giftPackTotal: 0,
     giftPackCounter: {
       giftActiveCount: 0,
@@ -253,6 +257,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     while (enemyPlayer.value.giftPackGauge >= maxGauge) {
       enemyPlayer.value.giftPackCounter.giftActiveCount += 1;
       enemyPlayer.value.giftPackGauge -= maxGauge;
+      enemyPlayer.value.giftActive = true;
     }
     // 0未満であるとき､0にする
     if (enemyPlayer.value.giftPackGauge < minGauge) {
@@ -270,7 +275,8 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       match: "nothing",
       password: "",
       character: "blankiss",
-      giftPackGauge: 0,
+      giftActive: false,
+      giftPackGauge: 90,
       giftPackTotal: 0,
       giftPackCounter: {
         giftActiveCount: 0,

@@ -7,7 +7,7 @@ import { collection, doc, increment, updateDoc } from "firebase/firestore";
 import type { GameData, PlayerData, Card } from "@/types";
 import { converter } from "@/server/converter";
 import { intervalForEach, wait, XOR } from "@/server/utils";
-import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer } from "./useBattleUtils";
+import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck } from "./useBattleUtils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { changeHandValue, changeStatusValue } from "@/server/useShopUtils";
 import { startShop } from "./useShop";
@@ -221,7 +221,7 @@ async function attack(which: "primary" | "second"): Promise<boolean> {
   await reflectStatus();
   console.log(i, "isDeath: ", isDeath);
   if (isDeath) return true;
-  // await checkMission(which);
+  giftCheck();
   return false;
 }
 
@@ -408,6 +408,8 @@ async function postBattle(): Promise<void> {
   const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
   const { game } = storeToRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
+
+  // giftCheck();
 
   // カード腐り処理
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter);

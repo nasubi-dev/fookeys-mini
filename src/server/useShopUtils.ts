@@ -8,7 +8,6 @@ import { db } from "./firebase";
 import { collection, deleteField, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { converter } from "@/server/converter";
 import type { Card, GameData, PlayerData, Attribute, Status, SumCards } from "@/types";
-// import allMissions from "@/assets/allMissions";
 import allCards from "@/assets/allCards";
 import { BATTLE_CONSTANTS, SALE_RATE } from "@/consts";
 import SelectCharacter from "@/components/selectCharacter.vue";
@@ -57,24 +56,21 @@ function drawOneCard(order?: Attribute | number): void {
   hand.value = hand.value.slice().sort((a, b) => a.id - b.id);
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
 }
-//cardをランダムに3枚引く
-async function draw2ExchangedCard() {
-  console.log(i, "draw3ExchangedCardを実行しました");
+async function drawChangedCard(values: [{ key: keyof SumCards; value: number }]): Promise<void> {
+  console.log(i, "drawChangedCardを実行しました");
   const { id, player, log } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
-  let selectCards: Card[] = [];
-  for (let i = 0; i < 2; i++) {
-    if (hand.value.length >= 5) return;
-    let selectCard = drawCard();
-    selectCard.waste = 7;
-    selectCard.hungry = 0;
-    selectCards[i] = selectCard;
-    hand.value.push(selectCard);
-    hand.value = [...hand.value].sort((a, b) => a.id - b.id);
-  }
+  if (hand.value.length >= BATTLE_CONSTANTS.MAX_HAND_SIZE) return;
+  let selectCard = drawCard();
+  values.forEach((value) => {
+    selectCard[value.key] += value.value;
+  });
+  hand.value.push(selectCard);
+  hand.value = [...hand.value].sort((a, b) => a.id - b.id);
+
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
-  console.log("draw3ExchangedCard: " + selectCards.map((card) => card.name));
+  log.value = "drawChangedCard: " + selectCard.name;
 }
 //cardをHandに3枚セットする
 async function setHand(): Promise<void> {
@@ -168,8 +164,8 @@ function changeStatusValue(key: keyof Status, value: number, isBreak?: boolean):
   console.log(i, "changeStatusValue: ", key, status.value[key]);
 }
 export {
-  drawOneCard as drawRandomOneCard,
-  draw2ExchangedCard,
+  drawOneCard,
+  drawChangedCard,
   setHand,
   setOffer,
   changeAllHand,

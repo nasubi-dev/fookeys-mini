@@ -31,17 +31,7 @@ type Gift = {
   id: number;
   name: string;
   description: string;
-  skill: () => void;
-};
-
-type Mission = {
-  id: number;
-  name: string;
-  achieved: boolean;
-  description: string;
-  reward: number;
-  goalAchievement: number;
-  nowAchievement: number;
+  effect: () => void;
 };
 
 //!使われてるか調べる
@@ -59,6 +49,7 @@ type PlayerData = {
   match: MatchStatus;
   password: string;
   character: string;
+  giftActive: boolean;
   giftPackGauge: number;
   giftPackTotal: number;
   giftPackCounter: {
@@ -84,4 +75,4 @@ type GameData = {
   firstAtkPlayer: PlayerSign | undefined;
 };
 
-export type { Attribute, Card, Character, Gift, Phase, MatchStatus, PlayerSign, Status, PlayerData, SumCards, GameData, Mission };
+export type { Attribute, Card, Character, Gift, Phase, MatchStatus, PlayerSign, Status, PlayerData, SumCards, GameData };

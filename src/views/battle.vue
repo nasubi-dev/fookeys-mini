@@ -8,7 +8,7 @@ import { e, s, i } from "@/log";
 import { intervalForEach, wait, XOR } from "@/server/utils";
 import { getEnemyPlayer, initPlayer } from "@/server/usePlayerData";
 import { deleteGame, watchDeleteGame } from "@/server/useMatchMaking";
-import { drawRandomOneCard } from "@/server/useShopUtils";
+import { drawOneCard } from "@/server/useShopUtils";
 import { startShop } from "@/server/useShop";
 import { BATTLE_CONSTANTS } from "@/consts";
 import Expanded from "@/components/Expanded.vue";
@@ -271,7 +271,7 @@ const devMode = ref(false);
           <div v-if="devMode" class="flex flex-col fixed top-24">
             <p>{{ "sign: " + sign }}</p>
             <p>{{ components }}</p>
-            <button @click="drawRandomOneCard(wantCard)">drawSelectCard</button>
+            <button @click="drawOneCard(wantCard)">drawSelectCard</button>
             <input v-model="wantCard" type="number" />
           </div>
         </div>

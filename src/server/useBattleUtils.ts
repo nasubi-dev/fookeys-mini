@@ -153,5 +153,21 @@ async function decideFirstAtkPlayer(): Promise<void> {
   await getEnemyPlayer();
   components.value = "afterDecideFirstAtkPlayer";
 }
+//! giftActiveがずっとfalse謎
+// gift発動
+async function giftCheck(): Promise<void> {
+  console.log(s, "giftActiveを実行しました");
+  const { player, log, myLog, enemyLog } = storeToRefs(playerStore);
+  const { giftActive } = toRefs(player.value);
+  const { enemyPlayer } = storeToRefs(enemyPlayerStore);
+  const { giftActive: enemyGiftActive } = toRefs(enemyPlayer.value);
 
-export { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer };
+  if (giftActive.value) {
+    myLog.value = "ギフトパックを使用します";
+  }
+  if (enemyGiftActive.value) {
+    enemyLog.value = "敵のギフトパックを使用します";
+  }
+}
+
+export { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck };
