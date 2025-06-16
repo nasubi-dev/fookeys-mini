@@ -78,12 +78,15 @@ async function setHand(): Promise<void> {
   const { id, player } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
-  for (let i = 0; i < BATTLE_CONSTANTS.SHOP_OFFER_COUNT; i++) {
+  while (hand.value.length < BATTLE_CONSTANTS.MAX_HAND_SIZE) {
     if (hand.value.length >= BATTLE_CONSTANTS.MAX_HAND_SIZE) {
       console.log(i, "hand is full");
       return;
     } else {
-      hand.value.push(drawCard());
+      let selectCard = drawCard();
+      //セールカードはHandに入れない
+      if (selectCard.isSale) continue;
+      hand.value.push(selectCard);
     }
     hand.value = hand.value.slice().sort((a, b) => a.id - b.id);
   }

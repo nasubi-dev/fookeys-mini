@@ -18,7 +18,7 @@ const SPECIAL_CARD_IDS = [...SPECIAL_ATK_CARD_IDS, ...SPECIAL_DEF_CARD_IDS, ...S
 // postBattle関連の定数
 const POST_BATTLE_CONSTANTS = {
   WASTE_REDUCTION: 1,
-  HUNGRY_REDUCTION: 40,
+  HUNGRY_REDUCTION: 30,
 } as const;
 
 // セールカードの確率
