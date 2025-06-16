@@ -78,7 +78,7 @@ async function setHand(): Promise<void> {
   const { id, player } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
-  while (hand.value.length < BATTLE_CONSTANTS.MAX_HAND_SIZE) {
+  while (hand.value.length < BATTLE_CONSTANTS.START__HAND_SIZE) {
     if (hand.value.length >= BATTLE_CONSTANTS.MAX_HAND_SIZE) {
       console.log(i, "hand is full");
       return;

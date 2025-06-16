@@ -47,6 +47,9 @@ const BATTLE_CONSTANTS = {
   // 手札制限
   MAX_HAND_SIZE: 5,
 
+  // 手札の初期枚数
+  START__HAND_SIZE: 3,
+
   // 戦闘フェーズ
   PRIMARY: "primary",
   SECOND: "second",
