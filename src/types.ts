@@ -50,6 +50,8 @@ type PlayerData = {
   password: string;
   character: string;
   giftActive: boolean;
+  // 発動するギフトID
+  giftActiveId: number;
   giftPackGauge: number;
   giftPackTotal: number;
   giftPackCounter: {

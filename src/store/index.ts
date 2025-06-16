@@ -19,6 +19,7 @@ const usePlayerStore = defineStore("playerData", () => {
     character: "blankiss",
     giftActive: false,
     giftPackGauge: 90,
+    giftActiveId: -1,
     giftPackTotal: 0,
     giftPackCounter: {
       giftActiveCount: 0,
@@ -144,6 +145,7 @@ const usePlayerStore = defineStore("playerData", () => {
       password: "",
       character: "blankiss",
       giftActive: false,
+      giftActiveId: -1,
       giftPackGauge: 90,
       giftPackTotal: 0,
       giftPackCounter: {
@@ -220,6 +222,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     character: "blankiss",
     giftActive: false,
     giftPackGauge: 90,
+    giftActiveId: -1,
     giftPackTotal: 0,
     giftPackCounter: {
       giftActiveCount: 0,
@@ -277,6 +280,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       character: "blankiss",
       giftActive: false,
       giftPackGauge: 90,
+      giftActiveId: -1,
       giftPackTotal: 0,
       giftPackCounter: {
         giftActiveCount: 0,
