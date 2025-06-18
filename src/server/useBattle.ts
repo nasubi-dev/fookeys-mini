@@ -221,7 +221,6 @@ async function attack(which: "primary" | "second"): Promise<boolean> {
   await reflectStatus();
   console.log(i, "isDeath: ", isDeath);
   if (isDeath) return true;
-  giftCheck();
   return false;
 }
 
@@ -409,8 +408,6 @@ async function postBattle(): Promise<void> {
   const { game } = storeToRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
 
-  // giftCheck();
-
   // カード腐り処理
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter);
 
@@ -428,6 +425,9 @@ async function postBattle(): Promise<void> {
 
   // 腐ったカード処理
   processRottenCardPenalty(rottenHand.value, rottenCardsCount, giftPackGauge, giftPackCounter);
+
+  // ギフトパック処理
+  giftCheck();
 
   // ターン終了処理
   await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter);

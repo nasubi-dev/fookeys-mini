@@ -157,15 +157,17 @@ async function decideFirstAtkPlayer(): Promise<void> {
 async function giftCheck(): Promise<void> {
   console.log(s, "giftActiveを実行しました");
   const { player, log, myLog, enemyLog } = storeToRefs(playerStore);
-  const { giftActive } = toRefs(player.value);
+  const { giftActiveId } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-  const { giftActive: enemyGiftActive } = toRefs(enemyPlayer.value);
+  const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
-  if (giftActive.value) {
+  if (giftActiveId.value !== -1) {
     myLog.value = "ギフトパックを使用します";
+    // animation
   }
-  if (enemyGiftActive.value) {
+  if (enemyGiftActiveId.value !== -1) {
     enemyLog.value = "敵のギフトパックを使用します";
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
 }
 
