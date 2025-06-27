@@ -3,6 +3,7 @@ import { i } from "@/log";
 import { defineStore } from "pinia";
 import type { Card, GameData, PlayerData, SumCards, Phase, PlayerSign } from "@/types";
 import allCards from "@/assets/allCards";
+import { decideGiftActive } from "@/server/useBattleUtils";
 
 const usePlayerStore = defineStore("playerData", () => {
   //?Const/State
@@ -123,7 +124,7 @@ const usePlayerStore = defineStore("playerData", () => {
     while (giftPackGauge >= maxGauge) {
       giftPackCounter.giftActiveCount += 1;
       giftPackGauge -= maxGauge;
-      player.value.giftActiveId = -1;
+      player.value.giftActiveId = decideGiftActive();
     }
     if (giftPackGauge < minGauge) {
       giftPackGauge = minGauge;
@@ -257,7 +258,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     while (enemyPlayer.value.giftPackGauge >= maxGauge) {
       enemyPlayer.value.giftPackCounter.giftActiveCount += 1;
       enemyPlayer.value.giftPackGauge -= maxGauge;
-      enemyPlayer.value.giftActiveId = -1;
+      enemyPlayer.value.giftActiveId = decideGiftActive();
     }
     // 0未満であるとき､0にする
     if (enemyPlayer.value.giftPackGauge < minGauge) {

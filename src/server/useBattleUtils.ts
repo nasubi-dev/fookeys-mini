@@ -9,6 +9,7 @@ import { converter } from "@/server/converter";
 import { intervalForEach, wait, XOR } from "@/server/utils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { BATTLE_CONSTANTS } from "@/consts";
+import allGifts from "@/assets/allGifts";
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
 const gamesRef = collection(db, "games").withConverter(converter<GameData>());
@@ -153,22 +154,34 @@ async function decideFirstAtkPlayer(): Promise<void> {
   await getEnemyPlayer();
   components.value = "afterDecideFirstAtkPlayer";
 }
+// gift決定
+function decideGiftActive(): number {
+  console.log(s, "decideGiftActiveを実行しました");
+
+  const randomGiftIndex = Math.floor(Math.random() * allGifts.length);
+  const randomGift = allGifts[randomGiftIndex];
+  console.log(i, "発動するgift: ", randomGift);
+  return randomGift.id;
+}
+
 // gift発動
 async function giftCheck(): Promise<void> {
   console.log(s, "giftActiveを実行しました");
-  const { player, log, myLog, enemyLog } = storeToRefs(playerStore);
+  const { player, myLog, enemyLog } = storeToRefs(playerStore);
   const { giftActiveId } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
   const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
   if (giftActiveId.value !== -1) {
-    myLog.value = "ギフトパックを使用します";
-    // animation
+    myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
+    giftActiveId.value = -1;
   }
   if (enemyGiftActiveId.value !== -1) {
-    enemyLog.value = "敵のギフトパックを使用します";
+    enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
+    enemyGiftActiveId.value = -1;
   }
 }
 
-export { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck };
+export { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, decideGiftActive, giftCheck };
