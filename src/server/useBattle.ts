@@ -248,7 +248,7 @@ async function battle() {
 
   getEnemyPlayer(); //!
   await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
-  components.value = "postBattle";
+  components.value = "giftPack";
 
   //戦後処理
   await postBattle();
@@ -407,6 +407,7 @@ async function postBattle(): Promise<void> {
   const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
   const { game } = storeToRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
+  const { components } = storeToRefs(playerStore);
 
   // カード腐り処理
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter);
@@ -417,19 +418,18 @@ async function postBattle(): Promise<void> {
   // 手札ボーナス処理
   processPostGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter);
 
-  // 手札にあるカードの効果を発動する（現在はコメントアウト）
-  hand.value.forEach((card: Card) => {
-    // if (card.id === 6) changeHandValue("hungry", -5);
-    // myLog.value = card.name + "の効果!" + card.description;
-  });
+  // 手札にあるカードの効果を発動する
+  hand.value.forEach((card: Card) => {});
 
   // 腐ったカード処理
   processRottenCardPenalty(rottenHand.value, rottenCardsCount, giftPackGauge, giftPackCounter);
 
   // ギフトパック処理
-  giftCheck();
+  giftCheck("primary");
+  // giftCheck("second");
 
   // ターン終了処理
+  components.value = "postBattle";
   await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter);
 }
 export { battle };

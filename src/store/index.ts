@@ -258,7 +258,6 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     while (enemyPlayer.value.giftPackGauge >= maxGauge) {
       enemyPlayer.value.giftPackCounter.giftActiveCount += 1;
       enemyPlayer.value.giftPackGauge -= maxGauge;
-      enemyPlayer.value.giftActiveId = decideGiftActive();
     }
     // 0未満であるとき､0にする
     if (enemyPlayer.value.giftPackGauge < minGauge) {

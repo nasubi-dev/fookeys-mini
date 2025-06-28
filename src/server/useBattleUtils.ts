@@ -161,26 +161,48 @@ function decideGiftActive(): number {
   const randomGiftIndex = Math.floor(Math.random() * allGifts.length);
   const randomGift = allGifts[randomGiftIndex];
   console.log(i, "発動するgift: ", randomGift);
+  updateDoc(doc(playersRef, playerStore.id), { giftActiveId: randomGift.id });
   return randomGift.id;
 }
 
 // gift発動
-async function giftCheck(): Promise<void> {
+async function giftCheck(order: "primary" | "second"): Promise<void> {
   console.log(s, "giftActiveを実行しました");
-  const { player, myLog, enemyLog } = storeToRefs(playerStore);
+  const { player, sign, myLog, enemyLog } = storeToRefs(playerStore);
   const { giftActiveId } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
   const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
-  if (giftActiveId.value !== -1) {
-    myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
-    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
-    giftActiveId.value = -1;
+  // 自分のギフトパック処理
+  async function myGiftCheck() {
+    if (giftActiveId.value !== -1) {
+      myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
+      await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
+      giftActiveId.value = -1;
+    }
   }
-  if (enemyGiftActiveId.value !== -1) {
-    enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
-    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
-    enemyGiftActiveId.value = -1;
+
+  // 敵のギフトパック処理
+  async function enemyGiftCheck() {
+    if (enemyGiftActiveId.value !== -1) {
+      enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
+      await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
+      enemyGiftActiveId.value = -1;
+    }
+  }
+
+  if (
+    (order === "primary" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST) ||
+    (order === "second" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND)
+  ) {
+    await myGiftCheck();
+  }
+  await wait(5000);
+  if (
+    (order === "primary" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND) ||
+    (order === "second" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST)
+  ) {
+    await enemyGiftCheck();
   }
 }
 
