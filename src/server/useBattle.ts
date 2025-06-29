@@ -426,7 +426,8 @@ async function postBattle(): Promise<void> {
 
   // ギフトパック処理
   giftCheck("primary");
-  // giftCheck("second");
+  await wait(1000);
+  giftCheck("second");
 
   // ターン終了処理
   components.value = "postBattle";

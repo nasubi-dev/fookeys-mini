@@ -178,7 +178,7 @@ async function giftCheck(order: "primary" | "second"): Promise<void> {
     if (giftActiveId.value !== -1) {
       myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
       await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
-      giftActiveId.value = -1;
+      // giftActiveId.value = -1;
     }
   }
 
@@ -187,7 +187,7 @@ async function giftCheck(order: "primary" | "second"): Promise<void> {
     if (enemyGiftActiveId.value !== -1) {
       enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
       await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
-      enemyGiftActiveId.value = -1;
+      // enemyGiftActiveId.value = -1;
     }
   }
 
@@ -197,7 +197,6 @@ async function giftCheck(order: "primary" | "second"): Promise<void> {
   ) {
     await myGiftCheck();
   }
-  await wait(5000);
   if (
     (order === "primary" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND) ||
     (order === "second" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST)
