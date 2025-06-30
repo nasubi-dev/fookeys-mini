@@ -293,7 +293,7 @@ const devMode = ref(false);
       </transition>
 
       <!-- このターン両者が使用したカード -->
-      <div v-if="components !== 'postBattle'">
+      <div v-if="components !== 'postBattle' && components !== 'giftPack'">
         <!-- 戦闘処理中のカード -->
         <div class="overlay">
           <transition appear enter-from-class="translate-y-[-150%] opacity-0"
