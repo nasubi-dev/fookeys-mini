@@ -395,13 +395,13 @@ async function finalizeTurn(
   }
 
   getEnemyPlayer();
-  startShop();
+  // startShop();
 }
 
 //戦闘後の処理
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
-  const { id, player, sign, log, myLog, enemyLog } = storeToRefs(playerStore);
+  const { id, player, sign, log, myLog, enemyLog, phase } = storeToRefs(playerStore);
   const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
   const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
@@ -425,12 +425,13 @@ async function postBattle(): Promise<void> {
   processRottenCardPenalty(rottenHand.value, rottenCardsCount, giftPackGauge, giftPackCounter);
 
   // ギフトパック処理
+  phase.value = "giftPack";
   giftCheck("primary");
   await wait(1000);
   giftCheck("second");
 
   // ターン終了処理
-  components.value = "postBattle";
+  // components.value = "postBattle";
   await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter);
 }
 export { battle };

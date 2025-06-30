@@ -4,7 +4,7 @@ import type { PlayerData } from "@/types";
 import Character from "./character.vue";
 import uiCardBehind from "./uiCardBehind.vue";
 import enemyStatusImg from "@/assets/img/ui/enemyStatus.png";
-import GiftPack from "./GiftPack.vue";
+import GiftPack from "./uiGiftPack.vue";
 
 const p = defineProps<{ player: PlayerData }>();
 

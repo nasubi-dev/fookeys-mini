@@ -16,7 +16,8 @@ import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
 import UiStatus from "@/components/uiStatus.vue";
 import UiHand from "@/components/uiHand.vue";
 import Battle from "@/components/battle.vue";
-import GiftPack from "@/components/GiftPack.vue";
+import GiftPack from "@/components/giftPack.vue";
+import uiGiftPack from "@/components/uiGiftPack.vue";
 import backImg from "@/assets/img/ui/back.png";
 import winImg from "@/assets/img/ui/win.png";
 import loseImg from "@/assets/img/ui/lose.png";
@@ -284,6 +285,11 @@ const devMode = ref(false);
           <div v-if="phase === 'battle'">
             <Battle />
           </div>
+
+          <div v-if="phase === 'giftPack'">
+            <GiftPack />
+            1111
+          </div>
         </div>
       </transition>
 
@@ -306,28 +312,8 @@ const devMode = ref(false);
         </div>
       </div>
 
-      <!--
-      <div v-if="components === 'giftPack'">
-        <div class="overlay">
-          <transition
-            appear
-            enter-from-class="translate-y-[-150%] opacity-0"
-            leave-to-class="translate-y-[150%] opacity-0"
-            leave-active-class="transition duration-300"
-            enter-active-class="transition duration-300"
-            mode="out-in"
-          >
-            <img v-if="myTurnAnimation" @load="loadMyTurnImg()" :src="myTurnImg" style="width: 40vw" />
-            <img v-else-if="enemyTurnAnimation" @load="loadEnemyTurnImg()" :src="enemyTurnImg" style="width: 40vw" />
-            <div v-else class="flex flex-col">
-              test
-            </div>
-          </transition>
-        </div>
-      </div> -->
-
       <!-- 使用カードの表示 -->
-      <div v-if="components !== 'postBattle'">
+      <div v-if="components !== 'postBattle' && components !== 'giftPack'">
         <div class="w-[460px] h-screen justify-center items-center">
           <div class="w-auto fixed bottom-1/4 ml-2">
             <UiUseCard :player="sign === firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
@@ -344,7 +330,7 @@ const devMode = ref(false);
           :src="waitingGif" class="w-[max(70vw,400px)] -translate-x-[80px] translate-y-[130px]" />
         <div class="flex gap-2">
           <UiStatus :player="player" :class="isMobile ? 'w-auto' : 'w-[min(80vw,380px)]'" />
-          <GiftPack class="w-[min(15vw,80px)]" :status="`my`" />
+          <uiGiftPack class="w-[min(15vw,80px)]" :status="`my`" />
         </div>
         <UiHand class="pt-5" />
       </div>

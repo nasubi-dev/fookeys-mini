@@ -35,7 +35,7 @@ type Gift = {
 };
 
 //!使われてるか調べる
-type Phase = "shop" | "battle" | "result" | "none";
+type Phase = "shop" | "battle" | "result" | "giftPack" | "none";
 type MatchStatus = "matching" | "nothing" | "waiting" | "battle";
 type PlayerSign = 0 | 1;
 type Status = { hp: number; hungry: number; maxHp: number; maxHungry: number };

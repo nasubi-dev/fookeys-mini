@@ -1,60 +1,56 @@
 <script setup lang="ts">
-import giftPackEnemyBackground from "@/assets/img/ui/giftPackEnemyBackground.png";
-import giftPackMyBackground from "@/assets/img/ui/giftPackMyBackground.png";
-import giftPackIcon from "@/assets/img/ui/giftPackIcon.png";
-import characterBackground from "@/assets/img/ui/characterBackground.png";
-import VDuringPress from "./VDuringPress.vue";
-
-import { ref, toRefs, watch, onMounted, computed } from "vue";
-import { playerStore, gameStore, enemyPlayerStore } from "@/main";
-import { wait, XOR } from "@/server/utils";
+import { onMounted, toRefs, ref } from "vue";
+import { enemyPlayerStore, playerStore } from "@/main";
+import { e, s, i } from "@/log";
+import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
+import { tap2, battlePhase, swipe } from "@/assets/sounds";
+import { BATTLE_CONSTANTS } from "@/consts";
+import allGifts from "@/assets/allGifts";
 
-const p = defineProps<{ status: "my" | "enemy" }>();
 
-const { player } = storeToRefs(playerStore);
-const { giftPackGauge: myGiftPackGauge, giftPackCounter: myGiftPackCounter } = toRefs(player.value);
-
+const useTap2 = useSound(tap2);
+const useBattlePhase = useSound(battlePhase);
+const useSwipe = useSound(swipe);
+const { player, cardLock, phase } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
+const { giftActiveId } = toRefs(player.value);
+const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
-const isMyStatus = computed(() => p.status === "my");
-const currentGiftPackGauge = computed(() => (isMyStatus.value ? myGiftPackGauge.value : enemyPlayer.value.giftPackGauge));
-const currentGiftPackCounter = computed(() => (isMyStatus.value ? myGiftPackCounter.value : enemyPlayer.value.giftPackCounter));
-const currentBackground = computed(() => (isMyStatus.value ? giftPackMyBackground : giftPackEnemyBackground));
-const currentGaugeStyle = computed(() =>
-  isMyStatus.value ? { height: `${100 - currentGiftPackGauge.value}%` } : { width: `${100 - currentGiftPackGauge.value}%` }
-);
-
-const dropDown = ref(false);
-const toggleDropDown = (value: boolean): void => {
-  dropDown.value = value;
+//ターンを終了時
+const turnEnd = () => {
+  if (cardLock.value) return;
+  console.log(i, "turnEnd");
+  //cardLockをtrueにする
+  cardLock.value = true;
+  //!手札がFirestoreに保存するためにhand.vueから移動する
 };
+
+const viewOrder = ref(false);
+onMounted(() => {
+  viewOrder.value = true;
+  setTimeout(() => {
+    viewOrder.value = false;
+    useSwipe.play();
+  }, BATTLE_CONSTANTS.WAIT_TIME.DEATH_ANIMATION);
+});
 </script>
 
 <template>
   <div>
-    <div class="relative">
-      <div v-if="dropDown" class="z-20 fixed pr-10 text-gray-900 text-left w-50 transform -translate-x-72 -translate-y-32">
-        <div class="w-[max(20vw,270px)]">
-          <img :src="characterBackground" class="absolute transform -scale-x-100" />
-          <div class="z-30 pb-8 pt-8 px-12 relative">
-            {{ currentGiftPackGauge }}
-            {{ currentGiftPackCounter }}
+    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+      <div v-if="phase === 'giftPack'" class="flex flex-col gap-5 p-20 justify-center items-center">
+        <div class="relative">
+          <img :src="`/img/gifts/${allGifts[giftActiveId].id}.png`" class="w-[320px] min-w-[248px]" />
+          <div class="overText">
+            <div class="text-lg font-bold flex w-full justify-between px-6 items-center content-between">
+              {{ allGifts[giftActiveId].name }}
+            </div>
           </div>
         </div>
       </div>
 
-      <VDuringPress :onKeyDown="() => toggleDropDown(true)" :onKeyUp="() => toggleDropDown(false)" :delay="250">
-        <div>
-          {{ currentGiftPackGauge }}
-          <img class="absolute" :class="isMyStatus ? `top-0` : `-top-16`" :src="currentBackground" />
-
-          <div class="absolute" :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
-            <div :style="currentGaugeStyle" :class="isMyStatus ? `bar` : `bar-enemy`"></div>
-          </div>
-          <img :src="giftPackIcon" class="absolute" :class="isMyStatus ? `w-[70%] -bottom-24` : `w-[40%] -top-12`" />
-        </div>
-      </VDuringPress>
-    </div>
+    </transition>
   </div>
 </template>
