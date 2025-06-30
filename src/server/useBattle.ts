@@ -431,7 +431,9 @@ async function postBattle(): Promise<void> {
   giftCheck("second");
 
   // ターン終了処理
-  // components.value = "postBattle";
+  await wait(10000);
+  components.value = "postBattle";
   await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter);
+  await startShop();
 }
 export { battle };

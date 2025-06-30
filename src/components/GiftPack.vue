@@ -6,33 +6,33 @@ import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
 import { tap2, battlePhase, swipe } from "@/assets/sounds";
 import { BATTLE_CONSTANTS } from "@/consts";
+import { startShop } from "@/server/useShop";
 import allGifts from "@/assets/allGifts";
 
-
-const useTap2 = useSound(tap2);
-const useBattlePhase = useSound(battlePhase);
 const useSwipe = useSound(swipe);
-const { player, cardLock, phase } = storeToRefs(playerStore);
+const { player, phase, sign, components } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { giftActiveId } = toRefs(player.value);
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
-//ターンを終了時
-const turnEnd = () => {
-  if (cardLock.value) return;
-  console.log(i, "turnEnd");
-  //cardLockをtrueにする
-  cardLock.value = true;
-  //!手札がFirestoreに保存するためにhand.vueから移動する
-};
+const props = defineProps<{
+  order: "primary" | "second";
+}>();
 
 const viewOrder = ref(false);
 onMounted(() => {
-  viewOrder.value = true;
-  setTimeout(() => {
+  if (
+    (props.order === "primary" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST) ||
+    (props.order === "second" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND)) {
+    viewOrder.value = true;
+  } else {
     viewOrder.value = false;
-    useSwipe.play();
-  }, BATTLE_CONSTANTS.WAIT_TIME.DEATH_ANIMATION);
+  }
+  setTimeout(() => {
+    viewOrder.value = !viewOrder.value;
+    // components.value = "postBattle";
+    // startShop();
+  }, 3000);
 });
 </script>
 
@@ -40,17 +40,16 @@ onMounted(() => {
   <div>
     <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
       leave-active-class="transition duration-300" enter-active-class="transition duration-300">
-      <div v-if="phase === 'giftPack'" class="flex flex-col gap-5 p-20 justify-center items-center">
-        <div class="relative">
-          <img :src="`/img/gifts/${allGifts[giftActiveId].id}.png`" class="w-[320px] min-w-[248px]" />
-          <div class="overText">
-            <div class="text-lg font-bold flex w-full justify-between px-6 items-center content-between">
-              {{ allGifts[giftActiveId].name }}
-            </div>
-          </div>
-        </div>
+      <div v-if="phase === 'giftPack' && viewOrder" class="flex flex-col gap-5 p-20 justify-center items-center">
+        <img v-if="giftActiveId !== -1" :src="`/img/gifts/${allGifts[giftActiveId].id}.png`" class="w-[320px] min-w-[248px]" />
       </div>
-
+    </transition>
+    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+      <div v-if="phase === 'giftPack' && !viewOrder" class="flex flex-col gap-5 p-20 justify-center items-center">
+        <img v-if="enemyGiftActiveId !== -1" :src="`/img/gifts/${allGifts[enemyGiftActiveId].id}.png`"
+          class="w-[320px] min-w-[248px]" />
+      </div>
     </transition>
   </div>
 </template>

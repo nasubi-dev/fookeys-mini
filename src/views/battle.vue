@@ -287,8 +287,7 @@ const devMode = ref(false);
           </div>
 
           <div v-if="phase === 'giftPack'">
-            <GiftPack />
-            1111
+            <GiftPack order="primary" />
           </div>
         </div>
       </transition>
