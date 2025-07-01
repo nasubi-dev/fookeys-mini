@@ -173,35 +173,19 @@ async function giftCheck(order: "primary" | "second"): Promise<void> {
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
   const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
-  // 自分のギフトパック処理
-  async function myGiftCheck() {
+  if (order === "primary") {
     if (giftActiveId.value !== -1) {
       myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
       await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
       // giftActiveId.value = -1;
     }
   }
-
-  // 敵のギフトパック処理
-  async function enemyGiftCheck() {
+  if (order === "second") {
     if (enemyGiftActiveId.value !== -1) {
       enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
       await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
       // enemyGiftActiveId.value = -1;
     }
-  }
-
-  if (
-    (order === "primary" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST) ||
-    (order === "second" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND)
-  ) {
-    await myGiftCheck();
-  }
-  if (
-    (order === "primary" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND) ||
-    (order === "second" && sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST)
-  ) {
-    await enemyGiftCheck();
   }
 }
 
