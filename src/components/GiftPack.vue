@@ -4,12 +4,10 @@ import { enemyPlayerStore, playerStore } from "@/main";
 import { e, s, i } from "@/log";
 import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
-import { tap2, battlePhase, swipe } from "@/assets/sounds";
 import { BATTLE_CONSTANTS } from "@/consts";
 import { startShop } from "@/server/useShop";
 import allGifts from "@/assets/allGifts";
 
-const useSwipe = useSound(swipe);
 const { player, phase, sign, components } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { giftActiveId } = toRefs(player.value);
