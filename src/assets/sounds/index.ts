@@ -18,6 +18,12 @@ import swipe from "./swipe.mp3";
 import tap1 from "./tap1.mp3";
 import tap2 from "./tap2.mp3";
 import tech from "./tech.mp3";
+import gaugeDown from "./gaugeDown.mp3";
+import gaugeUp from "./gaugeUp.mp3";
+import gaugeMax from "./gaugeMax.mp3";
+import bgm from "@/assets/sounds/bgm.mp3";
+import win from "@/assets/sounds/win.mp3";
+import lose from "@/assets/sounds/lose.mp3";
 
 export {
   atk,
@@ -39,4 +45,10 @@ export {
   tap1,
   tap2,
   tech,
+  gaugeDown,
+  gaugeUp,
+  gaugeMax,
+  bgm,
+  win,
+  lose
 };

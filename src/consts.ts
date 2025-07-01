@@ -29,6 +29,9 @@ const BATTLE_CONSTANTS = {
   // 会社数の閾値
   UNIQUE_COMPANIES_THRESHOLD: 3,
 
+  // ギフトパックのゲージ最大値
+  GIFT_PACK_GAUGE_MAX: 100,
+
   // 待機時間（ミリ秒）
   WAIT_TIME: {
     STANDARD: 1000,

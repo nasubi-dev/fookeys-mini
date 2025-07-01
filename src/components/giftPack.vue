@@ -8,19 +8,19 @@ import { BATTLE_CONSTANTS } from "@/consts";
 import { startShop } from "@/server/useShop";
 import allGifts from "@/assets/allGifts";
 import { giftCheck } from "@/server/useBattleUtils";
-
+import { success } from "@/assets/sounds";
 const { player, phase, sign, components } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { giftActiveId } = toRefs(player.value);
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
-const props = defineProps<{
-  order: "primary" | "second";
-}>();
+const useSuccess = useSound(success);
+
 
 const viewOrder = ref(false);
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
 onMounted(() => {
+  useSuccess.play();
   if (
     (order === "primary")) {
     viewOrder.value = true;

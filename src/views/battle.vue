@@ -18,22 +18,19 @@ import UiHand from "@/components/uiHand.vue";
 import Battle from "@/components/battle.vue";
 import GiftPack from "@/components/giftPack.vue";
 import uiGiftPack from "@/components/uiGiftPack.vue";
-import winImg from "@/assets/img/ui/win.png";
-import loseImg from "@/assets/img/ui/lose.png";
-import myTurnImg from "@/assets/gifs/myTurn.png";
-import enemyTurnImg from "@/assets/gifs/enemyTurn.png";
-import configImg from "@/assets/img/ui/config.png";
-import soundOnImg from "@/assets/img/ui/soundOn.png";
-import soundOffImg from "@/assets/img/ui/soundOff.png";
-import turnBackgroundImg from "@/assets/img/ui/turnBackground.png";
-import waitingGif from "@/assets/gifs/waiting.gif";
-import startGif from "@/assets/gifs/start.gif";
-import winGif from "@/assets/gifs/win.gif";
-import loseGif from "@/assets/gifs/lose.gif";
-import { tap2, enemyTurn, myTurn, battleStart, atk, def, tech, hp, sup, rotten } from "@/assets/sounds";
-import bgm from "@/assets/sounds/bgm.mp3";
-import win from "@/assets/sounds/win.mp3";
-import lose from "@/assets/sounds/lose.mp3";
+import {
+  winImg,
+  loseImg,
+  myTurnImg,
+  enemyTurnImg,
+  configImg,
+  soundOnImg,
+  soundOffImg,
+  turnBackgroundImg
+} from "@/assets/img/ui";
+import { waitingGif, startGif, winGif, loseGif } from "@/assets/gifs";
+import { tap2, enemyTurn, myTurn, battleStart, atk, def, tech, hp, sup, rotten, gaugeDown, gaugeUp, gaugeMax, bgm, win, lose, success } from "@/assets/sounds";
+
 
 const Shop = defineAsyncComponent(() => import("@/components/shop.vue"));
 const UiUseCard = defineAsyncComponent(() => import("@/components/uiUseCard.vue"));
@@ -54,10 +51,14 @@ const useSup = useSound(sup, { volume: 0.5 });
 const useDef = useSound(def);
 const useAtk = useSound(atk);
 const useTech = useSound(tech);
+const useGaugeDown = useSound(gaugeDown);
+const useGaugeUp = useSound(gaugeUp);
+const useGaugeMax = useSound(gaugeMax);
+const useSuccess = useSound(success);
 
 const { id, player, cardLock, phase, offer, sign, log, myLog, enemyLog, sumCards, isMobile, components, battleResult } =
   storeToRefs(playerStore);
-const { idGame, idEnemy, match, character, status, hand, rottenHand, death, field, sumFields, name, check } = toRefs(player.value);
+const { idGame, idEnemy, match, character, status, hand, rottenHand, death, field, sumFields, name, check, giftPackGauge, giftPackTotal } = toRefs(player.value);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { game } = storeToRefs(gameStore);
 const { players, turn, firstAtkPlayer } = toRefs(game.value);
@@ -128,6 +129,15 @@ watch(phase, (newVal) => {
       await getEnemyPlayer();
     }, BATTLE_CONSTANTS.WAIT_TIME.SHOP_DELAY);
   }
+});
+// giftPackが増減したら再生
+watch(giftPackGauge, (newVal, oldVal) => {
+  if (newVal > oldVal) useGaugeUp.play();
+  // ギフトパックゲージが100ごとに再生
+  if (newVal > oldVal && newVal % 100 === 0) useGaugeMax.play();
+});
+watch(giftPackTotal, (newVal, oldVal) => {
+  if (newVal < oldVal) useGaugeDown.play();
 });
 
 //入場したらPlayer型としてIDが保管される
@@ -285,7 +295,7 @@ const devMode = ref(false);
           </div>
 
           <div v-if="phase === 'giftPack'">
-            <GiftPack order="primary" />
+            <GiftPack />
           </div>
         </div>
       </transition>

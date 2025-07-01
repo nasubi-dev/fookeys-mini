@@ -33,31 +33,36 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
   const fieldSaleCard = my.field.filter((card) => card.isSale);
   const uniqueCardCompanies = [...new Set(my.field.map((card) => card.company))];
 
+  let fieldNormalCardGauge = 0;
+  let fieldSaleCardGauge = 0;
+  let uniqueCardCompaniesGauge = 0;
   // カードを使用
   if (fieldNormalCard.length > 0) {
     if (id.value === myId) {
       giftPackCounter.value.usedCard += fieldNormalCard.length;
-      giftPackGauge.value += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
+      fieldNormalCardGauge += fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD;
       myLog.value = LOG_MESSAGES.CARD_USED(fieldNormalCard.length, fieldNormalCard.length * GIFT_POINTS.NORMAL_CARD);
     }
   }
-
   // セールカードを使用
   if (fieldSaleCard.length > 0) {
     if (id.value === myId) {
       giftPackCounter.value.usedSaleCard += fieldSaleCard.length;
-      giftPackGauge.value += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
+      fieldSaleCardGauge += fieldSaleCard.length * GIFT_POINTS.SALE_CARD;
       myLog.value = LOG_MESSAGES.SALE_CARD_USED(fieldSaleCard.length, fieldSaleCard.length * GIFT_POINTS.SALE_CARD);
     }
   }
-
+  // 手札に同じ会社のカードが3枚以上ある場合、ギフトパックゲージを増加
   if (uniqueCardCompanies.length >= BATTLE_CONSTANTS.UNIQUE_COMPANIES_THRESHOLD) {
     if (id.value === myId) {
       giftPackCounter.value.haveNotSameCompanyCard++;
-      giftPackGauge.value += GIFT_POINTS.THREE_COMPANIES;
+      uniqueCardCompaniesGauge += GIFT_POINTS.THREE_COMPANIES;
       myLog.value = LOG_MESSAGES.THREE_COMPANIES_USED(uniqueCardCompanies.length, GIFT_POINTS.THREE_COMPANIES);
     }
   }
+
+  // ギフトパックゲージを更新
+  giftPackGauge.value += fieldNormalCardGauge + fieldSaleCardGauge + uniqueCardCompaniesGauge;
 
   checkGiftPackAchieved();
 
@@ -321,48 +326,54 @@ function processCardEffects(
 }
 
 // 手札ボーナス処理を行う
-function processPostGiftPack(hand: Card[], rottenHand: Card[], giftPackGauge: { value: number }, giftPackCounter: { value: any }): void {
-  const { log, myLog } = storeToRefs(playerStore);
+async function postGiftPack(
+  hand: Card[],
+  rottenHand: Card[],
+  giftPackGauge: { value: number },
+  giftPackCounter: { value: any },
+  rottenCardsCount: number
+): Promise<void> {
+  const { log, myLog, id } = storeToRefs(playerStore);
+  const { checkGiftPackAchieved } = playerStore;
+
+  let hand0Card = 0;
+  let have3UniqueCompanyCard = 0;
+  let rottenCard = 0;
 
   // 手札が0枚になる
   if (hand.length === 0 && rottenHand.length === 0) {
-    giftPackGauge.value += GIFT_POINTS.EMPTY_HAND;
+    hand0Card += GIFT_POINTS.EMPTY_HAND;
     giftPackCounter.value.hand0Card += 1;
     myLog.value = LOG_MESSAGES.EMPTY_HAND_BONUS(GIFT_POINTS.EMPTY_HAND);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
   }
-
   // 同じ会社のカードが手札にない
   if (hand.length > 0) {
     const uniqueCompanyList = [...new Set(hand.map((card) => card.company))];
     if (uniqueCompanyList.length === hand.length) {
-      giftPackGauge.value += GIFT_POINTS.UNIQUE_COMPANIES;
+      have3UniqueCompanyCard += GIFT_POINTS.UNIQUE_COMPANIES;
       giftPackCounter.value.haveNotSameCompanyCard += 1;
       myLog.value = LOG_MESSAGES.UNIQUE_COMPANIES_BONUS(GIFT_POINTS.UNIQUE_COMPANIES);
       console.log(i, "giftPackGauge: ", giftPackGauge.value);
       console.log(i, hand, rottenHand);
     }
   }
-}
-
-// 腐ったカード処理を行う
-function processRottenCardPenalty(
-  rottenHand: Card[],
-  rottenCardsCount: number,
-  giftPackGauge: { value: number },
-  giftPackCounter: { value: any }
-): void {
-  const { log } = storeToRefs(playerStore);
-
   // このターンで腐ったカードの枚数を取得
   const nowRottenCardsCount = rottenHand.length - rottenCardsCount;
   if (nowRottenCardsCount > 0) {
-    giftPackGauge.value -= nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY;
+    rottenCard -= nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY;
     giftPackCounter.value.haveRottenCard += nowRottenCardsCount;
     log.value = LOG_MESSAGES.HAVE_ROTTEN_PENALTY(nowRottenCardsCount, nowRottenCardsCount * GIFT_POINTS.HAVE_ROTTEN_PENALTY);
     console.log(i, "giftPackGauge: ", giftPackGauge.value);
     console.log(i, rottenHand);
   }
+
+  // ギフトパックゲージを更新
+  giftPackGauge.value += hand0Card + have3UniqueCompanyCard + rottenCard;
+
+  checkGiftPackAchieved();
+
+  await updateDoc(doc(playersRef, id.value), { giftPackGauge: giftPackGauge.value });
 }
 
 // ターン終了処理を行う
@@ -415,15 +426,13 @@ async function postBattle(): Promise<void> {
   // カード効果発動処理
   processCardEffects(enemyCheck.value, enemyField.value, enemyLog, check.value, field.value, myLog);
 
-  // 手札ボーナス処理
-  processPostGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter);
-
   // 手札にあるカードの効果を発動する
   hand.value.forEach((card: Card) => {});
 
-  // 腐ったカード処理
-  processRottenCardPenalty(rottenHand.value, rottenCardsCount, giftPackGauge, giftPackCounter);
+  // ギフトパック処理
+  postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount);
 
+  await wait(5000);
   // ギフトパック処理
   phase.value = "giftPack";
 
