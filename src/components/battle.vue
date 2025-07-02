@@ -4,9 +4,8 @@ import { playerStore, gameStore } from "@/main";
 import { e, s, i } from "@/log";
 import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
-import decideImg from "@/assets/img/ui/decide.png";
-import sumFieldImg from "@/assets/img/ui/info.png";
-import eatingGif from "@/assets/gifs/eating.gif";
+import { eatingGif } from "@/assets/gifs";
+import { decideImg, sumFieldImg, trash } from "@/assets/img/ui";
 import { tap2, battlePhase, swipe } from "@/assets/sounds";
 import { BATTLE_CONSTANTS } from "@/consts";
 
@@ -14,11 +13,18 @@ const useTap2 = useSound(tap2);
 const useBattlePhase = useSound(battlePhase);
 const useSwipe = useSound(swipe);
 const { player, cardLock, phase, sumCards } = storeToRefs(playerStore);
-const { field } = toRefs(player.value);
+const { field, rottenHand, isTrash,hand } = toRefs(player.value);
 const { game } = storeToRefs(gameStore);
 
 //ターンを終了時
-const turnEnd = () => {
+const turnEnd = (action: "decide" | "trash") => {
+  if (action === "trash") {
+    // trashを選択した場合はfieldからhandへ戻す
+    hand.value = [...hand.value, ...field.value].sort((a, b) => a.id - b.id);
+    // rottenHandから一枚削除
+    rottenHand.value.splice(0, 1);
+    isTrash.value = true;
+  }
   if (cardLock.value) return;
   console.log(i, "turnEnd");
   //cardLockをtrueにする
@@ -41,13 +47,8 @@ const loadBattleGif = () => {
 
 <template>
   <div>
-    <transition
-      appear
-      enter-from-class="translate-y-[-150%] opacity-0"
-      leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300"
-      enter-active-class="transition duration-300"
-    >
+    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
       <div v-if="battleAnimation" class="overlay">
         <img @load="loadBattleGif()" :src="eatingGif" />
       </div>
@@ -65,14 +66,23 @@ const loadBattleGif = () => {
             </div>
           </div>
 
-          <button
-            @click="
-              turnEnd();
+          <div class="flex justify-between items-center w-full">
+            <div class="w-[80px]" />
+            <button @click="
+              turnEnd('decide');
+            useTap2.play();
+            ">
+              <img :src="decideImg" class="w-[150px]" />
+            </button>
+            <button @click="
+            if (rottenHand.length > 0) {
+              turnEnd('trash');
               useTap2.play();
-            "
-          >
-            <img :src="decideImg" class="w-[150px]" />
-          </button>
+            }
+              ">
+              <img :src="trash" class="w-[80px]" :class="rottenHand.length > 0 ? 'opacity-100' : 'opacity-50'" />
+            </button>
+          </div>
         </div>
       </div>
     </transition>

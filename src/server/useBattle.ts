@@ -386,6 +386,8 @@ async function finalizeTurn(
   giftPackGauge: { value: number },
   giftPackCounter: { value: any }
 ): Promise<void> {
+  const { player } = storeToRefs(playerStore);
+  const { isTrash } = toRefs(player.value);
   const { checkGiftPackAchieved, deleteField } = playerStore;
   const { nextTurn } = gameStore;
 
@@ -396,6 +398,7 @@ async function finalizeTurn(
 
   check.value = false;
   firstAtkPlayer.value = undefined;
+  isTrash.value = false;
 
   await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
   await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
@@ -413,9 +416,9 @@ async function finalizeTurn(
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
   const { id, player, sign, log, myLog, enemyLog, phase } = storeToRefs(playerStore);
-  const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter } = toRefs(player.value);
+  const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter, giftActiveId } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-  const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
+  const { field: enemyField, check: enemyCheck, giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
   const { game } = storeToRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
   const { components } = storeToRefs(playerStore);
@@ -432,12 +435,14 @@ async function postBattle(): Promise<void> {
   // ギフトパック処理
   postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount);
 
-  await wait(5000);
+  await wait(1000);
   // ギフトパック処理
   phase.value = "giftPack";
 
   // ターン終了処理
-  await wait(5000);
+  if (giftActiveId.value !== -1) await wait(2000);
+  if (enemyGiftActiveId.value !== -1) await wait(2000);
+
   components.value = "postBattle";
   await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter);
   await startShop();

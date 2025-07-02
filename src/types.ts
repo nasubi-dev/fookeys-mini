@@ -64,6 +64,7 @@ type PlayerData = {
   };
   hand: Card[];
   rottenHand: Card[];
+  isTrash: boolean;
   field: Card[];
   status: Status;
   sumFields: SumCards;

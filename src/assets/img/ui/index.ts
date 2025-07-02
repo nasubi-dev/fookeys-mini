@@ -7,6 +7,9 @@ import configImg from "@/assets/img/ui/config.png";
 import soundOnImg from "@/assets/img/ui/soundOn.png";
 import soundOffImg from "@/assets/img/ui/soundOff.png";
 import turnBackgroundImg from "@/assets/img/ui/turnBackground.png";
+import trash from "@/assets/img/ui/trash.png";
+import decideImg from "@/assets/img/ui/decide.png";
+import sumFieldImg from "@/assets/img/ui/info.png";
 
 export {
   winImg,
@@ -16,5 +19,8 @@ export {
   configImg,
   soundOnImg,
   soundOffImg,
-  turnBackgroundImg
+  turnBackgroundImg,
+  trash,
+  decideImg,
+  sumFieldImg,
 };

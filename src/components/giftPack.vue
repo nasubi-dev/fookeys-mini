@@ -5,11 +5,10 @@ import { e, s, i } from "@/log";
 import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
 import { BATTLE_CONSTANTS } from "@/consts";
-import { startShop } from "@/server/useShop";
 import allGifts from "@/assets/allGifts";
 import { giftCheck } from "@/server/useBattleUtils";
 import { success } from "@/assets/sounds";
-const { player, phase, sign, components } = storeToRefs(playerStore);
+const { player, phase, sign } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { giftActiveId } = toRefs(player.value);
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
@@ -20,7 +19,6 @@ const useSuccess = useSound(success);
 const viewOrder = ref(false);
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
 onMounted(() => {
-  useSuccess.play();
   if (
     (order === "primary")) {
     viewOrder.value = true;
@@ -32,9 +30,7 @@ onMounted(() => {
   setTimeout(() => {
     viewOrder.value = !viewOrder.value;
     giftCheck(order==="primary" ? "second" : "primary");
-    // components.value = "postBattle";
-    // startShop();
-  }, 3000);
+  }, 2000);
 });
 </script>
 
