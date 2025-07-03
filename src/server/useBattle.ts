@@ -6,7 +6,7 @@ import { db } from "./firebase";
 import { collection, doc, increment, updateDoc } from "firebase/firestore";
 import type { GameData, PlayerData, Card } from "@/types";
 import { converter } from "@/server/converter";
-import { intervalForEach, wait, XOR } from "@/server/utils";
+import { wait } from "@/server/utils";
 import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck } from "./useBattleUtils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { changeHandValue, changeStatusValue } from "@/server/useShopUtils";
@@ -24,7 +24,7 @@ const judgeDrawCard = (card: Card): boolean => {
 
 // ギフトパック処理を行う
 async function processGiftPack(my: PlayerData, myId: string, playerAllocation: number): Promise<void> {
-  const { log, player, id, myLog } = storeToRefs(playerStore);
+  const { player, id, myLog } = storeToRefs(playerStore);
   const { giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { checkGiftPackAchieved } = playerStore;
 
@@ -196,8 +196,10 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     firstAtkPlayer.value === sign.value ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST : BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND;
 
   //fieldが空の場合､ダメージ計算を行わない
-  if (my.field.length === 0) return false;
-
+  if (my.field.length === 0) {
+    await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
+    return false;
+  }
   // 各処理を順番に実行
   await processGiftPack(my, myId, playerAllocation);
   await processHungry(my, enemy, myId, playerAllocation);
@@ -265,9 +267,9 @@ async function processCardRotting(
   hand: Card[],
   rottenHand: Card[],
   giftPackGauge: { value: number },
-  giftPackCounter: { value: any }
+  giftPackCounter: { value: any },
+  myLog: { value: string }
 ): Promise<number> {
-  const { log, myLog } = storeToRefs(playerStore);
   const { checkRotten } = playerStore;
 
   // handの腐り値を減らす
@@ -331,9 +333,11 @@ async function postGiftPack(
   rottenHand: Card[],
   giftPackGauge: { value: number },
   giftPackCounter: { value: any },
-  rottenCardsCount: number
+  rottenCardsCount: number,
+  log: { value: string },
+  myLog: { value: string },
+  id: { value: string }
 ): Promise<void> {
-  const { log, myLog, id } = storeToRefs(playerStore);
   const { checkGiftPackAchieved } = playerStore;
 
   let hand0Card = 0;
@@ -384,10 +388,10 @@ async function finalizeTurn(
   check: { value: boolean },
   firstAtkPlayer: { value: any },
   giftPackGauge: { value: number },
-  giftPackCounter: { value: any }
+  giftPackCounter: { value: any },
+  giftActiveId: { value: number },
+  isTrash: { value: boolean }
 ): Promise<void> {
-  const { player } = storeToRefs(playerStore);
-  const { isTrash } = toRefs(player.value);
   const { checkGiftPackAchieved, deleteField } = playerStore;
   const { nextTurn } = gameStore;
 
@@ -399,9 +403,11 @@ async function finalizeTurn(
   check.value = false;
   firstAtkPlayer.value = undefined;
   isTrash.value = false;
+  giftActiveId.value = -1;
 
   await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
   await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
+  await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
   await updateDoc(doc(playersRef, id), { check: check.value });
 
   if (sign) {
@@ -416,7 +422,7 @@ async function finalizeTurn(
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
   const { id, player, sign, log, myLog, enemyLog, phase } = storeToRefs(playerStore);
-  const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter, giftActiveId } = toRefs(player.value);
+  const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter, giftActiveId, isTrash } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
   const { field: enemyField, check: enemyCheck, giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
   const { game } = storeToRefs(gameStore);
@@ -424,7 +430,7 @@ async function postBattle(): Promise<void> {
   const { components } = storeToRefs(playerStore);
 
   // カード腐り処理
-  const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter);
+  const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter, myLog);
 
   // カード効果発動処理
   processCardEffects(enemyCheck.value, enemyField.value, enemyLog, check.value, field.value, myLog);
@@ -433,7 +439,7 @@ async function postBattle(): Promise<void> {
   hand.value.forEach((card: Card) => {});
 
   // ギフトパック処理
-  postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount);
+  postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount, log, myLog, id);
 
   await wait(1000);
   // ギフトパック処理
@@ -444,7 +450,7 @@ async function postBattle(): Promise<void> {
   if (enemyGiftActiveId.value !== -1) await wait(2000);
 
   components.value = "postBattle";
-  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter);
+  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, isTrash);
   await startShop();
 }
 export { battle };

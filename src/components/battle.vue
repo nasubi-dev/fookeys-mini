@@ -13,14 +13,15 @@ const useTap2 = useSound(tap2);
 const useBattlePhase = useSound(battlePhase);
 const useSwipe = useSound(swipe);
 const { player, cardLock, phase, sumCards } = storeToRefs(playerStore);
-const { field, rottenHand, isTrash,hand } = toRefs(player.value);
+const { field, rottenHand, isTrash, hand } = toRefs(player.value);
 const { game } = storeToRefs(gameStore);
 
 //ターンを終了時
 const turnEnd = (action: "decide" | "trash") => {
   if (action === "trash") {
     // trashを選択した場合はfieldからhandへ戻す
-    hand.value = [...hand.value, ...field.value].sort((a, b) => a.id - b.id);
+    hand.value = [...hand.value, ...field.value];
+    field.value = [];
     // rottenHandから一枚削除
     rottenHand.value.splice(0, 1);
     isTrash.value = true;
