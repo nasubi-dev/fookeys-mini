@@ -47,12 +47,16 @@ const toggleDropDown = (value: boolean): void => {
 
       <VDuringPress :onKeyDown="() => toggleDropDown(true)" :onKeyUp="() => toggleDropDown(false)" :delay="250">
         <div>
-          {{ currentGiftPackGauge }}
           <img class="absolute" :class="isMyStatus ? `top-0` : `-top-16`" :src="currentBackground" />
 
           <div class="absolute"
             :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
-            <div :style="currentGaugeStyle" :class="isMyStatus ? `bar` : `bar-enemy`"></div>
+            <div :style="currentGaugeStyle" :class="isMyStatus ? `bar` : `bar-enemy`">
+              <div class="font-bold  text-center" :class="isMyStatus ? `text-xl text-center` : `text-md align-middle absolute right-2 -top-1`"
+                style="text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                {{ currentGiftPackGauge }}
+              </div>
+            </div>
           </div>
           <img :src="giftPackIcon" class="absolute" :class="isMyStatus ? `w-[70%] -bottom-24` : `w-[40%] -top-12`" />
         </div>
