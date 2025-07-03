@@ -7,7 +7,7 @@ import { useSound } from "@vueuse/sound";
 import { tap1 } from "@/assets/sounds";
 import type { PlayerData } from "@/types";
 import { db } from "../server/firebase";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { converter } from "@/server/converter";
 import { watchTurnEnd } from "@/server/useShop";
 import UiCard from "@/components/uiCard.vue";

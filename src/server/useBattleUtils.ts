@@ -29,11 +29,6 @@ async function syncPlayer(which: "primary" | "second"): Promise<{ myId: string; 
   const isCurrentPlayerFirstAttacker = playerAllocation === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST;
   const isPrimarySync = which === "primary";
 
-  // Use XOR to determine which IDs to use:
-  // - If player is first attacker and sync is primary, use own ID
-  // - If player is first attacker and sync is second, use enemy ID
-  // - If player is second attacker and sync is primary, use enemy ID
-  // - If player is second attacker and sync is second, use own ID
   const shouldUseEnemyIdAsMyId = XOR(isCurrentPlayerFirstAttacker, isPrimarySync);
 
   // myIdとenemyIdを決定する
@@ -52,11 +47,12 @@ async function reflectStatus(): Promise<void> {
   const { player, id } = storeToRefs(playerStore);
   const { status, sumFields, check, death } = toRefs(player.value);
   //ダメージを反映する
-  let myPlayerStatus = (await getDoc(doc(playersRef, id.value))).data()?.status as Status;
-  let myPlayerSumFields = (await getDoc(doc(playersRef, id.value))).data()?.sumFields as SumCards;
-  let myPlayerCheck = (await getDoc(doc(playersRef, id.value))).data()?.check as boolean;
-  let myPlayerDeath = (await getDoc(doc(playersRef, id.value))).data()?.death as boolean;
-  let myPlayer;
+  let myPlayer = (await getDoc(doc(playersRef, id.value))).data() as PlayerData;
+  let myPlayerStatus = myPlayer.status as Status;
+  let myPlayerSumFields = myPlayer.sumFields as SumCards;
+  let myPlayerCheck = myPlayer.check;
+  let myPlayerDeath = myPlayer.death;
+
   if (!myPlayerStatus) throw Error("myStatusが取得できませんでした");
   if (!myPlayerSumFields) throw Error("mySumFieldsが取得できませんでした");
   if (myPlayerCheck === undefined) throw Error("myCheckが取得できませんでした");
@@ -80,7 +76,7 @@ async function checkDeath(p: PlayerData): Promise<boolean> {
   }
   return false;
 }
-//情報更新処理//!paramsはないだろ
+//情報更新処理
 async function everyUtil(params: [string, number]): Promise<void> {
   const { battleResult } = storeToRefs(playerStore);
 

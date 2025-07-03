@@ -3,7 +3,6 @@ import { ref, toRefs, watch, onMounted } from "vue";
 import { playerStore, gameStore, enemyPlayerStore } from "@/main";
 import { wait, XOR } from "@/server/utils";
 import { storeToRefs } from "pinia";
-import { getEnemyPlayer } from "@/server/usePlayerData";
 
 const p = defineProps<{ status: "my" | "enemy" }>();
 const emit = defineEmits<{
@@ -18,7 +17,7 @@ const { firstAtkPlayer } = toRefs(game.value);
 
 const characterName = ref();
 onMounted(async () => {
-  await getEnemyPlayer();
+
   if (p.status === "my") characterName.value = character.value;
   if (p.status === "enemy") characterName.value = enemyPlayer.value.character;
 });
