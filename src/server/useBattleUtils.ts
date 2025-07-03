@@ -153,11 +153,14 @@ async function decideFirstAtkPlayer(): Promise<void> {
 // gift決定
 function decideGiftActive(): number {
   console.log(s, "decideGiftActiveを実行しました");
+  const { id, player } = storeToRefs(playerStore);
+  const { giftActiveId } = toRefs(player.value);
 
   const randomGiftIndex = Math.floor(Math.random() * allGifts.length);
   const randomGift = allGifts[randomGiftIndex];
-  console.log(i, "発動するgift: ", randomGift);
-  updateDoc(doc(playersRef, playerStore.id), { giftActiveId: randomGift.id });
+
+  giftActiveId.value = randomGift.id;
+  updateDoc(doc(playersRef, id.value), { giftActiveId: randomGift.id });
   return randomGift.id;
 }
 

@@ -3,7 +3,7 @@ import { e, i, s } from "@/log";
 import { enemyPlayerStore, gameStore, playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import { db } from "./firebase";
-import { collection, doc, increment, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import type { GameData, PlayerData, Card } from "@/types";
 import { converter } from "@/server/converter";
 import { wait } from "@/server/utils";
@@ -403,11 +403,11 @@ export async function finalizeTurn(
   check.value = false;
   firstAtkPlayer.value = undefined;
   isTrash.value = false;
-  // giftActiveId.value = -1;
+  giftActiveId.value = -1;
 
   await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
   await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
-  // await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
+  await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
   await updateDoc(doc(playersRef, id), { check: check.value });
 
   if (sign) {
@@ -422,9 +422,9 @@ export async function finalizeTurn(
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
   const { id, player, log, myLog, enemyLog, phase } = storeToRefs(playerStore);
-  const { check, hand, rottenHand, field, giftPackGauge, giftPackCounter } = toRefs(player.value);
+  const { check, hand, rottenHand, field, idEnemy, giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-  const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
+  const { field: enemyField, check: enemyCheck, giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 
   // カード腐り処理
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter, myLog);
@@ -439,7 +439,8 @@ async function postBattle(): Promise<void> {
   postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount, log, myLog, id);
 
   // ギフトパック処理
-  getEnemyPlayer(); // 敵の情報を更新
+  await wait(1000);
+  enemyGiftActiveId.value = (await getDoc(doc(playersRef, idEnemy.value)))?.data()?.giftActiveId as number;
   phase.value = "giftPack";
 }
 export { battle };

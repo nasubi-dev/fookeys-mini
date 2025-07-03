@@ -21,6 +21,10 @@ watch(cardLock, (newVal) => {
   }
 });
 
+onMounted(() => {
+  console.log("Shop component mounted!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+});
+
 const shopAnimation = ref(true);
 const loadShoppingGif = () => {
   useShopping.play();

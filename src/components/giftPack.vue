@@ -26,23 +26,22 @@ const useSuccess = useSound(success);
 
 const viewOrder = ref(false);
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
+const shiftShopPhase = async () => {
+  components.value = "postBattle";
+  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, isTrash);
+  await startShop();
+}
 onMounted(async () => {
-  if (
-    (order === "primary")) {
-    viewOrder.value = true;
-    giftCheck(order);
-  } else {
-    viewOrder.value = false;
-    giftCheck(order);
-  }
+  if (giftActiveId.value === -1 && enemyGiftActiveId.value === -1) shiftShopPhase();
+
+  viewOrder.value = (order === "primary") ? true : false;
+  giftCheck(order);
+
   setTimeout(async () => {
     viewOrder.value = !viewOrder.value;
     giftCheck(order === "primary" ? "second" : "primary");
-    setTimeout(async () => {
-      components.value = "postBattle";
-      await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, isTrash);
-      await startShop();
-    }, 2000);
+    await wait(2000);
+    await shiftShopPhase();
   }, 2000);
 });
 </script>
