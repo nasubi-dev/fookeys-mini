@@ -12,7 +12,7 @@ import { BATTLE_CONSTANTS } from "@/consts";
 const useTap2 = useSound(tap2);
 const useBattlePhase = useSound(battlePhase);
 const useSwipe = useSound(swipe);
-const { player, cardLock, phase, sumCards } = storeToRefs(playerStore);
+const { player, cardLock, phase, sumCards, log } = storeToRefs(playerStore);
 const { field, rottenHand, isTrash, hand } = toRefs(player.value);
 const { game } = storeToRefs(gameStore);
 
@@ -75,13 +75,17 @@ const loadBattleGif = () => {
             ">
               <img :src="decideImg" class="w-[150px]" />
             </button>
-            <button @click="
-            if (rottenHand.length > 0) {
+            <button v-if="rottenHand.length > 0" @click="
               turnEnd('trash');
-              useTap2.play();
-            }
-              ">
-              <img :src="trash" class="w-[80px]" :class="rottenHand.length > 0 ? 'opacity-100' : 'opacity-50'" />
+            useTap2.play();
+            ">
+              <img :src="trash" class="w-[80px] opacity-100" />
+            </button>
+            <button v-else @click="
+              log = '腐ったカードが手札にありません。';
+            useTap2.play();
+            ">
+              <img :src="trash" class="w-[80px] opacity-50" />
             </button>
           </div>
         </div>
