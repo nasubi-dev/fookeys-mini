@@ -381,7 +381,7 @@ async function postGiftPack(
 }
 
 // ターン終了処理を行う
-async function finalizeTurn(
+export async function finalizeTurn(
   id: string,
   idGame: string,
   sign: number,
@@ -403,11 +403,11 @@ async function finalizeTurn(
   check.value = false;
   firstAtkPlayer.value = undefined;
   isTrash.value = false;
-  giftActiveId.value = -1;
+  // giftActiveId.value = -1;
 
   await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
   await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
-  await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
+  // await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
   await updateDoc(doc(playersRef, id), { check: check.value });
 
   if (sign) {
@@ -421,13 +421,10 @@ async function finalizeTurn(
 //戦闘後の処理
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
-  const { id, player, sign, log, myLog, enemyLog, phase } = storeToRefs(playerStore);
-  const { check, idGame, hand, rottenHand, field, status, giftPackGauge, giftPackCounter, giftActiveId, isTrash } = toRefs(player.value);
+  const { id, player, log, myLog, enemyLog, phase } = storeToRefs(playerStore);
+  const { check, hand, rottenHand, field, giftPackGauge, giftPackCounter } = toRefs(player.value);
   const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-  const { field: enemyField, check: enemyCheck, giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
-  const { game } = storeToRefs(gameStore);
-  const { firstAtkPlayer } = toRefs(game.value);
-  const { components } = storeToRefs(playerStore);
+  const { field: enemyField, check: enemyCheck } = toRefs(enemyPlayer.value);
 
   // カード腐り処理
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter, myLog);
@@ -441,16 +438,8 @@ async function postBattle(): Promise<void> {
   // ギフトパック処理
   postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount, log, myLog, id);
 
-  await wait(1000);
   // ギフトパック処理
+  getEnemyPlayer(); // 敵の情報を更新
   phase.value = "giftPack";
-
-  // ターン終了処理
-  if (giftActiveId.value !== -1) await wait(2000);
-  if (enemyGiftActiveId.value !== -1) await wait(2000);
-
-  components.value = "postBattle";
-  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, isTrash);
-  await startShop();
 }
 export { battle };

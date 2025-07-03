@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, toRefs, ref } from "vue";
-import { enemyPlayerStore, playerStore } from "@/main";
+import { enemyPlayerStore, playerStore, gameStore } from "@/main";
 import { e, s, i } from "@/log";
 import { useSound } from "@vueuse/sound";
 import { storeToRefs } from "pinia";
@@ -8,17 +8,25 @@ import { BATTLE_CONSTANTS } from "@/consts";
 import allGifts from "@/assets/allGifts";
 import { giftCheck } from "@/server/useBattleUtils";
 import { success } from "@/assets/sounds";
-const { player, phase, sign } = storeToRefs(playerStore);
+import { getEnemyPlayer } from "@/server/usePlayerData";
+import { wait } from "@/server/utils";
+import { startShop } from "@/server/useShop";
+import { finalizeTurn } from "@/server/useBattle";
+const { player, phase, sign, components, id } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
-const { giftActiveId } = toRefs(player.value);
+const { game } = storeToRefs(gameStore);
+
+const { giftActiveId, check, giftPackCounter, giftPackGauge, idGame, isTrash } = toRefs(player.value);
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
+const { firstAtkPlayer } = toRefs(game.value);
+
 
 const useSuccess = useSound(success);
 
 
 const viewOrder = ref(false);
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
-onMounted(() => {
+onMounted(async () => {
   if (
     (order === "primary")) {
     viewOrder.value = true;
@@ -27,9 +35,14 @@ onMounted(() => {
     viewOrder.value = false;
     giftCheck(order);
   }
-  setTimeout(() => {
+  setTimeout(async () => {
     viewOrder.value = !viewOrder.value;
-    giftCheck(order==="primary" ? "second" : "primary");
+    giftCheck(order === "primary" ? "second" : "primary");
+    setTimeout(async () => {
+      components.value = "postBattle";
+      await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, isTrash);
+      await startShop();
+    }, 2000);
   }, 2000);
 });
 </script>
