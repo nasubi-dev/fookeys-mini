@@ -4,7 +4,7 @@ import { e, s, i } from "@/log";
 import { playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import type { PlayerData, PlayerSign } from "@/types";
-import uiCardBehind from "./uiCardBehind.vue";
+import uiCardBehind from "./common/cardBehind.vue";
 import infoImg from "@/assets/img/ui/info.png";
 import { trash } from "@/assets/img/ui";
 
@@ -38,19 +38,15 @@ watch(battleResult, (newVal) => {
 </script>
 
 <template>
-  <Transition
-    appear
-    enter-from-class="translate-y-[-150%] opacity-0"
-    leave-to-class="translate-x-[-150%] opacity-0"
-    leave-active-class="transition duration-300"
-    enter-active-class="transition duration-300"
-  >
+  <Transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-x-[-150%] opacity-0"
+    leave-active-class="transition duration-300" enter-active-class="transition duration-300">
     <div class="w-[min(50vw,200px)]">
       <div class="relative flex justify-start">
         <img :src="infoImg" />
         <div class="overText">
           <div class="flex justify-start items-center font-bold text-lg">
-            <img v-if="characterName" :src="`/img/characters/${characterName}/normal.png`" class="w-1/3 bottom-5 bg-clip-border" />
+            <img v-if="characterName" :src="`/img/characters/${characterName}/normal.png`"
+              class="w-1/3 bottom-5 bg-clip-border" />
             <p>{{ "🍖" + p.player.sumFields.hungry }}</p>
             <img v-if="player.isTrash" :src="trash" class="w-[40px] ml-auto mr-5" />
           </div>

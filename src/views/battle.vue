@@ -11,13 +11,13 @@ import { deleteGame, watchDeleteGame } from "@/server/useMatchMaking";
 import { drawOneCard } from "@/server/useShopUtils";
 import { startShop } from "@/server/useShop";
 import { BATTLE_CONSTANTS } from "@/consts";
-import Expanded from "@/components/Expanded.vue";
-import UiEnemyInfo from "@/components/uiEnemyInfo.vue";
-import UiStatus from "@/components/uiStatus.vue";
-import UiHand from "@/components/uiHand.vue";
-import Battle from "@/components/battle.vue";
-import GiftPack from "@/components/giftPack.vue";
-import uiGiftPack from "@/components/uiGiftPack.vue";
+import Expanded from "@/components/common/Expanded.vue";
+import UiEnemyInfo from "@/components/static/enemyInfo.vue";
+import UiStatus from "@/components/static/status.vue";
+import UiHand from "@/components/static/hand.vue";
+import Battle from "@/components/flexible/battle.vue";
+import GiftPack from "@/components/flexible/giftPack.vue";
+import uiGiftPack from "@/components/static/giftPack.vue";
 import {
   winImg,
   loseImg,
@@ -32,11 +32,11 @@ import { waitingGif, startGif, winGif, loseGif } from "@/assets/gifs";
 import { tap2, enemyTurn, myTurn, battleStart, atk, def, tech, hp, sup, rotten, gaugeDown, gaugeUp, gaugeMax, bgm, win, lose, success } from "@/assets/sounds";
 
 
-const Shop = defineAsyncComponent(() => import("@/components/shop.vue"));
-const UiUseCard = defineAsyncComponent(() => import("@/components/uiUseCard.vue"));
-const UiUseCardDisplay = defineAsyncComponent(() => import("@/components/uiUseCardDisplay.vue"));
-const myLogImg = defineAsyncComponent(() => import("@/components/myLog.vue"));
-const enemyLogImg = defineAsyncComponent(() => import("@/components/enemyLog.vue"));
+const Shop = defineAsyncComponent(() => import("@/components/flexible/shop.vue"));
+const UiUseCard = defineAsyncComponent(() => import("@/components/flexible/useCard.vue"));
+const UiUseCardDisplay = defineAsyncComponent(() => import("@/components/flexible/useCardDisplay.vue"));
+const myLogImg = defineAsyncComponent(() => import("@/components/common/myLog.vue"));
+const enemyLogImg = defineAsyncComponent(() => import("@/components/common/enemyLog.vue"));
 
 const useBGM = useSound(bgm, { volume: 0.3, loop: true });
 const useWin = useSound(win, { volume: 0.5 });

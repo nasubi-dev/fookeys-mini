@@ -6,11 +6,11 @@ import { storeToRefs } from "pinia";
 import { useSound } from "@vueuse/sound";
 import { tap1 } from "@/assets/sounds";
 import type { PlayerData } from "@/types";
-import { db } from "../server/firebase";
+import { db } from "../../server/firebase";
 import { collection } from "firebase/firestore";
 import { converter } from "@/server/converter";
 import { watchTurnEnd } from "@/server/useShop";
-import UiCard from "@/components/uiCard.vue";
+import UiCard from "@/components/common/card.vue";
 import allCards from "@/assets/allCards";
 const useTap1 = useSound(tap1);
 
@@ -76,12 +76,8 @@ const popCard = (index: number, id: number) => {
 
 <template>
   <div class="flex justify-start overflow-x-visible">
-    <transition-group
-      enter-from-class="translate-y-[-150%] opacity-0"
-      leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300"
-      enter-active-class="transition duration-300"
-    >
+    <transition-group enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
       <div class="flex justify-start">
         <div v-for="(card, index) in rottenHand" :key="card.id" :class="recoverRottenHand ? `animate-jump` : null">
           <div>
@@ -92,14 +88,10 @@ const popCard = (index: number, id: number) => {
         </div>
         <img v-if="hand.length === 0" src="../assets/img/alpha.png" class="cardSize" />
         <div v-for="(card, index) in hand" :key="card.id">
-          <button
-            @click="
-              !isHandSelected[index] ? pushCard(index) : popCard(index, card.id);
-              cardLock ? null : useTap1.play();
-            "
-            :class="isHandSelected[index] ? 'transform -translate-y-4' : null"
-            class="cardSize relative"
-          >
+          <button @click="
+            !isHandSelected[index] ? pushCard(index) : popCard(index, card.id);
+          cardLock ? null : useTap1.play();
+          " :class="isHandSelected[index] ? 'transform -translate-y-4' : null" class="cardSize relative">
             <UiCard :card="card" size="normal" :state="isHandSelected[index]" :index="index" />
           </button>
         </div>

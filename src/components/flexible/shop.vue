@@ -2,7 +2,7 @@
 import { ref, watch, onMounted } from "vue";
 import { playerStore } from "@/main";
 import { storeToRefs } from "pinia";
-import ShopOffer from "./shopOffer.vue";
+import ShopOffer from "@/components/flexible/shopOffer.vue";
 import shoppingGif from "@/assets/gifs/shopping.gif";
 
 import { useSound } from "@vueuse/sound";
@@ -21,10 +21,6 @@ watch(cardLock, (newVal) => {
   }
 });
 
-onMounted(() => {
-  console.log("Shop component mounted!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-});
-
 const shopAnimation = ref(true);
 const loadShoppingGif = () => {
   useShopping.play();
@@ -36,14 +32,8 @@ const loadShoppingGif = () => {
 
 <template>
   <div>
-    <transition
-      appear
-      enter-from-class="translate-y-[-150%] opacity-0"
-      leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300"
-      enter-active-class="transition duration-300"
-      mode="out-in"
-    >
+    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300" enter-active-class="transition duration-300" mode="out-in">
       <div v-if="shopAnimation">
         <img @load="loadShoppingGif()" :src="shoppingGif" />
       </div>

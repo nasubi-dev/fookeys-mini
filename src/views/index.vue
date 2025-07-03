@@ -6,8 +6,8 @@ import { playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import { registerPlayer, reNamePlayer } from "@/server/usePlayerData";
 import { tap1 } from "@/assets/sounds";
-import myLogImg from "@/components/myLog.vue";
-import enemyLogImg from "@/components/enemyLog.vue";
+import myLogImg from "@/components/common/myLog.vue";
+import enemyLogImg from "@/components/common/enemyLog.vue";
 const customIcons = {
   success: myLogImg,
   error: enemyLogImg,

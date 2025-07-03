@@ -3,7 +3,7 @@ import { e, s, i } from "@/log";
 import { playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import type { Card } from "@/types";
-import UiCard from "./uiCard.vue";
+import UiCard from "./common/card.vue";
 
 const { cardLock } = storeToRefs(playerStore);
 
@@ -24,17 +24,13 @@ defineProps<{
       <p v-if="after === 'tech' && value" class="animate-jump animate-once">{{ "⚡️" + value }}</p>
     </div>
     <div class="flex items-center">
-      <div
-        class="flex justify-start"
-        v-for="(card, index) in after === 'donate'
-          ? cards
-          : cards.map((card) => {
-              if (card.attribute === after) {
-                return card;
-              }
-            })"
-        :key="card?.id"
-      >
+      <div class="flex justify-start" v-for="(card, index) in after === 'donate'
+        ? cards
+        : cards.map((card) => {
+          if (card.attribute === after) {
+            return card;
+          }
+        })" :key="card?.id">
         <div v-if="card" class="max-w-[400px]">
           <UiCard :card="card" size="big" :index="index" />
         </div>

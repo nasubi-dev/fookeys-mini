@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import Expanded from "@/components/Expanded.vue";
+import Expanded from "@/components/common/Expanded.vue";
 </script>
 
 <template>
