@@ -3,7 +3,7 @@ import { e, s, i } from "@/log";
 import { playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import type { Card } from "@/types";
-import UiCard from "./common/card.vue";
+import UiCard from "@/components/common/card.vue";
 
 const { cardLock } = storeToRefs(playerStore);
 

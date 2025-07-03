@@ -4,7 +4,7 @@ import { e, s, i } from "@/log";
 import { playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import type { PlayerData, PlayerSign } from "@/types";
-import uiCardBehind from "./common/cardBehind.vue";
+import uiCardBehind from "@/components/common/cardBehind.vue";
 import infoImg from "@/assets/img/ui/info.png";
 import { trash } from "@/assets/img/ui";
 

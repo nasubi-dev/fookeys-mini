@@ -3,7 +3,7 @@ import giftPackEnemyBackground from "@/assets/img/ui/giftPackEnemyBackground.png
 import giftPackMyBackground from "@/assets/img/ui/giftPackMyBackground.png";
 import giftPackIcon from "@/assets/img/ui/giftPackIcon.png";
 import characterBackground from "@/assets/img/ui/characterBackground.png";
-import VDuringPress from "./common/VDuringPress.vue";
+import VDuringPress from "@/components/common/VDuringPress.vue";
 
 import { ref, toRefs, watch, onMounted, computed } from "vue";
 import { playerStore, gameStore, enemyPlayerStore } from "@/main";
