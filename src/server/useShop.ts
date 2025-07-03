@@ -31,27 +31,8 @@ async function startShop(): Promise<void> {
 //shopフェーズの終了
 async function endShop(): Promise<void> {
   console.log(i, "endShopを実行しました");
-  const { id, player, phase, myLog, enemyLog, cardLock } = storeToRefs(playerStore);
-  const { status, check, idEnemy, hand, death } = toRefs(player.value);
-
-  //腐ったカードが9枚の場合、ゲームを終了する
-  if (hand.value.length === 9) {
-    const rottenCards = hand.value.reduce((acc: number, cur: Card) => {
-      if (cur.id === 0) acc++;
-      return acc;
-    }, 0);
-    if (rottenCards === 9) {
-      phase.value = "result";
-      death.value = true;
-      updateDoc(doc(playersRef, id.value), { death: true });
-      updateDoc(doc(playersRef, idEnemy.value), { death: true });
-      return;
-    }
-    setTimeout(async () => {
-      const deathData = (await getDoc(doc(playersRef, idEnemy.value))).data()?.death as boolean;
-      death.value = deathData;
-    }, 100);
-  }
+  const { id, player, phase, cardLock } = storeToRefs(playerStore);
+  const { status, check } = toRefs(player.value);
 
   //終了時処理
   phase.value = "battle";
