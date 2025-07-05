@@ -34,7 +34,7 @@ const shiftShopPhase = async () => {
 onMounted(async () => {
   if (giftActiveId.value === -1 && enemyGiftActiveId.value === -1) shiftShopPhase();
   viewOrder.value = (order === "primary") ? true : false;
-  await wait(2000);
+  await wait(500);
   test = giftCheck(order);
   if (test !== 0) useSuccessFirst.play();
 

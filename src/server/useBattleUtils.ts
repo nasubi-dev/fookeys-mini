@@ -175,14 +175,12 @@ function giftCheck(order: "primary" | "second"): number {
   if (order === "primary") {
     if (giftActiveId.value !== -1) {
       myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
-      // giftActiveId.value = -1;
       return 1;
     }
   }
   if (order === "second") {
     if (enemyGiftActiveId.value !== -1) {
       enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
-      // enemyGiftActiveId.value = -1;
       return 2;
     }
   }
