@@ -75,4 +75,14 @@ const LOG_MESSAGES = {
   HAVE_ROTTEN_PENALTY: (count: number, points: number) => `${count}枚の腐ったカードを持っているので、ギフトパックを${points}ptを失った！`,
 } as const;
 
-export { GIFT_POINTS, SPECIAL_CARD_IDS, SALE_RATE, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES };
+export {
+  GIFT_POINTS,
+  SPECIAL_CARD_IDS,
+  SALE_RATE,
+  POST_BATTLE_CONSTANTS,
+  BATTLE_CONSTANTS,
+  LOG_MESSAGES,
+  SPECIAL_ATK_CARD_IDS,
+  SPECIAL_DEF_CARD_IDS,
+  SPECIAL_SUP_CARD_IDS,
+};

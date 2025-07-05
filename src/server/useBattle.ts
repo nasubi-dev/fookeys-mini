@@ -6,12 +6,20 @@ import { db } from "./firebase";
 import { collection, doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import type { GameData, PlayerData, Card } from "@/types";
 import { converter } from "@/server/converter";
-import { wait } from "@/server/utils";
+import { intervalForEach, wait } from "@/server/utils";
 import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck } from "./useBattleUtils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { changeHandValue, changeStatusValue } from "@/server/useShopUtils";
-import { startShop } from "./useShop";
-import { GIFT_POINTS, SPECIAL_CARD_IDS, POST_BATTLE_CONSTANTS, BATTLE_CONSTANTS, LOG_MESSAGES } from "@/consts";
+import {
+  GIFT_POINTS,
+  SPECIAL_CARD_IDS,
+  POST_BATTLE_CONSTANTS,
+  BATTLE_CONSTANTS,
+  LOG_MESSAGES,
+  SPECIAL_ATK_CARD_IDS,
+  SPECIAL_DEF_CARD_IDS,
+  SPECIAL_SUP_CARD_IDS,
+} from "@/consts";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -90,16 +98,58 @@ async function processHungry(my: PlayerData, enemy: PlayerData, myId: string, pl
 }
 
 // 支援処理を行う
-async function processSupport(my: PlayerData): Promise<void> {
+async function processSupport(
+  my: PlayerData,
+  playerAllocation: number,
+  myLog: { value: string },
+  enemyLog: { value: string }
+): Promise<void> {
   if (my.field.map((card) => card.attribute).includes("sup")) {
+    console.log(i, "支援!!!");
+
+    intervalForEach(
+      (card: Card) => {
+        // リストの中にcard.idが含まれているかを確認
+        if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
+          if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+          else myLog.value = card.name + "の効果!" + card.description;
+          // if (card.id === 6) my.sumFields.atk += 30;
+        }
+      },
+      my.field,
+      1000
+    );
+
     await everyUtil(["sup", 0]);
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
 }
 
 // 回復処理を行う
-async function processHeal(my: PlayerData, myId: string, playerAllocation: number): Promise<void> {
+async function processHeal(
+  my: PlayerData,
+  myId: string,
+  playerAllocation: number,
+  myLog: { value: string },
+  enemyLog: { value: string }
+): Promise<void> {
   if (my.field.map((card) => card.attribute).includes("heal")) {
+    console.log(i, "回復!!!");
+
+    intervalForEach(
+      (card: Card) => {
+        // リストの中にcard.idが含まれているかを確認
+        if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
+          console.log(i, "特殊カードの効果を発動: ", card.name);
+          if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+          else myLog.value = card.name + "の効果!" + card.description;
+          // if (card.id === 6) my.sumFields.atk += 30;
+        }
+      },
+      my.field,
+      1000
+    );
+
     my.status.hp += my.sumFields.heal;
     if (my.status.hp > my.status.maxHp) {
       my.status.hp = my.status.maxHp;
@@ -115,7 +165,29 @@ async function processHeal(my: PlayerData, myId: string, playerAllocation: numbe
 }
 
 // 防御処理を行う
-async function processDefense(my: PlayerData, enemy: PlayerData, which: "primary" | "second"): Promise<number> {
+async function processDefense(
+  my: PlayerData,
+  enemy: PlayerData,
+  which: "primary" | "second",
+  playerAllocation: number,
+  myLog: { value: string },
+  enemyLog: { value: string }
+): Promise<number> {
+  console.log(s, "防御!!!");
+
+  intervalForEach(
+    (card: Card) => {
+      // リストの中にcard.idが含まれているかを確認
+      if (SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) {
+        console.log(i, "特殊カードの効果を発動: ", card.name);
+        if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        else myLog.value = card.name + "の効果!" + card.description;
+        // if (card.id === 6) my.sumFields.atk += 30;
+      }
+    },
+    my.field,
+    1000
+  );
   let defense = 0;
 
   //敵の防御力を計算する
@@ -146,10 +218,25 @@ async function processAttack(
   enemy: PlayerData,
   defense: number,
   enemyId: string,
-  playerAllocation: number
+  playerAllocation: number,
+  myLog: { value: string },
+  enemyLog: { value: string }
 ): Promise<boolean> {
   if (my.field.map((card) => card.attribute).includes("atk")) {
     console.log(i, "マッスル攻撃!!!");
+
+    intervalForEach(
+      (card: Card) => {
+        // リストの中にcard.idが含まれているかを確認
+        if (SPECIAL_ATK_CARD_IDS.includes(card.id as (typeof SPECIAL_ATK_CARD_IDS)[number])) {
+          if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+          else myLog.value = card.name + "の効果!" + card.description;
+          if (card.id === 6) my.sumFields.atk += 30;
+        }
+      },
+      my.field,
+      1000
+    );
 
     let holdingAtk = my.sumFields.atk - defense;
     if (holdingAtk < 0) holdingAtk = 0;
@@ -186,7 +273,7 @@ async function processAttack(
 //ダメージを計算する
 async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   console.log(s, "calcDamageを実行しました");
-  const { sign, battleResult } = storeToRefs(playerStore);
+  const { sign, battleResult, myLog, enemyLog } = storeToRefs(playerStore);
   const { game } = toRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
   const { myId, enemyId, my, enemy } = await syncPlayer(which);
@@ -206,11 +293,11 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
   if (!firstAtkPlayer.value) await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
-  await processSupport(my);
-  await processHeal(my, myId, playerAllocation);
+  await processSupport(my, playerAllocation, myLog, enemyLog);
+  await processHeal(my, myId, playerAllocation, myLog, enemyLog);
 
-  const defense = await processDefense(my, enemy, which);
-  const isDeath = await processAttack(my, enemy, defense, enemyId, playerAllocation);
+  const defense = await processDefense(my, enemy, which, playerAllocation, myLog, enemyLog);
+  const isDeath = await processAttack(my, enemy, defense, enemyId, playerAllocation, myLog, enemyLog);
 
   battleResult.value = ["none", 0];
   return isDeath;
@@ -308,14 +395,14 @@ function processCardEffects(
   if (!enemyCheck) {
     enemyField.forEach((card: Card) => {
       if (judgeDrawCard(card)) return;
-      enemyLog.value = card.name + "の効果!" + card.description;
+      // enemyLog.value = card.name + "の効果!" + card.description;
     });
   }
 
   if (!check) {
     field.forEach((card: Card) => {
       if (judgeDrawCard(card)) return;
-      myLog.value = card.name + "の効果!" + card.description;
+      // myLog.value = card.name + "の効果!" + card.description;
       // コメントアウトされた特殊効果処理
       // if (card.id === 50) drawRandomOneCard("atk");
       // if (card.id === 51) drawRandomOneCard("tech");
