@@ -20,11 +20,11 @@ const { giftActiveId, check, giftPackCounter, giftPackGauge, idGame, isTrash } =
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 const { firstAtkPlayer } = toRefs(game.value);
 
-
-const useSuccess = useSound(success);
-
+const useSuccessFirst = useSound(success);
+const useSuccessSecond = useSound(success);
 
 const viewOrder = ref(false);
+let test;
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
 const shiftShopPhase = async () => {
   components.value = "postBattle";
@@ -33,16 +33,18 @@ const shiftShopPhase = async () => {
 }
 onMounted(async () => {
   if (giftActiveId.value === -1 && enemyGiftActiveId.value === -1) shiftShopPhase();
-
   viewOrder.value = (order === "primary") ? true : false;
-  giftCheck(order);
+  await wait(2000);
+  test = giftCheck(order);
+  if (test !== 0) useSuccessFirst.play();
 
   setTimeout(async () => {
     viewOrder.value = !viewOrder.value;
-    giftCheck(order === "primary" ? "second" : "primary");
+    test = giftCheck(order === "primary" ? "second" : "primary");
+    if (test !== 0) useSuccessSecond.play();
     await wait(2000);
     await shiftShopPhase();
-  }, 2000);
+  }, 3000);
 });
 </script>
 

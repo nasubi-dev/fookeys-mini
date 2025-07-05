@@ -373,7 +373,8 @@ async function postGiftPack(
   }
 
   // ギフトパックゲージを更新
-  giftPackGauge.value += hand0Card + have3UniqueCompanyCard + rottenCard;
+  let test = hand0Card + have3UniqueCompanyCard + rottenCard;
+  giftPackGauge.value += test;
 
   checkGiftPackAchieved();
 
@@ -439,7 +440,7 @@ async function postBattle(): Promise<void> {
   postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount, log, myLog, id);
 
   // ギフトパック処理
-  await wait(1000);
+  await wait(2000);
   enemyGiftActiveId.value = (await getDoc(doc(playersRef, idEnemy.value)))?.data()?.giftActiveId as number;
   phase.value = "giftPack";
 }

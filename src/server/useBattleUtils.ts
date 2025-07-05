@@ -165,7 +165,7 @@ function decideGiftActive(): number {
 }
 
 // gift発動
-async function giftCheck(order: "primary" | "second"): Promise<void> {
+function giftCheck(order: "primary" | "second"): number {
   console.log(s, "giftActiveを実行しました");
   const { player, sign, myLog, enemyLog } = storeToRefs(playerStore);
   const { giftActiveId } = toRefs(player.value);
@@ -175,17 +175,18 @@ async function giftCheck(order: "primary" | "second"): Promise<void> {
   if (order === "primary") {
     if (giftActiveId.value !== -1) {
       myLog.value = `ギフトパック: ${allGifts[giftActiveId.value].name}を使用します`;
-      await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
       // giftActiveId.value = -1;
+      return 1;
     }
   }
   if (order === "second") {
     if (enemyGiftActiveId.value !== -1) {
       enemyLog.value = `敵のギフトパック: ${allGifts[enemyGiftActiveId.value].name}を使用します`;
-      await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
       // enemyGiftActiveId.value = -1;
+      return 2;
     }
   }
+  return 0;
 }
 
 export { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, decideGiftActive, giftCheck };

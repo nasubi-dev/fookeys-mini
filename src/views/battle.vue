@@ -58,7 +58,7 @@ const useSuccess = useSound(success);
 
 const { id, player, cardLock, phase, offer, sign, log, myLog, enemyLog, sumCards, isMobile, components, battleResult } =
   storeToRefs(playerStore);
-const { idGame, idEnemy, match, character, status, hand, rottenHand, death, field, sumFields, name, check, giftPackGauge, giftPackTotal } = toRefs(player.value);
+const { idGame, idEnemy, match, character, status, hand, rottenHand, death, field, sumFields, name, check, giftPackGauge, giftPackTotal, giftPackCounter } = toRefs(player.value);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { game } = storeToRefs(gameStore);
 const { players, turn, firstAtkPlayer } = toRefs(game.value);
@@ -130,14 +130,15 @@ watch(phase, (newVal) => {
     }, BATTLE_CONSTANTS.WAIT_TIME.SHOP_DELAY);
   }
 });
-// giftPackが増減したら再生
-watch(giftPackGauge, (newVal, oldVal) => {
-  if (newVal > oldVal) useGaugeUp.play();
-  // ギフトパックゲージが100ごとに再生
-  if (newVal > oldVal && newVal % 100 === 0) useGaugeMax.play();
-});
 watch(giftPackTotal, (newVal, oldVal) => {
-  if (newVal < oldVal) useGaugeDown.play();
+  // ギフトパックが100ごとにMaxを再生 減少して420 → 400のように減少した場合は再生しない
+  if (newVal >= BATTLE_CONSTANTS.GIFT_PACK_GAUGE_MAX && oldVal < BATTLE_CONSTANTS.GIFT_PACK_GAUGE_MAX) {
+    useGaugeMax.play();
+  } else if (newVal > oldVal) {
+    useGaugeUp.play();
+  } else if (newVal < oldVal) {
+    useGaugeDown.play();
+  }
 });
 
 //入場したらPlayer型としてIDが保管される
