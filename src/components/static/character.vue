@@ -17,7 +17,6 @@ const { firstAtkPlayer } = toRefs(game.value);
 
 const characterName = ref();
 onMounted(async () => {
-
   if (p.status === "my") characterName.value = character.value;
   if (p.status === "enemy") characterName.value = enemyPlayer.value.character;
 });

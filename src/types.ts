@@ -67,6 +67,7 @@ type PlayerData = {
   rottenHand: Card[];
   isTrash: boolean;
   isShopSale: boolean;
+  isSaleZeroHungry: boolean;
   field: Card[];
   status: Status;
   sumFields: SumCards;

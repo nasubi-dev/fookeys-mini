@@ -50,5 +50,5 @@ export {
   gaugeMax,
   bgm,
   win,
-  lose
+  lose,
 };

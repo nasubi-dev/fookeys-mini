@@ -36,6 +36,7 @@ const usePlayerStore = defineStore("playerData", () => {
     rottenHand: [],
     isTrash: false,
     isShopSale: false,
+    isSaleZeroHungry: false,
     field: [],
     status: {
       hp: 200,
@@ -165,6 +166,7 @@ const usePlayerStore = defineStore("playerData", () => {
       rottenHand: [],
       isTrash: false,
       isShopSale: false,
+      isSaleZeroHungry: false,
       field: [],
       status: {
         hp: 200,
@@ -243,6 +245,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     rottenHand: [],
     isTrash: false,
     isShopSale: false,
+    isSaleZeroHungry: false,
     field: [],
     status: {
       hp: 200,
@@ -303,6 +306,7 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       field: [],
       isTrash: false,
       isShopSale: false,
+      isSaleZeroHungry: false,
       status: {
         hp: 200,
         hungry: 30,

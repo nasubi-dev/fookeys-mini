@@ -1,4 +1,3 @@
-
 import winImg from "@/assets/img/ui/win.png";
 import loseImg from "@/assets/img/ui/lose.png";
 import myTurnImg from "@/assets/gifs/myTurn.png";
@@ -11,16 +10,4 @@ import trash from "@/assets/img/ui/trash.png";
 import decideImg from "@/assets/img/ui/decide.png";
 import sumFieldImg from "@/assets/img/ui/info.png";
 
-export {
-  winImg,
-  loseImg,
-  myTurnImg,
-  enemyTurnImg,
-  configImg,
-  soundOnImg,
-  soundOffImg,
-  turnBackgroundImg,
-  trash,
-  decideImg,
-  sumFieldImg,
-};
+export { winImg, loseImg, myTurnImg, enemyTurnImg, configImg, soundOnImg, soundOffImg, turnBackgroundImg, trash, decideImg, sumFieldImg };

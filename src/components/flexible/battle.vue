@@ -13,7 +13,7 @@ const useTap2 = useSound(tap2);
 const useBattlePhase = useSound(battlePhase);
 const useSwipe = useSound(swipe);
 const { player, cardLock, phase, sumCards, log } = storeToRefs(playerStore);
-const { field, rottenHand, isTrash, hand, giftActiveBeforeId } = toRefs(player.value);
+const { field, rottenHand, isTrash, hand, giftActiveBeforeId, isSaleZeroHungry } = toRefs(player.value);
 const { game } = storeToRefs(gameStore);
 
 //ターンを終了時
@@ -59,7 +59,8 @@ const loadBattleGif = () => {
             <img :src="sumFieldImg" class="w-[320px] min-w-[248px]" />
             <div class="overText">
               <div class="text-lg font-bold flex w-full justify-between px-6 items-center content-between">
-                <p>{{ "🍖" + sumCards.hungry }}</p>
+                <p>{{"🍖" + (sumCards.hungry - (isSaleZeroHungry ? field.reduce((acc, card) => (card.isSale
+                  ? acc + card.hungry : acc), 0) : 0)) }}</p>
                 <p>{{ "⚔" + (sumCards.atk + (giftActiveBeforeId === 5 ? 30 : 0)) }}</p>
                 <p>{{ "🛡" + (sumCards.def + (giftActiveBeforeId === 6 ? 40 : 0)) }}</p>
                 <p>{{ "💖" + sumCards.heal }}</p>

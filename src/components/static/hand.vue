@@ -18,7 +18,7 @@ const playersRef = collection(db, "players").withConverter(converter<PlayerData>
 
 const { pushHand, popHand } = playerStore;
 const { player, cardLock, log, sumCards } = storeToRefs(playerStore);
-const { hand, rottenHand, field, idEnemy, status } = toRefs(player.value);
+const { hand, rottenHand, field, idEnemy, status, isSaleZeroHungry } = toRefs(player.value);
 
 const recoverRottenHand = ref(false);
 watch(
@@ -56,7 +56,13 @@ watch(cardLock, async (newVal) => {
 //HandからFieldへ
 const pushCard = async (index: number) => {
   if (cardLock.value) return;
-  if (status.value.hungry + sumCards.value.hungry + allCards[hand.value[index].id].hungry > status.value.maxHungry) {
+  if (
+    status.value.hungry +
+    sumCards.value.hungry -
+    (isSaleZeroHungry.value ? field.value.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0) +
+    (isSaleZeroHungry.value ? 0 : (allCards[hand.value[index].id].hungry)) >
+    status.value.maxHungry
+  ) {
     log.value = "お腹がいっぱいでこれ以上食べれない！";
     return;
   }

@@ -89,18 +89,14 @@ async function processHungry(
   myId: string,
   playerAllocation: number
 ): Promise<void> {
-  if (my.field.some((card) => card.id === 19) && which === "second") my.sumFields.hungry -= 25;
   my.status.hungry += my.sumFields.hungry;
+
+  if (my.field.some((card) => card.id === 19) && which === "second") my.sumFields.hungry -= 25;
+  if (my.isSaleZeroHungry) my.status.hungry -= my.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0);
+
+  my.isSaleZeroHungry = false;
   if (playerAllocation) {
     await updateDoc(doc(playersRef, myId), { "status.hungry": my.status.hungry });
-  }
-
-  //相手がこのターン､行動不能の場合､ダメージ計算を行わない
-  let enemySumHungry = enemy.status.hungry;
-  if (enemySumHungry > enemy.status.maxHungry) {
-    enemy.check = false;
-    //hungryの値が上限を超えていた場合､上限値にする
-    enemySumHungry = enemy.status.maxHungry;
   }
 }
 
@@ -131,7 +127,10 @@ async function processSupport(
             deleteAllRottenCard();
             for (let i = 0; i < 3; i++) drawOneCard();
           }
-          // if (card.id === 24) test;
+          if (card.id === 24) {
+            player.value.isSaleZeroHungry = true;
+            updateDoc(doc(playersRef, myId), { isSaleZeroHungry: player.value.isSaleZeroHungry });
+          }
           if (card.id === 25) {
             player.value.isShopSale = true;
           }
