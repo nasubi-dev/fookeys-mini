@@ -107,7 +107,7 @@ async function processSupport(
   if (my.field.map((card) => card.attribute).includes("sup")) {
     console.log(i, "支援!!!");
 
-    intervalForEach(
+    await intervalForEach(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
         if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
@@ -136,7 +136,7 @@ async function processHeal(
   if (my.field.map((card) => card.attribute).includes("heal")) {
     console.log(i, "回復!!!");
 
-    intervalForEach(
+    await intervalForEach(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
         if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
@@ -168,28 +168,14 @@ async function processHeal(
 async function processDefense(
   my: PlayerData,
   enemy: PlayerData,
+  myId: string,
   which: "primary" | "second",
   playerAllocation: number,
   myLog: { value: string },
   enemyLog: { value: string }
 ): Promise<number> {
   console.log(s, "防御!!!");
-
-  intervalForEach(
-    (card: Card) => {
-      // リストの中にcard.idが含まれているかを確認
-      if (SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) {
-        console.log(i, "特殊カードの効果を発動: ", card.name);
-        if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
-        else myLog.value = card.name + "の効果!" + card.description;
-        // if (card.id === 6) my.sumFields.atk += 30;
-      }
-    },
-    my.field,
-    1000
-  );
   let defense = 0;
-
   //敵の防御力を計算する
   if (enemy.field.map((card) => card.attribute).includes("def")) {
     if (which === "primary") {
@@ -205,6 +191,23 @@ async function processDefense(
   //自分の防御を行う
   if (my.field.map((card) => card.attribute).includes("def")) {
     console.log(i, "防御!!!");
+
+    await intervalForEach(
+      (card: Card) => {
+        // リストの中にcard.idが含まれているかを確認
+        if (!SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) return;
+        if (!(card.id === 17 && my.field.length === 1)) return;
+        if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        else myLog.value = card.name + "の効果!" + card.description;
+        if (card.id === 17 && my.field.length === 1) {
+          my.sumFields.def += 40;
+          updateDoc(doc(playersRef, myId), { "sumFields.def": my.sumFields.def });
+        }
+      },
+      my.field,
+      1000
+    );
+
     await everyUtil(["def", my.sumFields.def]);
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
@@ -225,14 +228,16 @@ async function processAttack(
   if (my.field.map((card) => card.attribute).includes("atk")) {
     console.log(i, "マッスル攻撃!!!");
 
-    intervalForEach(
+    await intervalForEach(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
-        if (SPECIAL_ATK_CARD_IDS.includes(card.id as (typeof SPECIAL_ATK_CARD_IDS)[number])) {
-          if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
-          else myLog.value = card.name + "の効果!" + card.description;
-          if (card.id === 6) my.sumFields.atk += 30;
-        }
+        if (!SPECIAL_ATK_CARD_IDS.includes(card.id as (typeof SPECIAL_ATK_CARD_IDS)[number])) return;
+        if (!(card.id === 6 && my.field.length === 1)) return;
+
+        if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        else myLog.value = card.name + "の効果!" + card.description;
+
+        if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
       },
       my.field,
       1000
@@ -296,7 +301,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   await processSupport(my, playerAllocation, myLog, enemyLog);
   await processHeal(my, myId, playerAllocation, myLog, enemyLog);
 
-  const defense = await processDefense(my, enemy, which, playerAllocation, myLog, enemyLog);
+  const defense = await processDefense(my, enemy, myId, which, playerAllocation, myLog, enemyLog);
   const isDeath = await processAttack(my, enemy, defense, enemyId, playerAllocation, myLog, enemyLog);
 
   battleResult.value = ["none", 0];
