@@ -94,13 +94,22 @@ async function setHand(): Promise<void> {
 //Cardを3枚提示する
 async function setOffer(): Promise<void> {
   console.log(i, "setOfferを実行しました");
+  const { player } = storeToRefs(playerStore);
+  const { isShopSale } = toRefs(player.value);
   const { offer } = storeToRefs(playerStore);
 
   offer.value = [];
   for (let i = 0; i < BATTLE_CONSTANTS.SHOP_OFFER_COUNT; i++) {
-    offer.value.push(drawCard());
+    let card = drawCard();
+    //isShopSaleがtrueなら、セールカードのみを表示
+    if (isShopSale.value && !card.isSale) {
+      i--;
+      continue;
+    }
+    offer.value.push(card);
     offer.value = offer.value.slice().sort((a, b) => a.id - b.id);
   }
+  isShopSale.value = false;
 }
 //Handをすべて入れ替える
 async function changeAllHand(): Promise<void> {

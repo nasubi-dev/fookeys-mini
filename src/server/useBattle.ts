@@ -108,9 +108,12 @@ async function processHungry(
 async function processSupport(
   my: PlayerData,
   playerAllocation: number,
+  myId: string,
+  enemyId: string,
   myLog: { value: string },
   enemyLog: { value: string }
 ): Promise<void> {
+  const { player } = storeToRefs(playerStore);
   if (my.field.map((card) => card.attribute).includes("sup")) {
     console.log(i, "支援!!!");
 
@@ -127,6 +130,10 @@ async function processSupport(
           if (card.id === 26) {
             deleteAllRottenCard();
             for (let i = 0; i < 3; i++) drawOneCard();
+          }
+          // if (card.id === 24) test;
+          if (card.id === 25) {
+            player.value.isShopSale = true;
           }
         }
       },
@@ -325,7 +332,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
   if (!firstAtkPlayer.value) await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
-  await processSupport(my, playerAllocation, myLog, enemyLog);
+  await processSupport(my, playerAllocation, myId, enemyId, myLog, enemyLog);
   await processHeal(my, myId, playerAllocation, myLog, enemyLog);
 
   const defense = await processDefense(my, enemy, myId, which, playerAllocation, myLog, enemyLog);
