@@ -4,7 +4,7 @@ import { enemyPlayerStore, gameStore, playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import { db } from "./firebase";
 import { collection, doc, getDoc, increment, updateDoc } from "firebase/firestore";
-import type { GameData, PlayerData, Card, SumCards } from "@/types";
+import type { GameData, PlayerData, Card, SumCards, PlayerSign } from "@/types";
 import { converter } from "@/server/converter";
 import { intervalForEach, wait } from "@/server/utils";
 import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck } from "./useBattleUtils";
@@ -82,8 +82,14 @@ async function processGiftPack(my: PlayerData, myId: string, playerAllocation: n
 }
 
 // 満腹度処理を行う
-async function processHungry(my: PlayerData, enemy: PlayerData, myId: string, playerAllocation: number): Promise<void> {
-  //自分がこのターン､行動不能の場合､ダメージ計算を行わない
+async function processHungry(
+  my: PlayerData,
+  enemy: PlayerData,
+  which: "primary" | "second",
+  myId: string,
+  playerAllocation: number
+): Promise<void> {
+  if (my.field.some((card) => card.id === 19) && which === "second") my.sumFields.hungry -= 25;
   my.status.hungry += my.sumFields.hungry;
   if (playerAllocation) {
     await updateDoc(doc(playersRef, myId), { "status.hungry": my.status.hungry });
@@ -113,7 +119,7 @@ async function processSupport(
         // リストの中にcard.idが含まれているかを確認
         if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
           if (!(card.id === 23 || card.id === 24 || card.id === 25 || card.id === 26 || card.id === 27)) return;
-          if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+          if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
           else myLog.value = card.name + "の効果!" + card.description;
 
           if (playerAllocation) return;
@@ -190,16 +196,19 @@ async function processDefense(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
         if (!SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) return;
-        if (!((card.id === 17 && my.field.length === 1) || (card.id === 15 && my.field.some((card) => card.company.includes("unlimit")))))
+        if (
+          !(
+            (card.id === 17 && my.field.length === 1) ||
+            card.id === 19 ||
+            (card.id === 15 && my.field.some((card) => card.company.includes("unlimit")))
+          )
+        )
           return;
-        if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
         if (playerAllocation) return;
-        if (card.id === 17 && my.field.length === 1) {
-          my.sumFields.def += 40;
-          updateDoc(doc(playersRef, myId), { "sumFields.def": my.sumFields.def });
-        }
+        if (card.id === 17 && my.field.length === 1) my.sumFields.def += 40;
       },
       my.field,
       1000
@@ -221,6 +230,7 @@ async function processDefense(
 async function processAttack(
   my: PlayerData,
   enemy: PlayerData,
+  which: "primary" | "second",
   defense: number,
   enemyId: string,
   playerAllocation: number,
@@ -230,24 +240,25 @@ async function processAttack(
   if (my.field.map((card) => card.attribute).includes("atk") || my.giftActiveBeforeId === 5) {
     console.log(i, "マッスル攻撃!!!");
 
+    if (my.giftActiveBeforeId === 5) my.sumFields.atk += 30;
+
     await intervalForEach(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
         if (!SPECIAL_ATK_CARD_IDS.includes(card.id as (typeof SPECIAL_ATK_CARD_IDS)[number])) return;
-        if (!((card.id === 6 && my.field.length === 1) || card.id === 1)) return;
+        if (!((card.id === 6 && my.field.length === 1) || card.id === 1 || (card.id === 3 && which === "second"))) return;
 
-        if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
         if (playerAllocation) return;
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
         if (card.id === 1) changeHandValue("atk", 20, "atk");
+        if (card.id === 3 && which === "second") my.sumFields.atk -= 50;
       },
       my.field,
       1000
     );
-
-    if (my.giftActiveBeforeId === 5) my.sumFields.atk += 30;
 
     let holdingAtk = my.sumFields.atk - defense;
     if (holdingAtk < 0) holdingAtk = 0;
@@ -300,7 +311,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   }
   // 各処理を順番に実行
   await processGiftPack(my, myId, playerAllocation);
-  await processHungry(my, enemy, myId, playerAllocation);
+  await processHungry(my, enemy, which, myId, playerAllocation);
 
   if (!firstAtkPlayer.value) await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
@@ -308,7 +319,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   await processHeal(my, myId, playerAllocation, myLog, enemyLog);
 
   const defense = await processDefense(my, enemy, myId, which, playerAllocation, myLog, enemyLog);
-  const isDeath = await processAttack(my, enemy, defense, enemyId, playerAllocation, myLog, enemyLog);
+  const isDeath = await processAttack(my, enemy, which, defense, enemyId, playerAllocation, myLog, enemyLog);
 
   battleResult.value = ["none", 0];
   return isDeath;
