@@ -19,7 +19,7 @@ const allGifts: Gift[] = [
     id: 2,
     name: "冷凍保存",
     description: "手札にあるカードの消費期限を🦠+1する。",
-    effect: () => changeHandValue("waste", -1),
+    effect: () => changeHandValue("waste", 1),
   },
   {
     id: 3,

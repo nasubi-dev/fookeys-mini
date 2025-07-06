@@ -8,7 +8,6 @@ import { BATTLE_CONSTANTS } from "@/consts";
 import allGifts from "@/assets/allGifts";
 import { giftCheck } from "@/server/useBattleUtils";
 import { success } from "@/assets/sounds";
-import { getEnemyPlayer } from "@/server/usePlayerData";
 import { wait } from "@/server/utils";
 import { startShop } from "@/server/useShop";
 import { finalizeTurn } from "@/server/useBattle";
@@ -16,7 +15,7 @@ const { player, phase, sign, components, id } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { game } = storeToRefs(gameStore);
 
-const { giftActiveId, giftActiveBeforeId, check, giftPackCounter, giftPackGauge, idGame, isTrash } = toRefs(player.value);
+const { giftActiveId, giftActiveBeforeId, check, giftPackCounter, giftPackGauge, idGame, isTrash, sumFields } = toRefs(player.value);
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 const { firstAtkPlayer } = toRefs(game.value);
 
@@ -28,7 +27,7 @@ let test;
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
 const shiftShopPhase = async () => {
   components.value = "postBattle";
-  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, giftActiveBeforeId, isTrash);
+  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, giftActiveBeforeId, isTrash, sumFields);
   await startShop();
 }
 onMounted(async () => {

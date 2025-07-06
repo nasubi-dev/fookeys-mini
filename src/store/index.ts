@@ -37,8 +37,8 @@ const usePlayerStore = defineStore("playerData", () => {
     isTrash: false,
     field: [],
     status: {
-      hp: 300,
-      hungry: 0,
+      hp: 200,
+      hungry: 30,
       maxHp: 300,
       maxHungry: 100,
     },
@@ -165,8 +165,8 @@ const usePlayerStore = defineStore("playerData", () => {
       isTrash: false,
       field: [],
       status: {
-        hp: 300,
-        hungry: 0,
+        hp: 200,
+        hungry: 30,
         maxHp: 300,
         maxHungry: 100,
       },
@@ -242,8 +242,8 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     isTrash: false,
     field: [],
     status: {
-      hp: 300,
-      hungry: 0,
+      hp: 200,
+      hungry: 30,
       maxHp: 300,
       maxHungry: 100,
     },
@@ -300,8 +300,8 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       field: [],
       isTrash: false,
       status: {
-        hp: 300,
-        hungry: 0,
+        hp: 200,
+        hungry: 30,
         maxHp: 300,
         maxHungry: 100,
       },

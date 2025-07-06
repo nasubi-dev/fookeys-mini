@@ -64,13 +64,12 @@ async function drawChangedCard(values: [{ key: keyof SumCards; value: number }])
   if (hand.value.length >= BATTLE_CONSTANTS.MAX_HAND_SIZE) return;
   let selectCard = drawCard();
   values.forEach((value) => {
-    selectCard[value.key] += value.value;
+    selectCard[value.key] = value.value;
   });
   hand.value.push(selectCard);
   hand.value = [...hand.value].sort((a, b) => a.id - b.id);
 
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
-  log.value = "drawChangedCard: " + selectCard.name;
 }
 //cardをHandに3枚セットする
 async function setHand(): Promise<void> {

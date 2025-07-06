@@ -4,7 +4,7 @@ import { enemyPlayerStore, gameStore, playerStore } from "@/main";
 import { storeToRefs } from "pinia";
 import { db } from "./firebase";
 import { collection, doc, getDoc, increment, updateDoc } from "firebase/firestore";
-import type { GameData, PlayerData, Card } from "@/types";
+import type { GameData, PlayerData, Card, SumCards } from "@/types";
 import { converter } from "@/server/converter";
 import { intervalForEach, wait } from "@/server/utils";
 import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck } from "./useBattleUtils";
@@ -20,6 +20,7 @@ import {
   SPECIAL_DEF_CARD_IDS,
   SPECIAL_SUP_CARD_IDS,
 } from "@/consts";
+import allGifts from "@/assets/allGifts";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -189,7 +190,7 @@ async function processDefense(
   }
 
   //自分の防御を行う
-  if (my.field.map((card) => card.attribute).includes("def")) {
+  if (my.field.map((card) => card.attribute).includes("def") || my.giftActiveBeforeId === 6) {
     console.log(i, "防御!!!");
 
     await intervalForEach(
@@ -209,6 +210,11 @@ async function processDefense(
       1000
     );
 
+    if (my.giftActiveBeforeId === 6) {
+      my.sumFields.def += 40;
+      updateDoc(doc(playersRef, myId), { "sumFields.def": my.sumFields.def });
+    }
+
     await everyUtil(["def", my.sumFields.def]);
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   }
@@ -226,7 +232,7 @@ async function processAttack(
   myLog: { value: string },
   enemyLog: { value: string }
 ): Promise<boolean> {
-  if (my.field.map((card) => card.attribute).includes("atk")) {
+  if (my.field.map((card) => card.attribute).includes("atk") || my.giftActiveBeforeId === 5) {
     console.log(i, "マッスル攻撃!!!");
 
     await intervalForEach(
@@ -243,6 +249,8 @@ async function processAttack(
       my.field,
       1000
     );
+
+    if (my.giftActiveBeforeId === 5) my.sumFields.atk += 30;
 
     let holdingAtk = my.sumFields.atk - defense;
     if (holdingAtk < 0) holdingAtk = 0;
@@ -474,47 +482,6 @@ async function postGiftPack(
   await updateDoc(doc(playersRef, id.value), { giftPackGauge: giftPackGauge.value });
 }
 
-// ターン終了処理を行う
-export async function finalizeTurn(
-  id: string,
-  idGame: string,
-  sign: number,
-  check: { value: boolean },
-  firstAtkPlayer: { value: any },
-  giftPackGauge: { value: number },
-  giftPackCounter: { value: any },
-  giftActiveId: { value: number },
-  giftActiveBeforeId: { value: number },
-  isTrash: { value: boolean }
-): Promise<void> {
-  const { checkGiftPackAchieved, deleteField } = playerStore;
-  const { nextTurn } = gameStore;
-
-  checkGiftPackAchieved();
-  changeStatusValue("hungry", -POST_BATTLE_CONSTANTS.HUNGRY_REDUCTION);
-  deleteField();
-  nextTurn();
-
-  check.value = false;
-  firstAtkPlayer.value = undefined;
-  isTrash.value = false;
-  giftActiveBeforeId.value = giftActiveId.value;
-  giftActiveId.value = -1;
-
-  await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
-  await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
-  await updateDoc(doc(playersRef, id), { giftActiveBeforeId: giftActiveBeforeId.value });
-  await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
-  await updateDoc(doc(playersRef, id), { check: check.value });
-
-  if (sign) {
-    await updateDoc(doc(gamesRef, idGame), { turn: increment(1) });
-  }
-
-  getEnemyPlayer();
-  // startShop();
-}
-
 //戦闘後の処理
 async function postBattle(): Promise<void> {
   console.log(s, "postBattleを実行しました");
@@ -540,4 +507,61 @@ async function postBattle(): Promise<void> {
   enemyGiftActiveId.value = (await getDoc(doc(playersRef, idEnemy.value)))?.data()?.giftActiveId as number;
   phase.value = "giftPack";
 }
+
+// ターン終了処理を行う
+export async function finalizeTurn(
+  id: string,
+  idGame: string,
+  sign: number,
+  check: { value: boolean },
+  firstAtkPlayer: { value: any },
+  giftPackGauge: { value: number },
+  giftPackCounter: { value: any },
+  giftActiveId: { value: number },
+  giftActiveBeforeId: { value: number },
+  isTrash: { value: boolean },
+  sumFields: { value: SumCards }
+): Promise<void> {
+  const { checkGiftPackAchieved, deleteField } = playerStore;
+  const { nextTurn } = gameStore;
+
+  checkGiftPackAchieved();
+  changeStatusValue("hungry", -POST_BATTLE_CONSTANTS.HUNGRY_REDUCTION);
+  deleteField();
+  nextTurn();
+
+  check.value = false;
+  firstAtkPlayer.value = undefined;
+  isTrash.value = false;
+  giftActiveBeforeId.value = giftActiveId.value;
+  giftActiveId.value = -1;
+
+  // ギフトパックの効果を発動
+  giftActiveNextRound(giftActiveBeforeId);
+  if (giftActiveBeforeId.value === 0) allGifts[giftActiveBeforeId.value].effect();
+  if (giftActiveBeforeId.value === 1) allGifts[giftActiveBeforeId.value].effect();
+  if (giftActiveBeforeId.value === 2) allGifts[giftActiveBeforeId.value].effect();
+  if (giftActiveBeforeId.value === 3) allGifts[giftActiveBeforeId.value].effect();
+  if (giftActiveBeforeId.value === 7) allGifts[giftActiveBeforeId.value].effect();
+
+  await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
+  await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
+  await updateDoc(doc(playersRef, id), { giftActiveBeforeId: giftActiveBeforeId.value });
+  await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
+  await updateDoc(doc(playersRef, id), { check: check.value });
+
+  if (sign) {
+    await updateDoc(doc(gamesRef, idGame), { turn: increment(1) });
+  }
+
+  getEnemyPlayer();
+}
+export async function giftActiveNextRound(giftActiveBeforeId: { value: number }): Promise<void> {
+  const { player, id } = storeToRefs(playerStore);
+  const { sumFields, field } = toRefs(player.value);
+
+  if (giftActiveBeforeId.value === 5) sumFields.value.atk += 30;
+  if (giftActiveBeforeId.value === 6) sumFields.value.def += 40;
+}
+
 export { battle };
