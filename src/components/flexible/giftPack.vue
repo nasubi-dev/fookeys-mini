@@ -31,7 +31,10 @@ const shiftShopPhase = async () => {
   await startShop();
 }
 onMounted(async () => {
-  if (giftActiveId.value === -1 && enemyGiftActiveId.value === -1) shiftShopPhase();
+  if (giftActiveId.value === -1 && enemyGiftActiveId.value === -1) {
+    shiftShopPhase();
+    return;
+  }
   viewOrder.value = (order === "primary") ? true : false;
   await wait(500);
   test = giftCheck(order);

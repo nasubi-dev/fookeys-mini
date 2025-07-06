@@ -10,7 +10,6 @@ import { wait } from "@/server/utils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
 import { setHand, setOffer } from "@/server/useShopUtils";
 import { battle } from "@/server/useBattle";
-import allGifts from "@/assets/allGifts";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
