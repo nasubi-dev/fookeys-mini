@@ -62,6 +62,7 @@ type PlayerData = {
     haveNotSameCompanyCard: number;
     hand0Card: number;
   };
+  giftActiveBeforeId: number;
   hand: Card[];
   rottenHand: Card[];
   isTrash: boolean;

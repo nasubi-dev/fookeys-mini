@@ -16,7 +16,7 @@ const { player, phase, sign, components, id } = storeToRefs(playerStore);
 const { enemyPlayer } = storeToRefs(enemyPlayerStore);
 const { game } = storeToRefs(gameStore);
 
-const { giftActiveId, check, giftPackCounter, giftPackGauge, idGame, isTrash } = toRefs(player.value);
+const { giftActiveId, giftActiveBeforeId, check, giftPackCounter, giftPackGauge, idGame, isTrash } = toRefs(player.value);
 const { giftActiveId: enemyGiftActiveId } = toRefs(enemyPlayer.value);
 const { firstAtkPlayer } = toRefs(game.value);
 
@@ -28,7 +28,7 @@ let test;
 let order: "primary" | "second" = sign.value === BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST ? "primary" : "second";
 const shiftShopPhase = async () => {
   components.value = "postBattle";
-  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, isTrash);
+  await finalizeTurn(id.value, idGame.value, sign.value, check, firstAtkPlayer, giftPackGauge, giftPackCounter, giftActiveId, giftActiveBeforeId, isTrash);
   await startShop();
 }
 onMounted(async () => {

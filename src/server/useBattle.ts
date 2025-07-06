@@ -196,7 +196,8 @@ async function processDefense(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
         if (!SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) return;
-        if (!(card.id === 17 && my.field.length === 1)) return;
+        if (!((card.id === 17 && my.field.length === 1) || (card.id === 15 && my.field.some((card) => card.company.includes("unlimit")))))
+          return;
         if (!playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
         if (card.id === 17 && my.field.length === 1) {
@@ -483,6 +484,7 @@ export async function finalizeTurn(
   giftPackGauge: { value: number },
   giftPackCounter: { value: any },
   giftActiveId: { value: number },
+  giftActiveBeforeId: { value: number },
   isTrash: { value: boolean }
 ): Promise<void> {
   const { checkGiftPackAchieved, deleteField } = playerStore;
@@ -496,10 +498,12 @@ export async function finalizeTurn(
   check.value = false;
   firstAtkPlayer.value = undefined;
   isTrash.value = false;
+  giftActiveBeforeId.value = giftActiveId.value;
   giftActiveId.value = -1;
 
   await updateDoc(doc(playersRef, id), { giftPackGauge: giftPackGauge.value });
   await updateDoc(doc(playersRef, id), { giftPackCounter: giftPackCounter.value });
+  await updateDoc(doc(playersRef, id), { giftActiveBeforeId: giftActiveBeforeId.value });
   await updateDoc(doc(playersRef, id), { giftActiveId: giftActiveId.value });
   await updateDoc(doc(playersRef, id), { check: check.value });
 

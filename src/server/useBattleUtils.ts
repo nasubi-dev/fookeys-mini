@@ -14,6 +14,8 @@ import allGifts from "@/assets/allGifts";
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
 const gamesRef = collection(db, "games").withConverter(converter<GameData>());
 
+const getSwitchedPlayerSign = (playerSign: PlayerSign): PlayerSign => (playerSign === 0 ? 1 : 0);
+
 //Playerを同期する
 async function syncPlayer(which: "primary" | "second"): Promise<{ myId: string; enemyId: string; my: PlayerData; enemy: PlayerData }> {
   const { id, player, sign } = storeToRefs(playerStore);
@@ -93,7 +95,6 @@ async function compareSumField(field: "hungry"): Promise<void> {
   const { game } = storeToRefs(gameStore);
   const { firstAtkPlayer } = toRefs(game.value);
 
-  const getSwitchedPlayerSign = (playerSign: PlayerSign): PlayerSign => (playerSign === 0 ? 1 : 0);
   let enemySumFields = (await getDoc(doc(playersRef, idEnemy.value))).data()?.sumFields as SumCards;
   console.log(i, "sum", field, ": ", sumFields.value[field]);
   console.log(i, "enemySum", field, ": ", enemySumFields?.[field]);
@@ -104,6 +105,42 @@ async function compareSumField(field: "hungry"): Promise<void> {
     firstAtkPlayer.value = getSwitchedPlayerSign(sign.value);
   } else {
     console.log(i, field, "の値が同じなので");
+  }
+}
+async function advanceFirstAtkPlayer(): Promise<void> {
+  console.log(s, "advanceFirstAtkPlayerを実行しました");
+  const { player, sign } = storeToRefs(playerStore);
+  const { idEnemy, field, sumFields, giftActiveBeforeId } = toRefs(player.value);
+  const { game } = storeToRefs(gameStore);
+  const { firstAtkPlayer } = toRefs(game.value);
+
+  let enemy = (await getDoc(doc(playersRef, idEnemy.value))).data();
+  if (!enemy) throw Error("相手の情報が取得できませんでした");
+  if (!enemy.field) throw Error("相手のfieldが取得できませんでした");
+  const enemyField = Array.isArray(enemy.field) ? (enemy.field as Card[]) : [];
+
+  // 先行条件を個別に判定
+  const myCardCondition = field.value.some((card) => card.id === 15) && field.value.some((card) => card.company.includes("unlimit"));
+  const myGiftCondition = giftActiveBeforeId.value === 4;
+  const myAdvanceCondition = myCardCondition || myGiftCondition;
+
+  const enemyCardCondition =
+    enemyField.some((card) => "id" in card && card.id === 15) &&
+    enemyField.some((card) => "company" in card && card.company.includes("unlimit"));
+  const enemyGiftCondition = enemy.giftActiveBeforeId === 4;
+  const enemyAdvanceCondition = enemyCardCondition || enemyGiftCondition;
+
+  // 条件の組み合わせに応じて先攻を決定
+  if (myAdvanceCondition && enemyAdvanceCondition) {
+    console.log(i, "両方とも先行条件を達成 - 元のhungry比較結果を維持");
+  } else if (myAdvanceCondition && !enemyAdvanceCondition) {
+    firstAtkPlayer.value = sign.value;
+    console.log(i, "自分だけ先行条件を達成 - 自分が先攻: ", firstAtkPlayer.value);
+  } else if (!myAdvanceCondition && enemyAdvanceCondition) {
+    firstAtkPlayer.value = getSwitchedPlayerSign(sign.value);
+    console.log(i, "敵だけ先行条件を達成 - 敵が先攻: ", firstAtkPlayer.value);
+  } else {
+    console.log(i, "両方とも先行条件未達成 - 元のhungry比較結果を維持");
   }
 }
 //firstAtkPlayerの値の監視
@@ -144,6 +181,7 @@ async function decideFirstAtkPlayer(): Promise<void> {
   await watchFirstAtkPlayerField();
   await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
   await compareSumField("hungry");
+  await advanceFirstAtkPlayer();
   if (firstAtkPlayer.value === undefined) throw new Error("firstAtkPlayerの値がundefinedです");
 
   await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
