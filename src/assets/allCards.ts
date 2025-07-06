@@ -242,7 +242,7 @@ const allCards: Card[] = [
     hungry: 15,
     company: "hanamie",
     attribute: "sup",
-    description: "次のラウンド、お互いのドローカードがすべてセールカードになる。",
+    description: "次のラウンド、ショップに並ぶカードがすべてセールカードになる。",
   },
   {
     id: 26,

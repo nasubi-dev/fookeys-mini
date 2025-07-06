@@ -10,7 +10,6 @@ import { converter } from "@/server/converter";
 import type { Card, GameData, PlayerData, Attribute, Status, SumCards } from "@/types";
 import allCards from "@/assets/allCards";
 import { BATTLE_CONSTANTS, SALE_RATE } from "@/consts";
-import SelectCharacter from "@/components/menu/selectCharacter.vue";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
