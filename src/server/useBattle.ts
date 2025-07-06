@@ -297,7 +297,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     firstAtkPlayer.value === sign.value ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST : BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND;
 
   //fieldが空の場合､ダメージ計算を行わない
-  if (my.field.length === 0) {
+  if (my.field.length === 0 && my.giftActiveBeforeId !== 5 && my.giftActiveBeforeId !== 6) {
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
     return false;
   }
