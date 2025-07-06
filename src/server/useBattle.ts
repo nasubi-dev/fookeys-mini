@@ -247,7 +247,15 @@ async function processAttack(
       (card: Card) => {
         // リストの中にcard.idが含まれているかを確認
         if (!SPECIAL_ATK_CARD_IDS.includes(card.id as (typeof SPECIAL_ATK_CARD_IDS)[number])) return;
-        if (!((card.id === 6 && my.field.length === 1) || card.id === 1 || (card.id === 3 && which === "second"))) return;
+        if (
+          !(
+            (card.id === 6 && my.field.length === 1) ||
+            card.id === 1 ||
+            (card.id === 3 && which === "second") ||
+            (card.id === 5 && enemy.sumFields.hungry >= 70)
+          )
+        )
+          return;
 
         if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
@@ -256,6 +264,7 @@ async function processAttack(
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
         if (card.id === 1) changeHandValue("atk", 20, "atk");
         if (card.id === 3 && which === "second") my.sumFields.atk -= 50;
+        if (card.id === 5 && enemy.sumFields.hungry >= 70) my.sumFields.atk += 15;
       },
       my.field,
       1000
@@ -498,12 +507,15 @@ async function postBattle(): Promise<void> {
   processCardEffects(enemyCheck.value, enemyField.value, enemyLog, check.value, field.value, myLog);
 
   // 手札にあるカードの効果を発動する
-  hand.value.forEach((card: Card) => {});
+  hand.value.forEach((card: Card) => {
+    if (!(card.id === 14)) return;
+    myLog.value += card.name + "の効果!" + card.description;
+    if (card.id === 14) changeHandValue("def", 30, "def");
+  });
 
   // ギフトパック処理
   postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount, log, myLog, id);
 
-  // ギフトパック処理
   await wait(2000);
   enemyGiftActiveId.value = (await getDoc(doc(playersRef, idEnemy.value)))?.data()?.giftActiveId as number;
   phase.value = "giftPack";
