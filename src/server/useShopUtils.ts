@@ -36,6 +36,7 @@ function drawCard(attribute?: Attribute): Card {
   }
   // 確率でセールカードにする
   if (Math.random() < SALE_RATE) {
+    if (selectCard.id === 21) selectCard.hungry -= 10;
     selectCard.waste = 1;
     selectCard.isSale = true;
   }

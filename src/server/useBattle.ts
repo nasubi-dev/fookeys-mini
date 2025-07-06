@@ -200,7 +200,8 @@ async function processDefense(
           !(
             (card.id === 17 && my.field.length === 1) ||
             card.id === 19 ||
-            (card.id === 15 && my.field.some((card) => card.company.includes("unlimit")))
+            (card.id === 15 && my.field.some((card) => card.company.includes("unlimit"))) ||
+            card.id === 21
           )
         )
           return;
