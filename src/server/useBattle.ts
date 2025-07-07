@@ -266,11 +266,12 @@ async function processAttack(
         if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
-        if (playerAllocation) return;
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
-        if (card.id === 1) changeHandValue("atk", 20, "atk");
         if (card.id === 3 && which === "second") my.sumFields.atk -= 50;
         if (card.id === 5 && enemy.sumFields.hungry >= 50) my.sumFields.atk += 15;
+
+        if (playerAllocation) return;
+        if (card.id === 1) changeHandValue("atk", 20, "atk");
       },
       my.field,
       1000
