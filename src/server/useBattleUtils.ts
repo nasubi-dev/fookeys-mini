@@ -98,8 +98,11 @@ async function compareSumField(field: "hungry"): Promise<void> {
   let enemy = (await getDoc(doc(playersRef, idEnemy.value))).data() as PlayerData;
   console.log(i, "mySum", field, ": ", sumFields.value[field]);
   console.log(i, "enemySum", field, ": ", enemy.sumFields[field] ?? 0);
-  let mySumFields = sumFields.value[field] - player.value.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0);
-  let enemySumFields = enemy.sumFields[field] - enemy.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0);
+  let mySumFields =
+    sumFields.value[field] -
+    (player.value.isSaleZeroHungry ? player.value.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0);
+  let enemySumFields =
+    enemy.sumFields[field] - (enemy.isSaleZeroHungry ? enemy.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0);
   //hungryの値が小さい方が先行//hungryの値が同じならばFirstAtkPlayerの値を変更しない
   if (mySumFields < enemySumFields) {
     firstAtkPlayer.value = sign.value;

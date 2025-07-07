@@ -258,7 +258,11 @@ async function processAttack(
             (card.id === 6 && my.field.length === 1) ||
             card.id === 1 ||
             (card.id === 3 && which === "second") ||
-            (card.id === 5 && enemy.sumFields.hungry >= 750)
+            (card.id === 5 &&
+              enemy.sumFields.hungry +
+                enemy.status.hungry -
+                (enemy.isSaleZeroHungry ? enemy.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0) >=
+                50)
           )
         )
           return;
@@ -268,7 +272,16 @@ async function processAttack(
 
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
         if (card.id === 3 && which === "second") my.sumFields.atk -= 50;
-        if (card.id === 5 && enemy.sumFields.hungry >= 50) my.sumFields.atk += 15;
+        console.log(i, enemy.sumFields.hungry, my.sumFields.atk);
+        if (
+          card.id === 5 &&
+          enemy.sumFields.hungry +
+            enemy.status.hungry -
+            (enemy.isSaleZeroHungry ? enemy.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0) >=
+            50
+        )
+          my.sumFields.atk += 15;
+        console.log(i, enemy.sumFields.hungry, my.sumFields.atk);
 
         if (playerAllocation) return;
         if (card.id === 1) changeHandValue("atk", 20, "atk");
