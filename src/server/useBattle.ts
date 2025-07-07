@@ -258,7 +258,7 @@ async function processAttack(
             (card.id === 6 && my.field.length === 1) ||
             card.id === 1 ||
             (card.id === 3 && which === "second") ||
-            (card.id === 5 && enemy.sumFields.hungry >= 70)
+            (card.id === 5 && enemy.sumFields.hungry >= 750)
           )
         )
           return;
@@ -270,7 +270,7 @@ async function processAttack(
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
         if (card.id === 1) changeHandValue("atk", 20, "atk");
         if (card.id === 3 && which === "second") my.sumFields.atk -= 50;
-        if (card.id === 5 && enemy.sumFields.hungry >= 70) my.sumFields.atk += 15;
+        if (card.id === 5 && enemy.sumFields.hungry >= 50) my.sumFields.atk += 15;
       },
       my.field,
       1000
@@ -420,30 +420,6 @@ async function processCardRotting(
   return rottenCardsCount;
 }
 
-// カード効果発動処理を行う
-function processCardEffects(
-  enemyCheck: boolean,
-  enemyField: Card[],
-  enemyLog: { value: string },
-  check: boolean,
-  field: Card[],
-  myLog: { value: string }
-): void {
-  if (!check) {
-    field.forEach((card: Card) => {
-      if (judgeDrawCard(card)) return;
-      // myLog.value = card.name + "の効果!" + card.description;
-      // コメントアウトされた特殊効果処理
-      // if (card.id === 50) drawRandomOneCard("atk");
-      // if (card.id === 51) drawRandomOneCard("tech");
-      // if (card.id === 52) drawRandomOneCard("def");
-      // if (card.id === 53) drawRandomOneCard("sup");
-      // if (card.id === 60) draw2ExchangedCard();
-      // if (card.id === 7 || card.id === 24 || card.id === 41) status.value.hungry >= 100 ? (status.value.hungry -= 25) : null;
-    });
-  }
-}
-
 // 手札ボーナス処理を行う
 async function postGiftPack(
   hand: Card[],
@@ -508,9 +484,6 @@ async function postBattle(): Promise<void> {
 
   // カード腐り処理
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter, myLog);
-
-  // カード効果発動処理
-  processCardEffects(enemyCheck.value, enemyField.value, enemyLog, check.value, field.value, myLog);
 
   // 手札にあるカードの効果を発動する
   hand.value.forEach((card: Card) => {

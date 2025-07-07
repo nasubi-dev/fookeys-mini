@@ -54,7 +54,7 @@ const allCards: Card[] = [
     hungry: 25,
     company: "galdaybee",
     attribute: "atk",
-    description: "相手の満腹度が🍖70以上のとき、このカードのマッスルダメージを💪+15する。",
+    description: "相手の満腹度が🍖50以上のとき、このカードのマッスルダメージを💪+15する。",
     atk: 30,
   },
   {
