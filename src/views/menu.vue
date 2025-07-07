@@ -82,9 +82,7 @@ async function register() {
   id.value == "" ? await registerPlayer() : (log.value = "idは既に登録されています");
 }
 onMounted(() => {
-  if (import.meta.env.VITE_DEBUG_MODE) {
     register();
-  }
 });
 </script>
 
