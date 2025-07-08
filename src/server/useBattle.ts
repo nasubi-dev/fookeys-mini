@@ -121,18 +121,14 @@ async function processSupport(
           if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
           else myLog.value = card.name + "の効果!" + card.description;
 
+          if (card.id === 24) player.value.isSaleZeroHungry = true;
+          if (card.id === 25) player.value.isShopSale = true;
+
           if (playerAllocation) return;
           if (card.id === 23) changeHandValue("waste", 1);
           if (card.id === 26) {
             deleteAllRottenCard();
             for (let i = 0; i < 3; i++) drawOneCard();
-          }
-          if (card.id === 24) {
-            player.value.isSaleZeroHungry = true;
-            updateDoc(doc(playersRef, myId), { isSaleZeroHungry: player.value.isSaleZeroHungry });
-          }
-          if (card.id === 25) {
-            player.value.isShopSale = true;
           }
         }
       },
