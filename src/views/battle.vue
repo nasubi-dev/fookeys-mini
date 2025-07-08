@@ -406,5 +406,57 @@ watch(hand, (newVal) => {
         <p class="text-sm text-gray-600">カードを使用して手札を減らしてください。</p>
       </div>
     </Modal>
+
+    <!-- ギフトパック情報Modal -->
+    <Modal v-if="getModal('myGiftPack').value" :is-open="getModal('myGiftPack').value?.isOpen || false"
+      :title="getModal('myGiftPack').value?.title" @close="closeModal('myGiftPack')">
+      <div class="text-center p-4">
+        <div class="text-blue-600 text-xl font-bold mb-4">ギフトパック情報</div>
+        <div class="space-y-3">
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-semibold">ギフト使用回数</p>
+            <p class="text-blue-600 text-2xl font-bold">{{ giftPackCounter.giftActiveCount }}</p>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-semibold"></p>
+            <div class="text-md space-y-1">
+              <p>通常使用カード数: {{ giftPackCounter.usedCard }}</p>
+              <p>セールカード使用数: {{ giftPackCounter.usedSaleCard }}</p>
+              <p>3社カード使用数: {{ giftPackCounter.used3CompanyCard }}</p>
+              <p>手札を0枚にした: {{ giftPackCounter.hand0Card }}</p>
+              <p>異なる会社カード数: {{ giftPackCounter.haveNotSameCompanyCard }}</p>
+              <p>腐らせたカード数: {{ giftPackCounter.rottenCard }}</p>
+              <p>腐ったカード保持数: {{ giftPackCounter.haveRottenCard }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+
+    <Modal v-if="getModal('enemyGiftPack').value" :is-open="getModal('enemyGiftPack').value?.isOpen || false"
+      :title="getModal('enemyGiftPack').value?.title" @close="closeModal('enemyGiftPack')">
+      <div class="text-center p-4">
+        <div class="text-red-600 text-xl font-bold mb-4">🎁 相手のギフトパック情報 🎁</div>
+        <div class="space-y-3">
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-semibold">現在のゲージ</p>
+            <p class="text-2xl font-bold text-red-600">{{ enemyPlayer.giftPackGauge }}</p>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-semibold">カウンター情報</p>
+            <div class="text-sm space-y-1">
+              <p>ギフト使用回数: {{ enemyPlayer.giftPackCounter.giftActiveCount }}</p>
+              <p>使用カード数: {{ enemyPlayer.giftPackCounter.usedCard }}</p>
+              <p>セールカード使用数: {{ enemyPlayer.giftPackCounter.usedSaleCard }}</p>
+              <p>3社カード使用数: {{ enemyPlayer.giftPackCounter.used3CompanyCard }}</p>
+              <p>腐敗カード数: {{ enemyPlayer.giftPackCounter.rottenCard }}</p>
+              <p>腐敗カード保持数: {{ enemyPlayer.giftPackCounter.haveRottenCard }}</p>
+              <p>異なる会社カード数: {{ enemyPlayer.giftPackCounter.haveNotSameCompanyCard }}</p>
+              <p>0コストカード数: {{ enemyPlayer.giftPackCounter.hand0Card }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
   </Expanded>
 </template>

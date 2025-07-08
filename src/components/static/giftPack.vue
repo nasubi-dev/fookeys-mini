@@ -9,6 +9,7 @@ import { ref, toRefs, watch, onMounted, computed } from "vue";
 import { playerStore, gameStore, enemyPlayerStore } from "@/main";
 import { wait, XOR } from "@/server/utils";
 import { storeToRefs } from "pinia";
+import { useModalStore } from "@/store";
 
 const p = defineProps<{ status: "my" | "enemy" }>();
 
@@ -29,23 +30,26 @@ const dropDown = ref(false);
 const toggleDropDown = (value: boolean): void => {
   dropDown.value = value;
 };
+
+// Modal store
+const modalStore = useModalStore();
+const { openModal } = modalStore;
+
+// 長押し時にModalを開く
+const openGiftPackModal = () => {
+  const modalId = isMyStatus.value ? 'myGiftPack' : 'enemyGiftPack';
+  const title = isMyStatus.value ? '自分のギフトパック情報' : '相手のギフトパック情報';
+  openModal(modalId, title);
+};
 </script>
 
 <template>
   <div>
     <div class="relative">
-      <div v-if="dropDown"
-        class="z-20 fixed pr-10 text-gray-900 text-left w-50 transform -translate-x-72 -translate-y-32">
-        <div class="w-[max(20vw,270px)]">
-          <img :src="characterBackground" class="absolute transform -scale-x-100" />
-          <div class="z-30 pb-8 pt-8 px-12 relative">
-            {{ currentGiftPackGauge }}
-            {{ currentGiftPackCounter }}
-          </div>
-        </div>
-      </div>
 
-      <VDuringPress :onKeyDown="() => toggleDropDown(true)" :onKeyUp="() => toggleDropDown(false)" :delay="250">
+
+      <VDuringPress :onKeyDown="() => toggleDropDown(true)" :onKeyUp="() => toggleDropDown(false)" :delay="250"
+        @long-press="openGiftPackModal">
         <div>
           <img class="absolute" :class="isMyStatus ? `top-0` : `-top-16`" :src="currentBackground" />
 
