@@ -190,6 +190,25 @@ async function processDefense(
     } else if (enemy.check) {
       console.log(i, "敵は行動不能なので防御できない");
     } else {
+      await intervalForEach(
+        (card: Card) => {
+          // リストの中にcard.idが含まれているかを確認
+          if (!SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) return;
+          if (
+            !(
+              (card.id === 17 && my.field.length === 1) ||
+              card.id === 19 ||
+              (card.id === 15 && enemy.field.some((card) => card.company.includes("unlimit"))) ||
+              card.id === 21
+            )
+          )
+            return;
+
+          if (card.id === 17 && enemy.field.length === 1) enemy.sumFields.def += 40;
+        },
+        enemy.field,
+        1000
+      );
       defense = enemy.sumFields.def;
     }
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
@@ -215,7 +234,7 @@ async function processDefense(
         if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
-        if (playerAllocation) return;
+        // if (playerAllocation) return;
         if (card.id === 17 && my.field.length === 1) my.sumFields.def += 40;
       },
       my.field,
