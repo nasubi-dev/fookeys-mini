@@ -12,6 +12,7 @@ import SelectGifts from "@/components/menu/selectGifts.vue";
 import SelectEntry from "@/components/menu/selectEntry.vue";
 import myLogImg from "@/components/common/myLog.vue";
 import enemyLogImg from "@/components/common/enemyLog.vue";
+import Tutorial from "@/components/common/Tutorial.vue";
 //img
 import characterBackground from "@/assets/img/ui/characterBackground.webp";
 import menuBackground from "@/assets/img/ui/menuBackground.webp";
@@ -54,10 +55,19 @@ const selectGift = ref(false);
 const selectCharacter = ref(false);
 const selectEntry = ref(false);
 const loadMenu = ref(true);
+const showTutorial = ref(false);
 
 function changeLoadMenu(): void {
   loadMenu.value = !loadMenu.value;
 }
+
+const openTutorial = () => {
+  showTutorial.value = true;
+};
+
+const closeTutorial = () => {
+  showTutorial.value = false;
+};
 
 onMounted(() => {
   UseLobbyBGM.stop();
@@ -142,6 +152,11 @@ onMounted(() => {
               " class="btn-pop my-4">
                 <img src="@/assets/img/ui/giftList.webp" />
               </button>
+              <!-- チュートリアルボタン -->
+              <button @click="openTutorial(); useTap1.play();"
+                class="btn-pop my-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-6 py-3">
+                チュートリアル
+              </button>
             </div>
             <div v-else-if="selectEntry" class="overText w-full">
               <SelectEntry :changeLoadMenu="changeLoadMenu" />
@@ -156,5 +171,8 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- チュートリアルModal -->
+    <Tutorial :is-open="showTutorial" @close="closeTutorial" />
   </div>
 </template>

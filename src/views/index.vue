@@ -8,6 +8,8 @@ import { registerPlayer, reNamePlayer } from "@/server/usePlayerData";
 import { tap1 } from "@/assets/sounds";
 import myLogImg from "@/components/common/myLog.vue";
 import enemyLogImg from "@/components/common/enemyLog.vue";
+import Tutorial from "@/components/common/Tutorial.vue";
+
 const customIcons = {
   success: myLogImg,
   error: enemyLogImg,
@@ -33,15 +35,32 @@ watch(log, () => {
 });
 
 const newName = ref("");
+const showTutorial = ref(false);
+
 onMounted(() => {
   newName.value = name.value;
+
+  // 初回訪問時にチュートリアルを自動表示
+  const tutorialCompleted = localStorage.getItem('tutorial_completed');
+  if (!tutorialCompleted) {
+    showTutorial.value = true;
+  }
 });
+
 //アプリが起動したらユーザーIDを取得する ユーザー名が空の場合はNo name
 async function register() {
   newName.value === "" ? (name.value = "No name") : (name.value = newName.value);
   await reNamePlayer(name.value);
   id.value == "" ? await registerPlayer() : (log.value = "idは既に登録されています");
 }
+
+const openTutorial = () => {
+  showTutorial.value = true;
+};
+
+const closeTutorial = () => {
+  showTutorial.value = false;
+};
 </script>
 
 <template>
@@ -52,19 +71,23 @@ async function register() {
     <div class="flex flex-col items-center justify-center h-screen">
       <img src="@/assets/img/ui/fookeys-mini.webp" class="w-[min(40vw,700px)] mb-auto mt-32" />
       <div class="absolute top-2/3 flex flex-col">
-        <form class="flex flex-col items-center">
-          <a href="https://minimi-323.hatenablog.com/entry/2023/05/26/222715" target="_blank" class="text-yellow-300">
-            説明書リンク </a>
+        <div class="flex flex-col items-center">
+          <button @click="openTutorial(); useTap1.play();" type="button"
+            class="mb-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
+            チュートリアル
+          </button>
           <input class="border border-gray-400 rounded-lg p-2 w-72" type="text" placeholder="名前を入力" v-model="newName" />
           <router-link to="/menu" @click="
             register();
           useTap1.play();
-          " type="button"
-            class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
+          " type="button" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
             <button>Start</button>
           </router-link>
-        </form>
+        </div>
       </div>
     </div>
+
+    <!-- チュートリアルModal -->
+    <Tutorial :is-open="showTutorial" @close="closeTutorial" />
   </div>
 </template>
