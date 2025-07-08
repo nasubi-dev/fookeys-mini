@@ -420,11 +420,11 @@ watch(hand, (newVal) => {
           <div class="bg-gray-100 p-3 rounded">
             <p class="font-semibold"></p>
             <div class="text-md space-y-1">
-              <p>通常使用カード数: {{ giftPackCounter.usedCard }}</p>
+              <p>通常カード使用数: {{ giftPackCounter.usedCard }}</p>
               <p>セールカード使用数: {{ giftPackCounter.usedSaleCard }}</p>
-              <p>3社カード使用数: {{ giftPackCounter.used3CompanyCard }}</p>
+              <p>一度に3社カード使用数: {{ giftPackCounter.used3CompanyCard }}</p>
               <p>手札を0枚にした: {{ giftPackCounter.hand0Card }}</p>
-              <p>異なる会社カード数: {{ giftPackCounter.haveNotSameCompanyCard }}</p>
+              <p>同じ会社カード非所持数: {{ giftPackCounter.haveNotSameCompanyCard }}</p>
               <p>腐らせたカード数: {{ giftPackCounter.rottenCard }}</p>
               <p>腐ったカード保持数: {{ giftPackCounter.haveRottenCard }}</p>
             </div>
