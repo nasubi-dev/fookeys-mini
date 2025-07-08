@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { notivue } from "notivue";
-import { usePlayerStore, useEnemyPlayerStore, useGameStore } from "@/store";
+import { usePlayerStore, useEnemyPlayerStore, useGameStore, useModalStore } from "@/store";
 import App from "@/App.vue";
 import router from "@/router";
 import "./main.css";
@@ -20,5 +20,6 @@ createApp(App)
 const playerStore = usePlayerStore();
 const enemyPlayerStore = useEnemyPlayerStore();
 const gameStore = useGameStore();
+const modalStore = useModalStore();
 
-export { playerStore, enemyPlayerStore, gameStore };
+export { playerStore, enemyPlayerStore, gameStore, modalStore };

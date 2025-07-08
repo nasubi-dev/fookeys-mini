@@ -5,6 +5,51 @@ import type { Card, GameData, PlayerData, SumCards, Phase, PlayerSign } from "@/
 import allCards from "@/assets/allCards";
 import { decideGiftActive } from "@/server/useBattleUtils";
 
+interface ModalConfig {
+  id: string;
+  title?: string;
+  isOpen: boolean;
+}
+
+const useModalStore = defineStore("modal", () => {
+  const modals = ref<ModalConfig[]>([]);
+
+  const openModal = (id: string, title?: string) => {
+    const existingModal = modals.value.find((modal) => modal.id === id);
+    if (existingModal) {
+      existingModal.isOpen = true;
+      if (title) existingModal.title = title;
+    } else {
+      modals.value.push({ id, title, isOpen: true });
+    }
+  };
+
+  const closeModal = (id: string) => {
+    const modal = modals.value.find((modal) => modal.id === id);
+    if (modal) {
+      modal.isOpen = false;
+    }
+  };
+
+  const closeAllModals = () => {
+    modals.value.forEach((modal) => {
+      modal.isOpen = false;
+    });
+  };
+
+  const getModal = (id: string) => {
+    return computed(() => modals.value.find((modal) => modal.id === id));
+  };
+
+  return {
+    modals,
+    openModal,
+    closeModal,
+    closeAllModals,
+    getModal,
+  };
+});
+
 const usePlayerStore = defineStore("playerData", () => {
   //?Const/State
   const id = ref("");
@@ -351,4 +396,4 @@ const useGameStore = defineStore("gameData", () => {
   return { game, nextTurn, $reset };
 });
 
-export { useGameStore, useEnemyPlayerStore, usePlayerStore };
+export { useGameStore, useEnemyPlayerStore, usePlayerStore, useModalStore };
