@@ -17,10 +17,13 @@ const useTap1 = useSound(tap1);
 <template>
   <div class="flex flex-col">
     <div v-for="chara in allCharacters" :key="chara.name">
-      <button @click="
-        character = chara.name;
-      useTap1.play();
-      " class="btn-pop transform h-full w-full -my-3">
+      <button
+        @click="
+          character = chara.name;
+          useTap1.play();
+        "
+        class="btn-pop transform h-full w-full -my-3"
+      >
         <div class="relative">
           <img :src="characterSelectBackground" style="width: 25vw" />
           <img :src="`/img/characters/${chara.name}/normal.webp`" class="overText w-full" />

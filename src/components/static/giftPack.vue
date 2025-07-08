@@ -37,8 +37,8 @@ const { openModal } = modalStore;
 
 // 長押し時にModalを開く
 const openGiftPackModal = () => {
-  const modalId = isMyStatus.value ? 'myGiftPack' : 'enemyGiftPack';
-  const title = isMyStatus.value ? '自分のギフトパック情報' : '相手のギフトパック情報';
+  const modalId = isMyStatus.value ? "myGiftPack" : "enemyGiftPack";
+  const title = isMyStatus.value ? "自分のギフトパック情報" : "相手のギフトパック情報";
   openModal(modalId, title);
 };
 </script>
@@ -46,24 +46,28 @@ const openGiftPackModal = () => {
 <template>
   <div>
     <div class="relative">
-
-
-      <VDuringPress :onKeyDown="() => toggleDropDown(true)" :onKeyUp="() => toggleDropDown(false)" :delay="250"
-        @long-press="openGiftPackModal">
+      <VDuringPress
+        :onKeyDown="() => toggleDropDown(true)"
+        :onKeyUp="() => toggleDropDown(false)"
+        :delay="250"
+        @long-press="openGiftPackModal"
+      >
         <div>
           <img class="absolute" :class="isMyStatus ? `top-0` : `-top-16`" :src="currentBackground" />
 
-          <div class="absolute"
-            :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
+          <div class="absolute" :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
             <div :style="currentGaugeStyle" :class="isMyStatus ? `bar` : `bar-enemy`">
-              <div class="font-bold text-center"
-                :class="isMyStatus ? `text-xl text-center` : `text-md align-middle absolute right-2 -top-1`" style="
+              <div
+                class="font-bold text-center"
+                :class="isMyStatus ? `text-xl text-center` : `text-md align-middle absolute right-2 -top-1`"
+                style="
                   text-shadow:
                     -1px -1px 0 #fff,
                     1px -1px 0 #fff,
                     -1px 1px 0 #fff,
                     1px 1px 0 #fff;
-                ">
+                "
+              >
                 {{ currentGiftPackGauge }}
               </div>
             </div>

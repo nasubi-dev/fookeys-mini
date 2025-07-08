@@ -91,7 +91,7 @@ async function processHungry(
 ): Promise<void> {
   my.status.hungry += my.sumFields.hungry;
 
-  if (my.field.some((card) => card.id === 19) && which === "second") my.sumFields.hungry -= 25;
+  if (my.field.some((card) => card.id === 19) && which === "second") my.status.hungry -= 25;
   if (my.isSaleZeroHungry) my.status.hungry -= my.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0);
 
   my.isSaleZeroHungry = false;

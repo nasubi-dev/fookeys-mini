@@ -48,8 +48,13 @@ const loadBattleGif = () => {
 
 <template>
   <div>
-    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+    <transition
+      appear
+      enter-from-class="translate-y-[-150%] opacity-0"
+      leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300"
+      enter-active-class="transition duration-300"
+    >
       <div v-if="battleAnimation" class="overlay">
         <img @load="loadBattleGif()" :src="eatingGif" />
       </div>
@@ -59,8 +64,12 @@ const loadBattleGif = () => {
             <img :src="sumFieldImg" class="w-[320px] min-w-[248px]" />
             <div class="overText">
               <div class="text-lg font-bold flex w-full justify-between px-6 items-center content-between">
-                <p>{{"🍖" + (sumCards.hungry - (isSaleZeroHungry ? field.reduce((acc, card) => (card.isSale
-                  ? acc + card.hungry : acc), 0) : 0)) }}</p>
+                <p>
+                  {{
+                    "🍖" +
+                    (sumCards.hungry - (isSaleZeroHungry ? field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0))
+                  }}
+                </p>
                 <p>{{ "⚔" + (sumCards.atk + (giftActiveBeforeId === 5 ? 30 : 0)) }}</p>
                 <p>{{ "🛡" + (sumCards.def + (giftActiveBeforeId === 6 ? 40 : 0)) }}</p>
                 <p>{{ "💖" + sumCards.heal }}</p>
@@ -70,22 +79,30 @@ const loadBattleGif = () => {
 
           <div class="flex justify-between items-center w-full">
             <div class="w-[80px]" />
-            <button @click="
-              turnEnd('decide');
-            useTap2.play();
-            ">
+            <button
+              @click="
+                turnEnd('decide');
+                useTap2.play();
+              "
+            >
               <img :src="decideImg" class="w-[150px]" />
             </button>
-            <button v-if="rottenHand.length > 0" @click="
-              turnEnd('trash');
-            useTap2.play();
-            ">
+            <button
+              v-if="rottenHand.length > 0"
+              @click="
+                turnEnd('trash');
+                useTap2.play();
+              "
+            >
               <img :src="trash" class="w-[80px] opacity-100" />
             </button>
-            <button v-else @click="
-              log = '腐ったカードが手札にありません。';
-            useTap2.play();
-            ">
+            <button
+              v-else
+              @click="
+                log = '腐ったカードが手札にありません。';
+                useTap2.play();
+              "
+            >
               <img :src="trash" class="w-[80px] opacity-50" />
             </button>
           </div>

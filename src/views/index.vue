@@ -41,7 +41,7 @@ onMounted(() => {
   newName.value = name.value;
 
   // 初回訪問時にチュートリアルを自動表示
-  const tutorialCompleted = localStorage.getItem('tutorial_completed');
+  const tutorialCompleted = localStorage.getItem("tutorial_completed");
   if (!tutorialCompleted) {
     showTutorial.value = true;
   }
@@ -72,15 +72,26 @@ const closeTutorial = () => {
       <img src="@/assets/img/ui/fookeys-mini.webp" class="w-[min(40vw,700px)] mb-auto mt-32" />
       <div class="absolute top-2/3 flex flex-col">
         <div class="flex flex-col items-center">
-          <button @click="openTutorial(); useTap1.play();" type="button"
-            class="mb-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
+          <button
+            @click="
+              openTutorial();
+              useTap1.play();
+            "
+            type="button"
+            class="mb-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-4 py-2 btn-pop"
+          >
             チュートリアル
           </button>
           <input class="border border-gray-400 rounded-lg p-2 w-72" type="text" placeholder="名前を入力" v-model="newName" />
-          <router-link to="/menu" @click="
-            register();
-          useTap1.play();
-          " type="button" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
+          <router-link
+            to="/menu"
+            @click="
+              register();
+              useTap1.play();
+            "
+            type="button"
+            class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop"
+          >
             <button>Start</button>
           </router-link>
         </div>

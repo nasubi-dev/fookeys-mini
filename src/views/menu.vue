@@ -101,8 +101,7 @@ onMounted(() => {
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
-    <div v-if="loadMenu"
-      class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
+    <div v-if="loadMenu" class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
       loading....
     </div>
     <div class="h-screen flex flex-col">
@@ -112,12 +111,16 @@ onMounted(() => {
             <img :src="back" class="w-32" />
           </button>
         </router-link>
-        <button v-else class="p-4 absolute top-4 left-4 btn-pop" @click="
-          selectCharacter = false;
-        selectGift = false;
-        selectEntry = false;
-        useTap2.play();
-        ">
+        <button
+          v-else
+          class="p-4 absolute top-4 left-4 btn-pop"
+          @click="
+            selectCharacter = false;
+            selectGift = false;
+            selectEntry = false;
+            useTap2.play();
+          "
+        >
           <img :src="back" class="w-32" />
         </button>
       </div>
@@ -134,27 +137,41 @@ onMounted(() => {
           <div class="relative">
             <img :src="menuBackground" class="h-screen" />
             <div v-if="!selectCharacter && !selectGift && !selectEntry" class="overText w-full">
-              <button @click="
-                selectEntry = !selectEntry;
-              useTap1.play();
-              " class="btn-pop my-4">
+              <button
+                @click="
+                  selectEntry = !selectEntry;
+                  useTap1.play();
+                "
+                class="btn-pop my-4"
+              >
                 <img src="@/assets/img/ui/entry.webp" />
               </button>
-              <button @click="
-                selectCharacter = !selectCharacter;
-              useTap1.play();
-              " class="btn-pop my-4">
+              <button
+                @click="
+                  selectCharacter = !selectCharacter;
+                  useTap1.play();
+                "
+                class="btn-pop my-4"
+              >
                 <img src="@/assets/img/ui/changeCharacter.webp" />
               </button>
-              <button @click="
-                selectGift = !selectGift;
-              useTap1.play();
-              " class="btn-pop my-4">
+              <button
+                @click="
+                  selectGift = !selectGift;
+                  useTap1.play();
+                "
+                class="btn-pop my-4"
+              >
                 <img src="@/assets/img/ui/giftList.webp" />
               </button>
               <!-- チュートリアルボタン -->
-              <button @click="openTutorial(); useTap1.play();"
-                class="btn-pop my-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-6 py-3">
+              <button
+                @click="
+                  openTutorial();
+                  useTap1.play();
+                "
+                class="btn-pop my-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-6 py-3"
+              >
                 チュートリアル
               </button>
             </div>

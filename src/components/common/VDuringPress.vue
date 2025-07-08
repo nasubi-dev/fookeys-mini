@@ -26,7 +26,7 @@ function startPress(): void {
 
   // 長押し用のタイマー（1秒後に発火）
   longPressTimer.value = setTimeout(() => {
-    emit('longPress');
+    emit("longPress");
   }, 500);
 }
 

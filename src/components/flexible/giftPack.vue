@@ -64,18 +64,26 @@ onMounted(async () => {
 
 <template>
   <div>
-    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+    <transition
+      appear
+      enter-from-class="translate-y-[-150%] opacity-0"
+      leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300"
+      enter-active-class="transition duration-300"
+    >
       <div v-if="phase === 'giftPack' && viewOrder" class="flex flex-col gap-5 p-20 justify-center items-center">
-        <img v-if="giftActiveId !== -1" :src="`/img/gifts/${allGifts[giftActiveId].id}.webp`"
-          class="w-[320px] min-w-[248px]" />
+        <img v-if="giftActiveId !== -1" :src="`/img/gifts/${allGifts[giftActiveId].id}.webp`" class="w-[320px] min-w-[248px]" />
       </div>
     </transition>
-    <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
-      leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+    <transition
+      appear
+      enter-from-class="translate-y-[-150%] opacity-0"
+      leave-to-class="translate-y-[150%] opacity-0"
+      leave-active-class="transition duration-300"
+      enter-active-class="transition duration-300"
+    >
       <div v-if="phase === 'giftPack' && !viewOrder" class="flex flex-col gap-5 p-20 justify-center items-center">
-        <img v-if="enemyGiftActiveId !== -1" :src="`/img/gifts/${allGifts[enemyGiftActiveId].id}.webp`"
-          class="w-[320px] min-w-[248px]" />
+        <img v-if="enemyGiftActiveId !== -1" :src="`/img/gifts/${allGifts[enemyGiftActiveId].id}.webp`" class="w-[320px] min-w-[248px]" />
       </div>
     </transition>
   </div>
