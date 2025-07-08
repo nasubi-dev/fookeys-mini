@@ -6,7 +6,7 @@ import { playerStore } from "@/main";
 import { useSound } from "@vueuse/sound";
 import { tap1 } from "@/assets/sounds";
 import allCharacters from "@/assets/allCharacters";
-import characterSelectBackground from "@/assets/img/ui/characterSelectBackground.png";
+import characterSelectBackground from "@/assets/img/ui/characterSelectBackground.webp";
 
 const { player } = storeToRefs(playerStore);
 const { character } = toRefs(player.value);
@@ -17,16 +17,13 @@ const useTap1 = useSound(tap1);
 <template>
   <div class="flex flex-col">
     <div v-for="chara in allCharacters" :key="chara.name">
-      <button
-        @click="
-          character = chara.name;
-          useTap1.play();
-        "
-        class="btn-pop transform h-full w-full -my-3"
-      >
+      <button @click="
+        character = chara.name;
+      useTap1.play();
+      " class="btn-pop transform h-full w-full -my-3">
         <div class="relative">
           <img :src="characterSelectBackground" style="width: 25vw" />
-          <img :src="`/img/characters/${chara.name}/normal.png`" class="overText w-full" />
+          <img :src="`/img/characters/${chara.name}/normal.webp`" class="overText w-full" />
         </div>
       </button>
     </div>

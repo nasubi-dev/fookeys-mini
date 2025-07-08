@@ -3,7 +3,7 @@ import { ref, watch } from "vue";
 import type { PlayerData } from "@/types";
 import Character from "@/components/static/character.vue";
 import uiCardBehind from "@/components/common/cardBehind.vue";
-import enemyStatusImg from "@/assets/img/ui/enemyStatus.png";
+import enemyStatusImg from "@/assets/img/ui/enemyStatus.webp";
 import GiftPack from "@/components/static/giftPack.vue";
 
 const p = defineProps<{ player: PlayerData }>();

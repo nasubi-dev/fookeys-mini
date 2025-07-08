@@ -1,3 +1,3 @@
 <template>
-  <img src="@/assets/img/ui/myLog.png" />
+  <img src="@/assets/img/ui/myLog.webp" />
 </template>

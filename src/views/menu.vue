@@ -13,9 +13,9 @@ import SelectEntry from "@/components/menu/selectEntry.vue";
 import myLogImg from "@/components/common/myLog.vue";
 import enemyLogImg from "@/components/common/enemyLog.vue";
 //img
-import characterBackground from "@/assets/img/ui/characterBackground.png";
-import menuBackground from "@/assets/img/ui/menuBackground.png";
-import back from "@/assets/img/ui/back.png";
+import characterBackground from "@/assets/img/ui/characterBackground.webp";
+import menuBackground from "@/assets/img/ui/menuBackground.webp";
+import back from "@/assets/img/ui/back.webp";
 //bgm
 import lobbyBGM from "@/assets/sounds/lobby.mp3";
 import { registerPlayer, reNamePlayer } from "@/server/usePlayerData";
@@ -82,7 +82,7 @@ async function register() {
   id.value == "" ? await registerPlayer() : (log.value = "idは既に登録されています");
 }
 onMounted(() => {
-    register();
+  register();
 });
 </script>
 
@@ -91,7 +91,8 @@ onMounted(() => {
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
-    <div v-if="loadMenu" class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
+    <div v-if="loadMenu"
+      class="fixed flex items-center justify-center w-full h-full z-30 m-auto p-10 text-8xl text-bold text-white gray">
       loading....
     </div>
     <div class="h-screen flex flex-col">
@@ -101,16 +102,12 @@ onMounted(() => {
             <img :src="back" class="w-32" />
           </button>
         </router-link>
-        <button
-          v-else
-          class="p-4 absolute top-4 left-4 btn-pop"
-          @click="
-            selectCharacter = false;
-            selectGift = false;
-            selectEntry = false;
-            useTap2.play();
-          "
-        >
+        <button v-else class="p-4 absolute top-4 left-4 btn-pop" @click="
+          selectCharacter = false;
+        selectGift = false;
+        selectEntry = false;
+        useTap2.play();
+        ">
           <img :src="back" class="w-32" />
         </button>
       </div>
@@ -119,7 +116,7 @@ onMounted(() => {
         <div class="relative w-1/2 p-8 flex flex-col justify-center items-center text-center">
           <img :src="characterBackground" />
           <div class="overText items-center">
-            <img :src="`/img/characters/${character}/normal.png`" />
+            <img :src="`/img/characters/${character}/normal.webp`" />
           </div>
         </div>
 
@@ -127,32 +124,23 @@ onMounted(() => {
           <div class="relative">
             <img :src="menuBackground" class="h-screen" />
             <div v-if="!selectCharacter && !selectGift && !selectEntry" class="overText w-full">
-              <button
-                @click="
-                  selectEntry = !selectEntry;
-                  useTap1.play();
-                "
-                class="btn-pop my-4"
-              >
-                <img src="@/assets/img/ui/entry.png" />
+              <button @click="
+                selectEntry = !selectEntry;
+              useTap1.play();
+              " class="btn-pop my-4">
+                <img src="@/assets/img/ui/entry.webp" />
               </button>
-              <button
-                @click="
-                  selectCharacter = !selectCharacter;
-                  useTap1.play();
-                "
-                class="btn-pop my-4"
-              >
-                <img src="@/assets/img/ui/changeCharacter.png" />
+              <button @click="
+                selectCharacter = !selectCharacter;
+              useTap1.play();
+              " class="btn-pop my-4">
+                <img src="@/assets/img/ui/changeCharacter.webp" />
               </button>
-              <button
-                @click="
-                  selectGift = !selectGift;
-                  useTap1.play();
-                "
-                class="btn-pop my-4"
-              >
-                <img src="@/assets/img/ui/giftList.png" />
+              <button @click="
+                selectGift = !selectGift;
+              useTap1.play();
+              " class="btn-pop my-4">
+                <img src="@/assets/img/ui/giftList.webp" />
               </button>
             </div>
             <div v-else-if="selectEntry" class="overText w-full">

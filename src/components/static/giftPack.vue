@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import giftPackEnemyBackground from "@/assets/img/ui/giftPackEnemyBackground.png";
-import giftPackMyBackground from "@/assets/img/ui/giftPackMyBackground.png";
-import giftPackIcon from "@/assets/img/ui/giftPackIcon.png";
-import characterBackground from "@/assets/img/ui/characterBackground.png";
+import giftPackEnemyBackground from "@/assets/img/ui/giftPackEnemyBackground.webp";
+import giftPackMyBackground from "@/assets/img/ui/giftPackMyBackground.webp";
+import giftPackIcon from "@/assets/img/ui/giftPackIcon.webp";
+import characterBackground from "@/assets/img/ui/characterBackground.webp";
 import VDuringPress from "@/components/common/VDuringPress.vue";
 
 import { ref, toRefs, watch, onMounted, computed } from "vue";
@@ -34,7 +34,8 @@ const toggleDropDown = (value: boolean): void => {
 <template>
   <div>
     <div class="relative">
-      <div v-if="dropDown" class="z-20 fixed pr-10 text-gray-900 text-left w-50 transform -translate-x-72 -translate-y-32">
+      <div v-if="dropDown"
+        class="z-20 fixed pr-10 text-gray-900 text-left w-50 transform -translate-x-72 -translate-y-32">
         <div class="w-[max(20vw,270px)]">
           <img :src="characterBackground" class="absolute transform -scale-x-100" />
           <div class="z-30 pb-8 pt-8 px-12 relative">
@@ -48,19 +49,17 @@ const toggleDropDown = (value: boolean): void => {
         <div>
           <img class="absolute" :class="isMyStatus ? `top-0` : `-top-16`" :src="currentBackground" />
 
-          <div class="absolute" :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
+          <div class="absolute"
+            :class="isMyStatus ? `gauge h-[min(23vw,130px)] right-3 top-2` : `gauge-enemy w-[100px] -top-14`">
             <div :style="currentGaugeStyle" :class="isMyStatus ? `bar` : `bar-enemy`">
-              <div
-                class="font-bold text-center"
-                :class="isMyStatus ? `text-xl text-center` : `text-md align-middle absolute right-2 -top-1`"
-                style="
+              <div class="font-bold text-center"
+                :class="isMyStatus ? `text-xl text-center` : `text-md align-middle absolute right-2 -top-1`" style="
                   text-shadow:
                     -1px -1px 0 #fff,
                     1px -1px 0 #fff,
                     -1px 1px 0 #fff,
                     1px 1px 0 #fff;
-                "
-              >
+                ">
                 {{ currentGiftPackGauge }}
               </div>
             </div>

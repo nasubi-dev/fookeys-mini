@@ -5,7 +5,7 @@ import { playerStore } from "@/main";
 import { useSound } from "@vueuse/sound";
 import { tap1 } from "@/assets/sounds";
 import allGifts from "@/assets/allGifts";
-import giftSelectBackground from "@/assets/img/ui/giftSelectBackground.png";
+import giftSelectBackground from "@/assets/img/ui/giftSelectBackground.webp";
 
 const { player } = storeToRefs(playerStore);
 
@@ -17,7 +17,7 @@ const useTap1 = useSound(tap1);
     <div v-for="(gift, index) in allGifts" :key="gift.name">
       <div :class="index % 2 ? `-translate-x-[30%]` : `translate-x-[30%]`">
         <div class="flex items-center">
-          <img :src="`./img/gifts/${gift.id}.png`" class="w-20" />
+          <img :src="`./img/gifts/${gift.id}.webp`" class="w-20" />
           <div class="relative w-full">
             <img :src="giftSelectBackground" style="width: 25vw" />
             <div class="overText flex flex-col justify-start text-left align-text-bottom ml-3">

@@ -92,7 +92,7 @@ const popCard = (index: number, id: number) => {
             </button>
           </div>
         </div>
-        <img v-if="hand.length === 0" src="../../assets/img/alpha.png" class="cardSize" />
+        <img v-if="hand.length === 0" src="../../assets/img/alpha.webp" class="cardSize" />
         <div v-for="(card, index) in hand" :key="card.id">
           <button @click="
             !isHandSelected[index] ? pushCard(index) : popCard(index, card.id);

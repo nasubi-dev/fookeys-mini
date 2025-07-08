@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 import type { PlayerData } from "@/types";
 import Character from "@/components/static/character.vue";
-import statusImg from "@/assets/img/ui/status.png";
+import statusImg from "@/assets/img/ui/status.webp";
 
 const p = defineProps<{ player: PlayerData }>();
 
