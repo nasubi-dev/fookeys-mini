@@ -103,6 +103,8 @@ async function compareSumField(field: "hungry"): Promise<void> {
     (player.value.isSaleZeroHungry ? player.value.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0);
   let enemySumFields =
     enemy.sumFields[field] - (enemy.isSaleZeroHungry ? enemy.field.reduce((acc, card) => (card.isSale ? acc + card.hungry : acc), 0) : 0);
+    console.log(i, "mySumFields", field, ": ", mySumFields, player.value.isSaleZeroHungry);
+    console.log(i, "enemySumFields", field, ": ", enemySumFields, enemy.isSaleZeroHungry);
   //hungryの値が小さい方が先行//hungryの値が同じならばFirstAtkPlayerの値を変更しない
   if (mySumFields < enemySumFields) {
     firstAtkPlayer.value = sign.value;
