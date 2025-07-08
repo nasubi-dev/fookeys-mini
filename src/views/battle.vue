@@ -249,20 +249,6 @@ const loadStartGif = () => {
 };
 const wantCard = ref(); //!test用
 const devMode = ref(false);
-
-// モーダルのデモ用 - 例：HPが50以下になったらモーダルを開く
-watch(status, (newVal) => {
-  if (newVal.hp <= 50 && newVal.hp > 0) {
-    openModal('lowHealth', '体力が危険です！');
-  }
-});
-
-// モーダルのデモ用 - 例：手札が5枚以上になったらモーダルを開く
-watch(hand, (newVal) => {
-  if (newVal.length >= 5) {
-    openModal('tooManyCards', '手札がいっぱいです！');
-  }
-});
 </script>
 
 <template>
@@ -387,25 +373,6 @@ watch(hand, (newVal) => {
         <UiHand class="pt-5" />
       </div>
     </div>
-
-    <!-- モーダル群 -->
-    <Modal v-if="getModal('lowHealth').value" :is-open="getModal('lowHealth').value?.isOpen || false"
-      :title="getModal('lowHealth').value?.title" @close="closeModal('lowHealth')">
-      <div class="text-center">
-        <div class="text-red-600 text-xl font-bold mb-4">⚠️ 警告 ⚠️</div>
-        <p class="mb-4">あなたの体力が{{ status.hp }}まで減っています！</p>
-        <p class="text-sm text-gray-600">回復カードを使用することをお勧めします。</p>
-      </div>
-    </Modal>
-
-    <Modal v-if="getModal('tooManyCards').value" :is-open="getModal('tooManyCards').value?.isOpen || false"
-      :title="getModal('tooManyCards').value?.title" @close="closeModal('tooManyCards')">
-      <div class="text-center">
-        <div class="text-yellow-600 text-xl font-bold mb-4">📚 手札満杯 📚</div>
-        <p class="mb-4">手札が{{ hand.length }}枚になりました！</p>
-        <p class="text-sm text-gray-600">カードを使用して手札を減らしてください。</p>
-      </div>
-    </Modal>
 
     <!-- ギフトパック情報Modal -->
     <Modal v-if="getModal('myGiftPack').value" :is-open="getModal('myGiftPack').value?.isOpen || false"
