@@ -6,7 +6,7 @@ const isMobile = ref(window.innerWidth <= 480);
 
 <template>
   <div class="flex justify-center items-center overflow-clip">
-    <div class="h-screen border-2 border-gray-900" :class="isMobile ? 'w-full' : 'w-[480px]'">
+    <div class="h-screen" :class="isMobile ? 'w-full' : 'w-[480px]'">
       <div class="w-fit h-fit grid justify-center items-center p-1">
         <slot />
       </div>
