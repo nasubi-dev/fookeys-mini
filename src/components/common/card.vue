@@ -17,6 +17,8 @@ const p = defineProps<{
 const usePopUp = useSound(popUp);
 
 const dropDown = ref(false);
+const cardElementRef = ref<HTMLElement>();
+
 const onLongPressCallbackHook = (): void => {
   console.log("longPress");
   dropDown.value = true;
@@ -26,13 +28,72 @@ const onKeyUpCallbackHook = (): void => {
   dropDown.value = false;
 };
 
-// カードの位置に応じて表示位置を動的に調整
-const getDropDownPosition = () => {
-  const baseTranslateY = p.card.description ? '-translate-y-32' : '-translate-y-16';
-  let translateX;
-  translateX = p.index >= 2 ? '-translate-x-32' : '';
-  translateX = p.index >= 4 ? '-translate-x-48' : translateX;
-  return `${baseTranslateY} ${translateX}`;
+// カードの実際の位置を取得して表示位置を計算
+const getDropDownStyle = () => {
+  if (!cardElementRef.value) return {};
+
+  const rect = cardElementRef.value.getBoundingClientRect();
+  const dropdownWidth = p.card.description ? 270 : 180;
+  const dropdownHeight = p.card.description ? 128 : 64;
+
+  let left = rect.left;
+  let top;
+
+  if (p.size === 'big') {
+    // ショップオファーカードの場合、常にカードの下に表示
+    // カードの親要素の変換を確認して補正
+    const parentElement = cardElementRef.value.parentElement;
+    let transformOffset = 0;
+
+    if (parentElement) {
+      try {
+        const computedStyle = window.getComputedStyle(parentElement);
+        const transform = computedStyle.transform;
+
+        // transform matrix から translateY の値を取得
+        if (transform && transform !== 'none') {
+          const matrix = transform.match(/matrix.*\((.+)\)/);
+          if (matrix) {
+            const values = matrix[1].split(', ');
+            if (values.length >= 6) {
+              const translateY = parseFloat(values[5]);
+              if (translateY < 0) {
+                // 負の値（上向きの移動）なので、その分を補正
+                transformOffset = Math.abs(translateY);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Transform detection failed:', error);
+        // フォールバック: クラスベースの検出
+        if (parentElement.classList.contains('transform') &&
+          parentElement.classList.contains('-translate-y-5')) {
+          transformOffset = 20;
+        }
+      }
+    }
+
+    top = rect.bottom + transformOffset + 8;
+  } else {
+    top = rect.top - dropdownHeight - 8;
+    if (top < 10) {
+      top = rect.bottom + 8;
+    }
+  }
+
+  // 画面境界での調整
+  if (left + dropdownWidth > window.innerWidth - 8) {
+    left = window.innerWidth - dropdownWidth - 8;
+  }
+  if (left < 8) {
+    left = 8;
+  }
+
+  return {
+    left: `${Math.max(0, left)}px`,
+    top: `${Math.max(0, top)}px`
+  };
 };
 
 const wastedClass = ref("");
@@ -52,24 +113,29 @@ watch(
 </script>
 
 <template>
-  <div class="">
-    <div v-if="dropDown" class="z-40 mx-3 absolute text-gray-900 text-left" :class="[
-      card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`,
-      getDropDownPosition()
-    ]">
-      <div :class="[card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`]">
-        <img :src="bg" class="z-40 absolute" />
-        <div v-if="card.description" class="z-40 pb-4 pt-3 px-5 absolute">
-          <p class="font-bold">{{ card.company + " : " + card.name }}</p>
-          <p>{{ card.description }}</p>
-        </div>
-        <div v-else class="z-40 pb-4 pt-2 px-4 absolute">
-          <p class="font-bold">{{ card.company }}</p>
-          <p>{{ card.name }}</p>
+  <div class="relative">
+    <!-- Portal-like approach for dropdown - completely escapes parent containers -->
+    <Teleport to="body" v-if="dropDown">
+      <div class="fixed inset-0 pointer-events-none z-[10000]">
+        <div class="absolute pointer-events-auto text-gray-900 text-left shadow-lg" :class="[
+          card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`
+        ]" :style="getDropDownStyle()">
+          <div :class="[card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`]">
+            <img :src="bg" class="absolute" style="pointer-events: auto !important; overflow: visible !important;" />
+            <div v-if="card.description" class="absolute pb-4 pt-3 px-5">
+              <p class="font-bold">{{ card.company + " : " + card.name }}</p>
+              <p>{{ card.description }}</p>
+            </div>
+            <div v-else class="absolute pb-4 pt-2 px-4">
+              <p class="font-bold">{{ card.company }}</p>
+              <p>{{ card.name }}</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="relative" :class="size === 'normal' ? `w-[min(20vw,100px)]` : `w-[min(30vw,150px)]`">
+    </Teleport>
+    <div ref="cardElementRef" class="relative"
+      :class="size === 'normal' ? `w-[min(20vw,100px)]` : `w-[min(30vw,150px)]`">
       <VDuringPress :onKeyDown="onLongPressCallbackHook" :onKeyUp="onKeyUpCallbackHook" :delay="250">
         <img :src="`/img/companys/${card.company}.webp`" />
         <div class="overText">
