@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, nextTick, computed } from "vue";
 import { useSound } from "@vueuse/sound";
 import { popUp } from "@/assets/sounds";
 import type { Card } from "@/types";
@@ -18,6 +18,58 @@ const usePopUp = useSound(popUp);
 
 const dropDown = ref(false);
 const cardElementRef = ref<HTMLElement>();
+const descriptionRef = ref<HTMLElement>();
+const isWideMode = ref(false);
+
+// Description の文字数から行数を推定
+const estimateLines = (text: string, maxWidth: number = 270): number => {
+  if (!text) return 1;
+
+  // 日本語・英語混在を考慮した文字数計算
+  // 日本語文字は約2倍の幅を占める
+  let charWidth = 0;
+  for (const char of text) {
+    if (char.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/)) {
+      charWidth += 12; // 日本語文字の幅
+    } else {
+      charWidth += 6; // 英数字の幅
+    }
+  }
+
+  const availableWidth = maxWidth - 40; // padding分を引く
+  return Math.ceil(charWidth / availableWidth);
+};
+
+// カードの幅を動的に決定
+const cardWidth = computed(() => {
+  if (!p.card.description) return 180;
+
+  const estimatedLines = estimateLines(p.card.description);
+  return estimatedLines >= 3 ? 350 : 270;
+});
+
+const dynamicWidthClass = computed(() => {
+  const width = cardWidth.value;
+  if (width === 350) return 'w-[350px]';
+  return p.card.description ? 'w-[max(20vw,270px)]' : 'w-[max(15vw,180px)]';
+});
+
+// ドロップダウンが表示されたときに幅を再計算
+watch(dropDown, (newValue) => {
+  if (newValue && p.card.description) {
+    nextTick(() => {
+      if (descriptionRef.value) {
+        // 実際のDOM要素から行数を計算
+        const descriptionElement = descriptionRef.value.querySelector('p:last-child') as HTMLElement;
+        if (descriptionElement) {
+          const lineHeight = parseInt(window.getComputedStyle(descriptionElement).lineHeight) || 20;
+          const actualLines = Math.ceil(descriptionElement.scrollHeight / lineHeight);
+          isWideMode.value = actualLines >= 3;
+        }
+      }
+    });
+  }
+});
 
 const onLongPressCallbackHook = (): void => {
   console.log("longPress");
@@ -33,8 +85,8 @@ const getDropDownStyle = () => {
   if (!cardElementRef.value) return {};
 
   const rect = cardElementRef.value.getBoundingClientRect();
-  const dropdownWidth = p.card.description ? 270 : 180;
-  const dropdownHeight = p.card.description ? 128 : 64;
+  const dropdownWidth = isWideMode.value ? 350 : cardWidth.value;
+  const dropdownHeight = p.card.description ? 192 : 64;
 
   let left = rect.left;
   let top;
@@ -117,12 +169,11 @@ watch(
     <!-- Portal-like approach for dropdown - completely escapes parent containers -->
     <Teleport to="body" v-if="dropDown">
       <div class="fixed inset-0 pointer-events-none z-[10000]">
-        <div class="absolute pointer-events-auto text-gray-900 text-left shadow-lg" :class="[
-          card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`
-        ]" :style="getDropDownStyle()">
-          <div :class="[card.description ? `w-[max(20vw,270px)]` : `w-[max(15vw,180px)]`]">
+        <div class="absolute pointer-events-auto text-gray-900 text-left shadow-lg"
+          :class="isWideMode ? 'w-[350px]' : dynamicWidthClass" :style="getDropDownStyle()">
+          <div :class="isWideMode ? 'w-[350px]' : dynamicWidthClass">
             <img :src="bg" class="absolute" style="pointer-events: auto !important; overflow: visible !important;" />
-            <div v-if="card.description" class="absolute pb-4 pt-3 px-5">
+            <div v-if="card.description" ref="descriptionRef" class="absolute pb-4 pt-3 px-5">
               <p class="font-bold">{{ card.company + " : " + card.name }}</p>
               <p>{{ card.description }}</p>
             </div>
