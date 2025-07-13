@@ -103,6 +103,7 @@ async function processHungry(
 // 支援処理を行う
 async function processSupport(
   my: PlayerData,
+  enemy: PlayerData,
   playerAllocation: number,
   myId: string,
   enemyId: string,
@@ -122,15 +123,15 @@ async function processSupport(
           else myLog.value = card.name + "の効果!" + card.description;
 
           if (playerAllocation) return;
-          if (card.id === 23) changeHandValue("waste", 1);
-          if (card.id === 24) {
+          if (card.id === 24 && myId === enemy.idEnemy) {
             player.value.isSaleZeroHungry = true;
             updateDoc(doc(playersRef, myId), { isSaleZeroHungry: true });
           }
-          if (card.id === 25) {
+          if (card.id === 25 && myId === enemy.idEnemy) {
             player.value.isShopSale = true;
             updateDoc(doc(playersRef, myId), { isShopSale: true });
           }
+          if (card.id === 23) changeHandValue("waste", 1);
           if (card.id === 26) {
             deleteAllRottenCard();
             for (let i = 0; i < 3; i++) drawOneCard();
@@ -371,7 +372,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
 
   if (!firstAtkPlayer.value) await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
-  await processSupport(my, playerAllocation, myId, enemyId, myLog, enemyLog);
+  await processSupport(my, enemy, playerAllocation, myId, enemyId, myLog, enemyLog);
   await processHeal(my, myId, playerAllocation, myLog, enemyLog);
 
   const defense = await processDefense(my, enemy, myId, which, playerAllocation, myLog, enemyLog);
