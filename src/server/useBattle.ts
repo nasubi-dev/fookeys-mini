@@ -268,6 +268,7 @@ async function processAttack(
   enemy: PlayerData,
   which: "primary" | "second",
   defense: number,
+  myId: string,
   enemyId: string,
   playerAllocation: number,
   myLog: { value: string },
@@ -324,7 +325,7 @@ async function processAttack(
 
     console.log(i, "mySumFields.atk: ", my.sumFields.atk);
 
-    if (playerAllocation) {
+    if (myId === enemy.idEnemy) {
       enemy.status.hp -= holdingAtk;
       await updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
     }
@@ -336,7 +337,6 @@ async function processAttack(
     }
 
     await everyUtil(["atk", my.sumFields.atk]);
-    enemy.status.hp -= my.sumFields.atk;
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
 
     //死亡判定
@@ -378,7 +378,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
   await processHeal(my, myId, playerAllocation, myLog, enemyLog);
 
   const defense = await processDefense(my, enemy, myId, which, playerAllocation, myLog, enemyLog);
-  const isDeath = await processAttack(my, enemy, which, defense, enemyId, playerAllocation, myLog, enemyLog);
+  const isDeath = await processAttack(my, enemy, which, defense, myId, enemyId, playerAllocation, myLog, enemyLog);
 
   battleResult.value = ["none", 0];
   return isDeath;
