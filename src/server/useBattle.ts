@@ -327,6 +327,7 @@ async function processAttack(
 
     if (myId === enemy.idEnemy) {
       enemy.status.hp -= holdingAtk;
+      if (enemy.status.hp < 0) enemy.status.hp = 0;
       await updateDoc(doc(playersRef, enemyId), { "status.hp": enemy.status.hp });
     }
 
@@ -413,13 +414,19 @@ async function battle() {
 
   console.log(i, "先行の攻撃");
   const isPrimaryDeath = await attack(BATTLE_CONSTANTS.PRIMARY);
-  if (isPrimaryDeath) return;
+  if (isPrimaryDeath) {
+    while (!player.value.death) reflectStatus();
+    return;
+  }
 
-  wait(BATTLE_CONSTANTS.WAIT_TIME.SHORT);
+  await wait(BATTLE_CONSTANTS.WAIT_TIME.SHORT);
 
   console.log(i, "後攻の攻撃");
   const isSecondDeath = await attack(BATTLE_CONSTANTS.SECOND);
-  if (isSecondDeath) return;
+  if (isSecondDeath) {
+    while (!player.value.death) reflectStatus();
+    return;
+  }
 
   getEnemyPlayer(); //!
   await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);

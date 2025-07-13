@@ -140,7 +140,7 @@ watch(death, (newVal) => {
   if (!newVal || !isBGM.value) return;
   useBGM.stop();
 
-  const isLose = status.value.hp <= 0 || hand.value.filter((card) => card.id === 0).length >= BATTLE_CONSTANTS.MAX_HAND_SIZE;
+  const isLose = status.value.hp <= 0;
   isLose ? useLose.play() : useWin.play();
 });
 
