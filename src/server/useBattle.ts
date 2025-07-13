@@ -193,26 +193,19 @@ async function processDefense(
       await intervalForEach(
         (card: Card) => {
           // リストの中にcard.idが含まれているかを確認
-          if (
-            !SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number]) ||
-            enemy.giftActiveBeforeId !== 6 ||
-            !enemy.hand.find((c) => c.id === 14)
-          )
-            return;
+          if (!SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) return;
           if (
             !(
               (card.id === 17 && my.field.length === 1) ||
               card.id === 19 ||
               (card.id === 15 && enemy.field.some((card) => card.company.includes("unlimit"))) ||
-              card.id === 21 ||
-              enemy.hand.find((c) => c.id === 14)
+              card.id === 21
             )
           )
             return;
           if (enemy.hand.find((c) => c.id === 14)) enemyLog.value = card.name + "の効果!" + card.description;
 
           if (card.id === 17 && enemy.field.length === 1) enemy.sumFields.def += 40;
-          if (enemy.hand.find((c) => c.id === 14)) enemy.sumFields.def += 30;
         },
         enemy.field,
         1000
@@ -235,8 +228,7 @@ async function processDefense(
             (card.id === 17 && my.field.length === 1) ||
             card.id === 19 ||
             (card.id === 15 && my.field.some((card) => card.company.includes("unlimit"))) ||
-            card.id === 21 ||
-            my.hand.find((c) => c.id === 14)
+            card.id === 21
           )
         )
           return;
@@ -244,11 +236,15 @@ async function processDefense(
         else myLog.value = card.name + "の効果!" + card.description;
 
         if (card.id === 17 && my.field.length === 1) my.sumFields.def += 40;
-        if (my.hand.find((c) => c.id === 14)) my.sumFields.def += 30;
       },
       my.field,
       1000
     );
+
+    if (my.hand.find((c) => c.id === 14)) {
+      my.sumFields.def += 30;
+      updateDoc(doc(playersRef, myId), { "sumFields.def": my.sumFields.def });
+    }
 
     if (my.giftActiveBeforeId === 6) {
       my.sumFields.def += 40;
@@ -415,7 +411,10 @@ async function battle() {
   console.log(i, "先行の攻撃");
   const isPrimaryDeath = await attack(BATTLE_CONSTANTS.PRIMARY);
   if (isPrimaryDeath) {
-    while (!player.value.death) reflectStatus();
+    while (!player.value.death) {
+      reflectStatus();
+      await wait(1000);
+    }
     return;
   }
 
@@ -424,7 +423,10 @@ async function battle() {
   console.log(i, "後攻の攻撃");
   const isSecondDeath = await attack(BATTLE_CONSTANTS.SECOND);
   if (isSecondDeath) {
-    while (!player.value.death) reflectStatus();
+    while (!player.value.death) {
+      reflectStatus();
+      await wait(1000);
+    }
     return;
   }
 
