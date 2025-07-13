@@ -9,7 +9,7 @@ import { converter } from "@/server/converter";
 import { intervalForEach, wait } from "@/server/utils";
 import { syncPlayer, reflectStatus, checkDeath, everyUtil, decideFirstAtkPlayer, giftCheck } from "./useBattleUtils";
 import { getEnemyPlayer } from "@/server/usePlayerData";
-import { changeHandValue, changeStatusValue, deleteAllRottenCard, drawOneCard } from "@/server/useShopUtils";
+import { changeHandValue, changeStatusValue, deleteAllCard, drawOneCard } from "@/server/useShopUtils";
 import {
   GIFT_POINTS,
   SPECIAL_CARD_IDS,
@@ -133,8 +133,8 @@ async function processSupport(
           }
           if (card.id === 23) changeHandValue("waste", 1);
           if (card.id === 26) {
-            deleteAllRottenCard();
-            for (let i = 0; i < 3; i++) drawOneCard();
+            deleteAllCard();
+            for (let i = 0; i < 3; i++) drawOneCard(null, false);
           }
         }
       },

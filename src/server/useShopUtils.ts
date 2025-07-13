@@ -16,7 +16,7 @@ const playersRef = collection(db, "players").withConverter(converter<PlayerData>
 const gamesRef = collection(db, "games").withConverter(converter<GameData>());
 
 //cardをランダムに1枚引く
-function drawCard(attribute?: Attribute): Card {
+function drawCard(attribute?: Attribute, isSale?: boolean): Card {
   const { player, offer } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
@@ -35,23 +35,31 @@ function drawCard(attribute?: Attribute): Card {
     }
   }
   // 確率でセールカードにする
-  if (Math.random() < SALE_RATE) {
+  if (isSale === undefined) {
+    if (Math.random() < SALE_RATE) {
+      if (selectCard.id === 21 || selectCard.id === 9) selectCard.hungry -= 10;
+      selectCard.waste = 1;
+      selectCard.isSale = true;
+    }
+  } else if (isSale) {
     if (selectCard.id === 21 || selectCard.id === 9) selectCard.hungry -= 10;
     selectCard.waste = 1;
     selectCard.isSale = true;
   }
   return selectCard;
 }
-//cardをランダムに1枚引く
-function drawOneCard(order?: Attribute | number): void {
+// カードを一枚引く
+function drawOneCard(order?: Attribute | number | null, isSale?: boolean): void {
   const { player, id } = storeToRefs(playerStore);
   const { hand } = toRefs(player.value);
 
   if (hand.value.length >= 5) return;
   if (typeof order === "number") {
     hand.value.push(structuredClone(allCards[order]));
+  } else if (typeof order === "string") {
+    hand.value.push(drawCard(order, isSale));
   } else {
-    hand.value.push(drawCard(order));
+    hand.value.push(drawCard(undefined, isSale));
   }
   hand.value = hand.value.slice().sort((a, b) => a.id - b.id);
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
@@ -149,16 +157,14 @@ function changeHandValue(key: keyof SumCards, value: number, attribute?: Attribu
 
   updateDoc(doc(playersRef, id.value), { hand: hand.value });
 }
-//Handの腐ったカードを削除する
-function deleteAllRottenCard(): number {
-  console.log(i, "deleteAllRottenCardを実行しました");
+// Handから普通のカードを削除する
+function deleteAllCard(): void {
+  console.log(i, "deleteAllCardを実行しました");
   const { id, player } = storeToRefs(playerStore);
-  const { rottenHand } = toRefs(player.value);
+  const { hand } = toRefs(player.value);
 
-  let num = rottenHand.value.length;
-  rottenHand.value = [];
-  updateDoc(doc(playersRef, id.value), { rottenHand: [] });
-  return num;
+  hand.value = hand.value.filter((card) => card.id === 0);
+  updateDoc(doc(playersRef, id.value), { hand: hand.value });
 }
 //Statusの値を変更する
 function changeStatusValue(key: keyof Status, value: number, isBreak?: boolean): void {
@@ -182,6 +188,6 @@ export {
   changeAllHand,
   changeSumCardsValue,
   changeHandValue,
-  deleteAllRottenCard,
+  deleteAllCard,
   changeStatusValue,
 };
