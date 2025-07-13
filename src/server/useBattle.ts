@@ -184,7 +184,7 @@ async function processDefense(
   console.log(s, "防御!!!");
   let defense = 0;
   //敵の防御力を計算する
-  if (enemy.field.map((card) => card.attribute).includes("def")) {
+  if (enemy.field.map((card) => card.attribute).includes("def") || enemy.giftActiveBeforeId === 6 || enemy.hand.find((c) => c.id === 14)) {
     if (which === "primary") {
       console.log(i, "先行なので防御できない");
     } else if (enemy.check) {
@@ -193,18 +193,26 @@ async function processDefense(
       await intervalForEach(
         (card: Card) => {
           // リストの中にcard.idが含まれているかを確認
-          if (!SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number])) return;
+          if (
+            !SPECIAL_DEF_CARD_IDS.includes(card.id as (typeof SPECIAL_DEF_CARD_IDS)[number]) ||
+            enemy.giftActiveBeforeId !== 6 ||
+            !enemy.hand.find((c) => c.id === 14)
+          )
+            return;
           if (
             !(
               (card.id === 17 && my.field.length === 1) ||
               card.id === 19 ||
               (card.id === 15 && enemy.field.some((card) => card.company.includes("unlimit"))) ||
-              card.id === 21
+              card.id === 21 ||
+              enemy.hand.find((c) => c.id === 14)
             )
           )
             return;
+          if (enemy.hand.find((c) => c.id === 14)) enemyLog.value = card.name + "の効果!" + card.description;
 
           if (card.id === 17 && enemy.field.length === 1) enemy.sumFields.def += 40;
+          if (enemy.hand.find((c) => c.id === 14)) enemy.sumFields.def += 30;
         },
         enemy.field,
         1000
@@ -215,7 +223,7 @@ async function processDefense(
   }
 
   //自分の防御を行う
-  if (my.field.map((card) => card.attribute).includes("def") || my.giftActiveBeforeId === 6) {
+  if (my.field.map((card) => card.attribute).includes("def") || my.giftActiveBeforeId === 6 || my.hand.find((c) => c.id === 14)) {
     console.log(i, "防御!!!");
 
     await intervalForEach(
@@ -227,15 +235,16 @@ async function processDefense(
             (card.id === 17 && my.field.length === 1) ||
             card.id === 19 ||
             (card.id === 15 && my.field.some((card) => card.company.includes("unlimit"))) ||
-            card.id === 21
+            card.id === 21 ||
+            my.hand.find((c) => c.id === 14)
           )
         )
           return;
         if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
-        // if (playerAllocation) return;
         if (card.id === 17 && my.field.length === 1) my.sumFields.def += 40;
+        if (my.hand.find((c) => c.id === 14)) my.sumFields.def += 30;
       },
       my.field,
       1000
@@ -355,7 +364,7 @@ async function calcDamage(which: "primary" | "second"): Promise<boolean> {
     firstAtkPlayer.value === sign.value ? BATTLE_CONSTANTS.PLAYER_ALLOCATION.FIRST : BATTLE_CONSTANTS.PLAYER_ALLOCATION.SECOND;
 
   //fieldが空の場合､ダメージ計算を行わない
-  if (my.field.length === 0 && my.giftActiveBeforeId !== 5 && my.giftActiveBeforeId !== 6) {
+  if (my.field.length === 0 && my.giftActiveBeforeId !== 5 && my.giftActiveBeforeId !== 6 && !my.hand.find((c) => c.id === 14)) {
     await wait(BATTLE_CONSTANTS.WAIT_TIME.STANDARD);
     return false;
   }
@@ -520,11 +529,7 @@ async function postBattle(): Promise<void> {
   const rottenCardsCount = await processCardRotting(id.value, hand.value, rottenHand.value, giftPackGauge, giftPackCounter, myLog);
 
   // 手札にあるカードの効果を発動する
-  hand.value.forEach((card: Card) => {
-    if (!(card.id === 14)) return;
-    myLog.value += card.name + "の効果!" + card.description;
-    if (card.id === 14) changeHandValue("def", 30, "def");
-  });
+  hand.value.forEach((card: Card) => {});
 
   // ギフトパック処理
   postGiftPack(hand.value, rottenHand.value, giftPackGauge, giftPackCounter, rottenCardsCount, log, myLog, id);

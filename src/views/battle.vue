@@ -183,6 +183,11 @@ onMounted(async () => {
     log.value = "マッチ成功!相手:" + enemyPlayer.value.name;
     loadGame.value = false;
     isBGM.value = true;
+    while (enemyPlayer.value.hand === undefined) {
+      await getEnemyPlayer();
+      console.log(i, "Waiting for enemy hand data...");
+      await wait(1000);
+    }
   }, BATTLE_CONSTANTS.WAIT_TIME.BATTLE_ANIMATION);
   await startShop().then(() => {
     console.log(i, "gameId: ", idGame.value);

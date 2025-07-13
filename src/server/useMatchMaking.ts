@@ -7,6 +7,7 @@ import { collection, doc, addDoc, updateDoc, getDocs, query, where, onSnapshot, 
 import { converter } from "@/server/converter";
 import { router } from "@/router";
 import type { MatchStatus, PlayerData, GameData } from "@/types";
+import { wait } from "./utils";
 
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
@@ -20,6 +21,7 @@ async function findWaitingPlayer(): Promise<void> {
   const waitingPlayers = (await getDocs(query(playersRef, where("match", "==", "waiting")))).docs.map((doc) => doc.id);
   console.log(i, "Found players: ", waitingPlayers);
   // 自分を除外する
+  await wait(2000);
   waitingPlayers.indexOf(id.value) ? undefined : waitingPlayers.splice(waitingPlayers.indexOf(id.value), 1);
   // ランダムに選択する
   idEnemy.value = waitingPlayers[Math.floor(Math.random() * waitingPlayers.length)];
