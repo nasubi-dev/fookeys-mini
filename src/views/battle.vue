@@ -15,6 +15,7 @@ import { BATTLE_CONSTANTS } from "@/consts";
 import Expanded from "@/components/common/Expanded.vue";
 import Modal from "@/components/common/Modal.vue";
 import UiEnemyInfo from "@/components/static/enemyInfo.vue";
+import Tutorial from "@/components/common/Tutorial.vue";
 import UiStatus from "@/components/static/status.vue";
 import UiHand from "@/components/static/hand.vue";
 import Battle from "@/components/flexible/battle.vue";
@@ -254,6 +255,16 @@ const loadStartGif = () => {
 };
 const wantCard = ref(); //!test用
 const devMode = ref(false);
+
+const showTutorial = ref(false);
+const openTutorial = () => {
+  showTutorial.value = true;
+};
+
+const closeTutorial = () => {
+  showTutorial.value = false;
+};
+
 </script>
 
 <template>
@@ -313,6 +324,11 @@ const devMode = ref(false);
             <p>{{ components }}</p>
             <button @click="drawOneCard(wantCard)">drawSelectCard</button>
             <input v-model="wantCard" type="number" />
+            <button @click="
+              openTutorial();
+            " class="btn-pop my-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-6 py-3">
+              チュートリアル
+            </button>
           </div>
         </div>
         <UiEnemyInfo :player="enemyPlayer" :sign="sign" class="ml-auto" :class="isMobile ? 'w-full' : 'w-[320px]'" />
@@ -428,5 +444,6 @@ const devMode = ref(false);
         </div>
       </div>
     </Modal>
+    <Tutorial :is-open="showTutorial" @close="closeTutorial" />
   </Expanded>
 </template>

@@ -164,7 +164,6 @@ onMounted(() => {
               >
                 <img src="@/assets/img/ui/giftList.webp" />
               </button>
-              <!-- チュートリアルボタン -->
               <button
                 @click="
                   openTutorial();
