@@ -21,7 +21,7 @@ import UiHand from "@/components/static/hand.vue";
 import Battle from "@/components/flexible/battle.vue";
 import GiftPack from "@/components/flexible/giftPack.vue";
 import uiGiftPack from "@/components/static/giftPack.vue";
-import { winImg, loseImg, myTurnImg, enemyTurnImg, configImg, soundOnImg, soundOffImg, turnBackgroundImg } from "@/assets/img/ui";
+import { winImg, loseImg, myTurnImg, enemyTurnImg, configImg, soundOnImg, soundOffImg, turnBackgroundImg, back } from "@/assets/img/ui";
 import { waitingGif, startGif, winGif, loseGif } from "@/assets/gifs";
 import {
   tap2,
@@ -264,7 +264,6 @@ const openTutorial = () => {
 const closeTutorial = () => {
   showTutorial.value = false;
 };
-
 </script>
 
 <template>
@@ -273,35 +272,8 @@ const closeTutorial = () => {
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
     <div class="w-full">
-      <img v-if="startAnimation" @load="loadStartGif()" :src="startGif"
-        class="overlay object-contain aspect-square z-10" />
-      <!-- 死亡時 -->
-      <router-link v-if="
-        (death && status.hp <= 0) ||
-        hand.reduce((acc, cur) => {
-          if (cur.id === 0) acc++;
-          return acc;
-        }, 0) >= BATTLE_CONSTANTS.MAX_HAND_SIZE
-      " to="/menu" class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto">
-        <button @click="
-          deleteGame();
-        initPlayer();
-        useTap2.play();
-        ">
-          <img @load="loadDeathGif()" :src="deathAnimation ? loseGif : loseImg"
-            class="object-contain max-w-[480px] w-auto" />
-        </button>
-      </router-link>
-      <router-link v-else-if="death" to="/menu" class="fixed z-50 flex items-center py-[50%] pb-[70%] w-auto">
-        <button @click="
-          deleteGame();
-        initPlayer();
-        useTap2.play();
-        ">
-          <img @load="loadDeathGif()" :src="deathAnimation ? winGif : winImg"
-            class="object-contain max-w-[480px] w-auto" />
-        </button>
-      </router-link>
+      <img v-if="startAnimation" @load="loadStartGif()" :src="startGif" class="overlay object-contain aspect-square z-10" />
+      <!-- 勝敗結果Modal -->
 
       <!-- 敵の情報と設定系 -->
       <div class="flex fixed z-30 w-auto first-letter: justify-between">
@@ -324,9 +296,10 @@ const closeTutorial = () => {
             <p>{{ components }}</p>
             <button @click="drawOneCard(wantCard)">drawSelectCard</button>
             <input v-model="wantCard" type="number" />
-            <button @click="
-              openTutorial();
-            " class="btn-pop my-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-6 py-3">
+            <button
+              @click="openTutorial()"
+              class="btn-pop my-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-6 py-3"
+            >
               チュートリアル
             </button>
           </div>
@@ -335,8 +308,13 @@ const closeTutorial = () => {
       </div>
 
       <!-- ショップとバトルのアニメーション -->
-      <transition appear enter-from-class="translate-y-[-150%] opacity-0" leave-to-class="translate-y-[150%] opacity-0"
-        leave-active-class="transition duration-300" enter-active-class="transition duration-300">
+      <transition
+        appear
+        enter-from-class="translate-y-[-150%] opacity-0"
+        leave-to-class="translate-y-[150%] opacity-0"
+        leave-active-class="transition duration-300"
+        enter-active-class="transition duration-300"
+      >
         <div class="overlay">
           <div v-if="phase === 'shop'">
             <Shop />
@@ -356,16 +334,29 @@ const closeTutorial = () => {
       <div v-if="components !== 'postBattle' && components !== 'giftPack'">
         <!-- 戦闘処理中のカード -->
         <div class="overlay">
-          <transition appear enter-from-class="translate-y-[-150%] opacity-0"
-            leave-to-class="translate-y-[150%] opacity-0" leave-active-class="transition duration-300"
-            enter-active-class="transition duration-300" mode="out-in">
+          <transition
+            appear
+            enter-from-class="translate-y-[-150%] opacity-0"
+            leave-to-class="translate-y-[150%] opacity-0"
+            leave-active-class="transition duration-300"
+            enter-active-class="transition duration-300"
+            mode="out-in"
+          >
             <img v-if="myTurnAnimation" @load="loadMyTurnImg()" :src="myTurnImg" style="width: 40vw" />
             <img v-else-if="enemyTurnAnimation" @load="loadEnemyTurnImg()" :src="enemyTurnImg" style="width: 40vw" />
             <div v-else class="flex flex-col">
-              <UiUseCardDisplay v-if="sign === firstAtkPlayer" :after="battleResult[0]" :value="battleResult[1]"
-                :cards="components === 'primaryAtk' ? field : enemyPlayer.field" />
-              <UiUseCardDisplay v-if="sign !== firstAtkPlayer" :after="battleResult[0]" :value="battleResult[1]"
-                :cards="components === 'primaryAtk' ? enemyPlayer.field : field" />
+              <UiUseCardDisplay
+                v-if="sign === firstAtkPlayer"
+                :after="battleResult[0]"
+                :value="battleResult[1]"
+                :cards="components === 'primaryAtk' ? field : enemyPlayer.field"
+              />
+              <UiUseCardDisplay
+                v-if="sign !== firstAtkPlayer"
+                :after="battleResult[0]"
+                :value="battleResult[1]"
+                :cards="components === 'primaryAtk' ? enemyPlayer.field : field"
+              />
             </div>
           </transition>
         </div>
@@ -375,18 +366,30 @@ const closeTutorial = () => {
       <div v-if="components !== 'postBattle' && components !== 'giftPack'">
         <div class="w-[460px] h-screen justify-center items-center">
           <div class="w-auto fixed bottom-1/4 ml-2">
-            <UiUseCard :player="sign === firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
-              :components="components" which="primary" v-show="components !== 'secondAtk'" />
-            <UiUseCard :player="sign !== firstAtkPlayer ? player : enemyPlayer" :firstAtkPlayer="firstAtkPlayer"
-              :components="components" which="second" />
+            <UiUseCard
+              :player="sign === firstAtkPlayer ? player : enemyPlayer"
+              :firstAtkPlayer="firstAtkPlayer"
+              :components="components"
+              which="primary"
+              v-show="components !== 'secondAtk'"
+            />
+            <UiUseCard
+              :player="sign !== firstAtkPlayer ? player : enemyPlayer"
+              :firstAtkPlayer="firstAtkPlayer"
+              :components="components"
+              which="second"
+            />
           </div>
         </div>
       </div>
 
       <!-- 自分のステータス&ギフト&ミッション&手札の表示 -->
       <div class="bottom-0 fixed flex flex-col" :class="isMobile ? 'w-auto' : 'w-[460px]'">
-        <img v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
-          :src="waitingGif" class="w-[max(70vw,400px)] -translate-x-[80px] translate-y-[130px]" />
+        <img
+          v-if="(cardLock && phase === 'battle' && components === 'postBattle') || (phase === 'shop' && check)"
+          :src="waitingGif"
+          class="w-[max(70vw,400px)] -translate-x-[80px] translate-y-[130px]"
+        />
         <div class="flex gap-2">
           <UiStatus :player="player" :class="isMobile ? 'w-auto' : 'w-[min(80vw,380px)]'" />
           <uiGiftPack class="w-[min(15vw,80px)]" :status="`my`" />
@@ -396,8 +399,12 @@ const closeTutorial = () => {
     </div>
 
     <!-- ギフトパック情報Modal -->
-    <Modal v-if="getModal('myGiftPack').value" :is-open="getModal('myGiftPack').value?.isOpen || false"
-      :title="getModal('myGiftPack').value?.title" @close="closeModal('myGiftPack')">
+    <Modal
+      v-if="getModal('myGiftPack').value"
+      :is-open="getModal('myGiftPack').value?.isOpen || false"
+      :title="getModal('myGiftPack').value?.title"
+      @close="closeModal('myGiftPack')"
+    >
       <div class="text-center p-4">
         <div class="text-blue-600 text-xl font-bold mb-4">ギフトパック情報</div>
         <div class="space-y-3">
@@ -421,8 +428,59 @@ const closeTutorial = () => {
       </div>
     </Modal>
 
-    <Modal v-if="getModal('enemyGiftPack').value" :is-open="getModal('enemyGiftPack').value?.isOpen || false"
-      :title="getModal('enemyGiftPack').value?.title" @close="closeModal('enemyGiftPack')">
+    <!-- 勝敗結果Modal -->
+    <Modal
+      v-if="death"
+      :is-open="true"
+      :title="''"
+      :no-background="false"
+      :no-close-button="true"
+      :no-padding="true"
+      :no-white-background="true"
+      @close="
+        () => {
+          deleteGame();
+          initPlayer();
+          useTap2.play();
+          $router.push('/menu');
+        }
+      "
+    >
+      <div class="text-center overflow-hidden max-w-[480px] align-middle">
+        <div
+          v-if="
+            status.hp <= 0 ||
+            hand.reduce((acc, cur) => {
+              if (cur.id === 0) acc++;
+              return acc;
+            }, 0) >= BATTLE_CONSTANTS.MAX_HAND_SIZE
+          "
+          class=""
+        >
+          <img @load="loadDeathGif()" :src="deathAnimation ? loseGif : loseImg" class="max-w-[480px] mx-auto mb-4" />
+        </div>
+        <div v-else class="">
+          <img @load="loadDeathGif()" :src="deathAnimation ? winGif : winImg" class="max-w-[480px] mx-auto mb-4" />
+        </div>
+        <button
+          @click="
+            deleteGame();
+            initPlayer();
+            useTap2.play();
+            $router.push('/menu');
+          "
+        >
+          <img :src="back" class="w-32" />
+        </button>
+      </div>
+    </Modal>
+
+    <Modal
+      v-if="getModal('enemyGiftPack').value"
+      :is-open="getModal('enemyGiftPack').value?.isOpen || false"
+      :title="getModal('enemyGiftPack').value?.title"
+      @close="closeModal('enemyGiftPack')"
+    >
       <div class="text-center p-4">
         <div class="text-red-600 text-xl font-bold mb-4">ギフトパック情報</div>
         <div class="space-y-3">

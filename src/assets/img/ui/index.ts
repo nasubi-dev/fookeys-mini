@@ -9,5 +9,19 @@ import turnBackgroundImg from "@/assets/img/ui/turnBackground.webp";
 import trash from "@/assets/img/ui/trash.webp";
 import decideImg from "@/assets/img/ui/decide.webp";
 import sumFieldImg from "@/assets/img/ui/info.webp";
+import back from "@/assets/img/ui/back.webp";
 
-export { winImg, loseImg, myTurnImg, enemyTurnImg, configImg, soundOnImg, soundOffImg, turnBackgroundImg, trash, decideImg, sumFieldImg };
+export {
+  winImg,
+  loseImg,
+  myTurnImg,
+  enemyTurnImg,
+  configImg,
+  soundOnImg,
+  soundOffImg,
+  turnBackgroundImg,
+  trash,
+  decideImg,
+  sumFieldImg,
+  back,
+};
