@@ -110,7 +110,7 @@ async function processSupport(
   myLog: { value: string },
   enemyLog: { value: string }
 ): Promise<void> {
-  const { player } = storeToRefs(playerStore);
+  const { player, id } = storeToRefs(playerStore);
   if (my.field.map((card) => card.attribute).includes("sup")) {
     console.log(i, "支援!!!");
 
@@ -119,15 +119,15 @@ async function processSupport(
         // リストの中にcard.idが含まれているかを確認
         if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
           if (!(card.id === 23 || card.id === 24 || card.id === 25 || card.id === 26 || card.id === 27)) return;
-          if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+          if (myId !== id.value) enemyLog.value = card.name + "の効果!" + card.description;
           else myLog.value = card.name + "の効果!" + card.description;
 
-          if (playerAllocation) return;
-          if (card.id === 24 && myId === enemy.idEnemy) {
+          if (myId !== id.value) return;
+          if (card.id === 24) {
             player.value.isSaleZeroHungry = true;
             updateDoc(doc(playersRef, myId), { isSaleZeroHungry: true });
           }
-          if (card.id === 25 && myId === enemy.idEnemy) {
+          if (card.id === 25) {
             player.value.isShopSale = true;
             updateDoc(doc(playersRef, myId), { isShopSale: true });
           }
@@ -183,6 +183,7 @@ async function processDefense(
   enemyLog: { value: string }
 ): Promise<number> {
   console.log(s, "防御!!!");
+  const { id } = storeToRefs(playerStore);
   let defense = 0;
   //敵の防御力を計算する
   if (enemy.field.map((card) => card.attribute).includes("def") || enemy.giftActiveBeforeId === 6 || enemy.hand.find((c) => c.id === 14)) {
@@ -233,7 +234,7 @@ async function processDefense(
           )
         )
           return;
-        if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        if (myId !== id.value) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
         if (card.id === 17 && my.field.length === 1) my.sumFields.def += 40;
@@ -271,6 +272,7 @@ async function processAttack(
   myLog: { value: string },
   enemyLog: { value: string }
 ): Promise<boolean> {
+  const { id } = storeToRefs(playerStore);
   if (my.field.map((card) => card.attribute).includes("atk") || my.giftActiveBeforeId === 5) {
     console.log(i, "マッスル攻撃!!!");
 
@@ -294,7 +296,7 @@ async function processAttack(
         )
           return;
 
-        if (playerAllocation) enemyLog.value = card.name + "の効果!" + card.description;
+        if (myId !== id.value) enemyLog.value = card.name + "の効果!" + card.description;
         else myLog.value = card.name + "の効果!" + card.description;
 
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
