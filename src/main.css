@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Safari用のズーム・画像検索禁止 */
+* {
+  -webkit-touch-callout: none; /* リンクや画像の長押しメニュー禁止 */
+  -webkit-user-select: none; /* テキスト選択禁止 */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent; /* タップ時のハイライト色を透明に */
+  -webkit-user-drag: none; /* ドラッグ禁止 */
+}
+
+html,
+body {
+  -webkit-text-size-adjust: 100%; /* テキストサイズの自動調整禁止 */
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation; /* ダブルタップズーム禁止 */
+  overflow: hidden; /* スクロールバー非表示 */
+}
+
+/* Safari用のビューポート設定 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  html {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
 .btn-pop {
   transition: all 0.3s ease;
 }
