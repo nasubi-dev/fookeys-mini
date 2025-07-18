@@ -57,7 +57,7 @@ const completeTutorial = () => {
         <img
           :src="currentImage"
           :alt="`チュートリアル ${currentPage}/${totalPages}`"
-          class="max-w-full max-h-[70vh] object-contain shadow-lg"
+          class="max-w-full max-h-[70vh] object-contain"
         />
       </div>
 
