@@ -75,21 +75,10 @@ const openTutorial = () => {
 const closeTutorial = () => {
   showTutorial.value = false;
 };
-
-// 画面タップ時にフォーカスを外す処理
-const handleScreenTap = (event: Event) => {
-  const target = event.target as HTMLElement;
-  // 入力フィールドやボタン以外をタップした場合のみフォーカスを外す
-  if (target.tagName !== 'INPUT' && target.tagName !== 'BUTTON' && !target.closest('button')) {
-    if (nameInputRef.value) {
-      nameInputRef.value.blur();
-    }
-  }
-};
 </script>
 
 <template>
-  <div @click="handleScreenTap" class="h-screen w-screen bg-black">
+  <div>
     <Notivue v-slot="item">
       <Notifications :item="item" :icons="customIcons" />
     </Notivue>
@@ -100,7 +89,8 @@ const handleScreenTap = (event: Event) => {
           <button @click="
             openTutorial();
           useTap1.play();
-          " type="button" class="mb-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
+          " type="button"
+            class="mb-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
             チュートリアル
           </button>
           <input ref="nameInputRef" class="border border-gray-400 rounded-lg p-2 w-72" type="text" placeholder="名前を入力"
