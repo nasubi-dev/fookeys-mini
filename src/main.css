@@ -17,8 +17,11 @@ html,
 body {
   -webkit-text-size-adjust: 100%; /* テキストサイズの自動調整禁止 */
   -ms-text-size-adjust: 100%;
-  touch-action: manipulation; /* ダブルタップズーム禁止 */
-  overflow: hidden; /* スクロールバー非表示 */
+  touch-action: pan-x pan-y; /* パンとスクロールを許可、ピンチズームは禁止 */
+  overflow-x: hidden; /* 横スクロールのみ禁止 */
+  overflow-y: auto; /* 縦スクロールは許可 */
+  height: 100vh; /* ビューポートの高さに設定 */
+  height: 100dvh; /* 動的ビューポートの高さ（対応ブラウザのみ） */
 }
 
 /* Safari用のビューポート設定 */
@@ -29,6 +32,21 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+}
+
+/* モバイル向けキーボード表示時の調整 */
+@media screen and (max-height: 500px) {
+  html, body {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* iOS Safari用のキーボード対応 */
+@supports (-webkit-touch-callout: none) {
+  html, body {
+    height: -webkit-fill-available;
   }
 }
 
