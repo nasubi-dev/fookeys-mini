@@ -19,6 +19,20 @@ body {
   -ms-text-size-adjust: 100%;
   touch-action: manipulation; /* ダブルタップズーム禁止 */
   overflow: hidden; /* スクロールバー非表示 */
+  height: 100vh; /* ビューポートの高さを固定 */
+  height: 100dvh; /* 動的ビューポートの高さ（モダンブラウザ対応） */
+  position: fixed; /* 位置を固定してキーボード表示時のレイアウトシフトを防ぐ */
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+#app {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  position: relative;
+  background-color: #000; /* 背景色を黒に設定して白い部分を防ぐ */
 }
 
 /* Safari用のビューポート設定 */
@@ -29,6 +43,28 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+}
+
+/* iOS Safari用のキーボード対応 */
+@supports (-webkit-appearance: none) and (not (contain: paint)) {
+  html,
+  body {
+    height: -webkit-fill-available;
+  }
+
+  #app {
+    height: -webkit-fill-available;
+  }
+}
+
+/* iOS Safari用のセーフエリア対応 */
+@supports (padding: max(0px)) {
+  #app {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
   }
 }
 
