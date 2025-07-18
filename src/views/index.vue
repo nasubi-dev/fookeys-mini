@@ -57,6 +57,14 @@ async function register() {
   // 入力フィールドのフォーカスを外してキーボードを非表示にする
   if (nameInputRef.value) {
     nameInputRef.value.blur();
+    
+    // キーボードが確実に閉じられるまで待つ
+    setTimeout(() => {
+      // 画面を最上部にスクロール
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }, 300);
   }
 }
 
@@ -67,6 +75,16 @@ const handleEnterKey = (event: KeyboardEvent) => {
     useTap1.play();
   }
 }
+
+// 入力フィールドがフォーカスを失った時の処理
+const handleInputBlur = () => {
+  setTimeout(() => {
+    // 画面を最上部にスクロール
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }, 300);
+};
 
 const openTutorial = () => {
   showTutorial.value = true;
@@ -94,7 +112,7 @@ const closeTutorial = () => {
             チュートリアル
           </button>
           <input ref="nameInputRef" class="border border-gray-400 rounded-lg p-2 w-72" type="text" placeholder="名前を入力"
-            v-model="newName" @keydown.enter="handleEnterKey" />
+            v-model="newName" @keydown.enter="handleEnterKey" @blur="handleInputBlur" />
           <router-link to="/menu" @click="
             register();
           useTap1.play();

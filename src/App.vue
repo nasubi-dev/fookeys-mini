@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const isKeyboardOpen = ref(false);
 const initialViewportHeight = ref(0);
 
@@ -32,18 +34,20 @@ const handleContextMenu = (event: any) => {
   event.preventDefault();
 };
 
-//スクロール禁止（キーボード表示時は除く）
+//スクロール禁止（indexページまたはキーボード表示時は除く）
 const disableScroll = (event: any) => {
-  if (!isKeyboardOpen.value) {
-    event.preventDefault();
+  // indexページ（home）の場合はスクロールを許可
+  if (route.name === 'home' || isKeyboardOpen.value) {
+    return;
   }
+  event.preventDefault();
 };
 
 // キーボードの表示・非表示を検出
 const detectKeyboard = () => {
   const currentHeight = window.visualViewport?.height || window.innerHeight;
   const heightDifference = initialViewportHeight.value - currentHeight;
-  
+
   // 高さの差が100px以上の場合、キーボードが表示されていると判定
   if (heightDifference > 100) {
     if (!isKeyboardOpen.value) {
@@ -61,7 +65,7 @@ const detectKeyboard = () => {
       document.body.style.top = '';
       document.body.style.width = '';
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      
+
       // 元の表示に戻すための追加処理
       setTimeout(() => {
         window.scrollTo(0, 0);
@@ -104,21 +108,21 @@ const handleResize = () => {
 onMounted(() => {
   // 初期ビューポート高さを記録
   initialViewportHeight.value = window.visualViewport?.height || window.innerHeight;
-  
+
   // イベントリスナーを追加
   document.addEventListener("touchstart", touchHandler, { passive: false });
   document.addEventListener("touchend", handleTouchEnd, false);
   document.onselectstart = disableTextSelection;
   document.addEventListener("contextmenu", handleContextMenu, false);
   document.addEventListener("touchmove", disableScroll, { passive: false });
-  
+
   // キーボード検出のイベントリスナー
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', handleVisualViewportChange);
   } else {
     window.addEventListener('resize', handleResize);
   }
-  
+
   // フォーカスイベントリスナー
   document.addEventListener('focusin', handleFocusIn);
   document.addEventListener('focusout', handleFocusOut);
@@ -131,14 +135,14 @@ onUnmounted(() => {
   document.onselectstart = null;
   document.removeEventListener("contextmenu", handleContextMenu);
   document.removeEventListener("touchmove", disableScroll);
-  
+
   // キーボード検出のイベントリスナー削除
   if (window.visualViewport) {
     window.visualViewport.removeEventListener('resize', handleVisualViewportChange);
   } else {
     window.removeEventListener('resize', handleResize);
   }
-  
+
   // フォーカスイベントリスナー削除
   document.removeEventListener('focusin', handleFocusIn);
   document.removeEventListener('focusout', handleFocusOut);
@@ -146,7 +150,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="background" :class="{ 'keyboard-open': isKeyboardOpen }">
+  <div class="background" :class="{ 
+    'keyboard-open': isKeyboardOpen,
+    'index-page': route.name === 'home',
+    'no-scroll': route.name !== 'home' && !isKeyboardOpen
+  }">
     <RouterView />
   </div>
 </template>

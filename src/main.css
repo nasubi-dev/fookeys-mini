@@ -67,6 +67,19 @@ body {
   position: relative;
 }
 
+/* indexページ用のスクロール許可 */
+.index-page {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* その他のページでのスクロール禁止 */
+.no-scroll {
+  overflow: hidden !important;
+}
+
 .btn-pop {
   transition: all 0.3s ease;
 }
