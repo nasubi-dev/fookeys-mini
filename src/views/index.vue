@@ -36,6 +36,7 @@ watch(log, () => {
 
 const newName = ref("");
 const showTutorial = ref(false);
+const nameInputRef = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
   newName.value = name.value;
@@ -52,6 +53,19 @@ async function register() {
   newName.value === "" ? (name.value = "No name") : (name.value = newName.value);
   await reNamePlayer(name.value);
   id.value == "" ? await registerPlayer() : (log.value = "idは既に登録されています");
+
+  // 入力フィールドのフォーカスを外してキーボードを非表示にする
+  if (nameInputRef.value) {
+    nameInputRef.value.blur();
+  }
+}
+
+// 入力フィールドのEnterキー押下時の処理
+const handleEnterKey = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    register();
+    useTap1.play();
+  }
 }
 
 const openTutorial = () => {
@@ -72,26 +86,20 @@ const closeTutorial = () => {
       <img src="@/assets/img/ui/fookeys-mini.webp" class="w-[min(40vw,700px)] mb-auto mt-32" />
       <div class="absolute top-2/3 flex flex-col">
         <div class="flex flex-col items-center">
-          <button
-            @click="
-              openTutorial();
-              useTap1.play();
-            "
-            type="button"
-            class="mb-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-4 py-2 btn-pop"
-          >
+          <button @click="
+            openTutorial();
+          useTap1.play();
+          " type="button"
+            class="mb-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
             チュートリアル
           </button>
-          <input class="border border-gray-400 rounded-lg p-2 w-72" type="text" placeholder="名前を入力" v-model="newName" />
-          <router-link
-            to="/menu"
-            @click="
-              register();
-              useTap1.play();
-            "
-            type="button"
-            class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop"
-          >
+          <input ref="nameInputRef" class="border border-gray-400 rounded-lg p-2 w-72" type="text" placeholder="名前を入力"
+            v-model="newName" @keydown.enter="handleEnterKey" />
+          <router-link to="/menu" @click="
+            register();
+          useTap1.play();
+          " type="button"
+            class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg px-4 py-2 btn-pop">
             <button>Start</button>
           </router-link>
         </div>
