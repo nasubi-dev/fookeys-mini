@@ -84,9 +84,9 @@ const usePlayerStore = defineStore("playerData", () => {
     isSaleZeroHungry: false,
     field: [],
     status: {
-      hp: 300,
+      hp: 100,
       hungry: 0,
-      maxHp: 300,
+      maxHp: 100,
       maxHungry: 100,
     },
     sumFields: {
@@ -214,9 +214,9 @@ const usePlayerStore = defineStore("playerData", () => {
       isSaleZeroHungry: false,
       field: [],
       status: {
-        hp: 300,
+        hp:  100,
         hungry: 0,
-        maxHp: 300,
+        maxHp: 100,
         maxHungry: 100,
       },
       sumFields: {
@@ -293,9 +293,9 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     isSaleZeroHungry: false,
     field: [],
     status: {
-      hp: 300,
+      hp: 100,
       hungry: 0,
-      maxHp: 300,
+      maxHp: 100,
       maxHungry: 100,
     },
     sumFields: {
