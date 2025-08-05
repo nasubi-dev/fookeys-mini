@@ -117,10 +117,10 @@ const allCards: Card[] = [
     id: 12,
     name: "ローストターキー",
     waste: 3,
-    hungry: 30,
+    hungry: 60,
     company: "galdaybee",
     attribute: "atk",
-    atk: 70,
+    atk: 110,
   },
   {
     id: 13,
