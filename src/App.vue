@@ -8,21 +8,21 @@ const isKeyboardOpen = ref(false);
 const initialViewportHeight = ref(0);
 
 //ピンチアウト禁止
-const touchHandler = (event: any) => {
-  if (event.touches.length > 1) {
-    event.preventDefault();
-  }
-};
+// const touchHandler = (event: any) => {
+//   if (event.touches.length > 1) {
+//     event.preventDefault();
+//   }
+// };
 
 //ダブルタップズーム禁止
-let lastTouchEnd = 0;
-const handleTouchEnd = (event: any) => {
-  const now = (new Date()).getTime();
-  if (now - lastTouchEnd <= 300) {
-    event.preventDefault();
-  }
-  lastTouchEnd = now;
-};
+// let lastTouchEnd = 0;
+// const handleTouchEnd = (event: any) => {
+//   const now = (new Date()).getTime();
+//   if (now - lastTouchEnd <= 300) {
+//     event.preventDefault();
+//   }
+//   lastTouchEnd = now;
+// };
 
 //テキスト選択禁止
 const disableTextSelection = () => {
@@ -110,8 +110,8 @@ onMounted(() => {
   initialViewportHeight.value = window.visualViewport?.height || window.innerHeight;
 
   // イベントリスナーを追加
-  document.addEventListener("touchstart", touchHandler, { passive: false });
-  document.addEventListener("touchend", handleTouchEnd, false);
+  // document.addEventListener("touchstart", touchHandler, { passive: false });
+  // document.addEventListener("touchend", handleTouchEnd, false);
   document.onselectstart = disableTextSelection;
   document.addEventListener("contextmenu", handleContextMenu, false);
   document.addEventListener("touchmove", disableScroll, { passive: false });
@@ -130,8 +130,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   // イベントリスナーを削除
-  document.removeEventListener("touchstart", touchHandler);
-  document.removeEventListener("touchend", handleTouchEnd);
+  // document.removeEventListener("touchstart", touchHandler);
+  // document.removeEventListener("touchend", handleTouchEnd);
   document.onselectstart = null;
   document.removeEventListener("contextmenu", handleContextMenu);
   document.removeEventListener("touchmove", disableScroll);
