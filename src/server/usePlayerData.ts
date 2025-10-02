@@ -32,7 +32,7 @@ async function reNamePlayer(name: string): Promise<void> {
   }
 }
 //player情報初期化 残す情報はid,name,character,gifts
-async function initPlayer(): Promise<void> {
+async function initPlayer(hp?: number): Promise<void> {
   const { id, player } = storeToRefs(playerStore);
   const { idGame } = toRefs(player.value);
   const { game } = storeToRefs(gameStore);
@@ -41,8 +41,8 @@ async function initPlayer(): Promise<void> {
   let keepName = player.value.name;
   let keepCharacter = player.value.character;
 
-  playerStore.$reset();
-  enemyPlayerStore.$reset();
+  playerStore.$reset(hp);
+  enemyPlayerStore.$reset(hp);
   gameStore.$reset();
 
   id.value = keepId;

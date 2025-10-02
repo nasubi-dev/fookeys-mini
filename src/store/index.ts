@@ -181,7 +181,8 @@ const usePlayerStore = defineStore("playerData", () => {
     player.value.giftPackGauge = giftPackGauge;
     player.value.giftPackTotal = giftPackCounter.giftActiveCount * 100 + giftPackGauge;
   };
-  const $reset = () => {
+  const $reset = (hp?: number) => {
+    const maxHp = hp !== undefined ? hp : 300;
     id.value = "";
     sign.value = 0;
     player.value = {
@@ -214,9 +215,9 @@ const usePlayerStore = defineStore("playerData", () => {
       isSaleZeroHungry: false,
       field: [],
       status: {
-        hp:  300,
+        hp: maxHp,
         hungry: 0,
-        maxHp: 300,
+        maxHp: maxHp,
         maxHungry: 100,
       },
       sumFields: {
@@ -322,7 +323,8 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
     }
     return enemyPlayer.value.giftPackCounter.giftActiveCount * 100 + enemyPlayer.value.giftPackGauge;
   });
-  const $reset = () => {
+  const $reset = (hp?: number) => {
+    const maxHp = hp !== undefined ? hp : 300;
     enemyPlayer.value = {
       idEnemy: "",
       idGame: "",
@@ -353,9 +355,9 @@ const useEnemyPlayerStore = defineStore("enemyPlayerData", () => {
       isShopSale: false,
       isSaleZeroHungry: false,
       status: {
-        hp: 300,
+        hp: maxHp,
         hungry: 0,
-        maxHp: 300,
+        maxHp: maxHp,
         maxHungry: 100,
       },
       sumFields: {

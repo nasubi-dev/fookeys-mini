@@ -9,6 +9,12 @@ import { router } from "@/router";
 import type { MatchStatus, PlayerData, GameData } from "@/types";
 import { wait } from "./utils";
 
+// 現在のルートからhpパラメータを取得する関数
+function getHpParam(): string | undefined {
+  const hp = router.currentRoute.value.query.hp;
+  return hp ? String(hp) : undefined;
+}
+
 //Collectionの参照
 const playersRef = collection(db, "players").withConverter(converter<PlayerData>());
 const gamesRef = collection(db, "games").withConverter(converter<GameData>());
@@ -77,7 +83,12 @@ async function watchMatchField(): Promise<void> {
       updateDoc(doc(playersRef, id.value), { match: match.value });
 
       //画面遷移
-      router.push({ name: "battle", params: { idGame: idGame.value } });
+      const hpParam = getHpParam();
+      router.push({
+        name: "battle",
+        params: { idGame: idGame.value },
+        query: hpParam ? { hp: hpParam } : undefined,
+      });
     }
   });
 }
@@ -134,7 +145,12 @@ async function startRandomMatchmaking(): Promise<void> {
     ]);
 
     //画面遷移
-    router.push({ name: "battle", params: { idGame: idGame.value } });
+    const hpParam = getHpParam();
+    router.push({
+      name: "battle",
+      params: { idGame: idGame.value },
+      query: hpParam ? { hp: hpParam } : undefined,
+    });
   }
 }
 
@@ -172,7 +188,12 @@ async function startPasswordMatchmaking(): Promise<void> {
     ]);
 
     //画面遷移
-    router.push({ name: "battle", params: { idGame: idGame.value } });
+    const hpParam = getHpParam();
+    router.push({
+      name: "battle",
+      params: { idGame: idGame.value },
+      query: hpParam ? { hp: hpParam } : undefined,
+    });
   }
 }
 
@@ -199,7 +220,11 @@ async function watchDeleteGame(): Promise<void> {
       console.log(s, "ゲーム終了");
       setTimeout(() => {
         log.value = "ゲーム終了";
-        router.push({ name: "menu" });
+        const hpParam = getHpParam();
+        router.push({
+          name: "menu",
+          query: hpParam ? { hp: hpParam } : undefined,
+        });
       }, 1000);
     }
   });
