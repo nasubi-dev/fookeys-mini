@@ -32,9 +32,9 @@ defineEmits<Emits>();
         :class="noWhiteBackground ? '' : 'bg-white rounded-lg shadow-xl'"
       >
         <div v-if="title || !noCloseButton" class="flex items-center justify-between border-b" :class="noPadding ? '' : 'p-4'">
-          <h3 v-if="title" class="text-lg font-semibold text-gray-900">
+          <p v-if="title" class="text-lg font-semibold text-gray-900">
             {{ title }}
-          </h3>
+          </p>
           <div v-else></div>
 
           <button v-if="!noCloseButton" @click="$emit('close')" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">

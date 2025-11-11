@@ -45,7 +45,7 @@ const cardWidth = computed(() => {
   if (!p.card.description) return 180;
 
   const estimatedLines = estimateLines(p.card.description);
-  return estimatedLines >= 3 ? 350 : 270;
+  return estimatedLines >= 3 ? 350 : 350;
 });
 
 const dynamicWidthClass = computed(() => {
@@ -175,7 +175,7 @@ watch(
         >
           <div :class="isWideMode ? 'w-[350px]' : dynamicWidthClass">
             <img :src="bg" class="absolute" style="pointer-events: auto !important; overflow: visible !important" />
-            <div v-if="card.description" ref="descriptionRef" class="absolute pb-4 pt-3 px-5">
+            <div v-if="card.description" ref="descriptionRef" class="absolute pb-4 pt-5 px-5">
               <p class="font-bold">{{ card.company + " : " + card.name }}</p>
               <p>{{ card.description }}</p>
             </div>

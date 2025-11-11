@@ -126,6 +126,15 @@ onMounted(() => {
   // フォーカスイベントリスナー
   document.addEventListener('focusin', handleFocusIn);
   document.addEventListener('focusout', handleFocusOut);
+
+  // RubyfulV2の初期化（Vueマウント後に実行）
+  if (typeof (window as any).RubyfulV2 !== 'undefined') {
+    (window as any).RubyfulV2.init({
+      selector: '.content p, .content span',
+      defaultDisplay: true,
+      observeChanges: true,
+    });
+  }
 });
 
 onUnmounted(() => {
@@ -150,11 +159,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="background" :class="{ 
-    'keyboard-open': isKeyboardOpen,
-    'index-page': route.name === 'home',
-    'no-scroll': route.name !== 'home' && !isKeyboardOpen
-  }">
-    <RouterView />
+  <div class="content">
+    <div class="background" :class="{
+      'keyboard-open': isKeyboardOpen,
+      'index-page': route.name === 'home',
+      'no-scroll': route.name !== 'home' && !isKeyboardOpen
+    }">
+      <RouterView />
+    </div>
   </div>
 </template>

@@ -388,7 +388,11 @@ const closeTutorial = () => {
     <Modal v-if="getModal('myGiftPack').value" :is-open="getModal('myGiftPack').value?.isOpen || false"
       :title="getModal('myGiftPack').value?.title" @close="closeModal('myGiftPack')">
       <div class="text-center p-4">
-        <div class="text-blue-600 text-xl font-bold mb-4">ギフトパック情報</div>
+        <div class="text-blue-600 text-xl font-bold mb-4">
+          <p>
+            ギフトパック情報
+          </p>
+        </div>
         <div class="space-y-3">
           <div class="bg-gray-100 p-3 rounded">
             <p class="font-semibold">ギフト使用回数</p>
@@ -435,7 +439,11 @@ const closeTutorial = () => {
     <Modal v-if="getModal('enemyGiftPack').value" :is-open="getModal('enemyGiftPack').value?.isOpen || false"
       :title="getModal('enemyGiftPack').value?.title" @close="closeModal('enemyGiftPack')">
       <div class="text-center p-4">
-        <div class="text-red-600 text-xl font-bold mb-4">ギフトパック情報</div>
+        <div class="text-red-600 text-xl font-bold mb-4">
+          <p>
+            ギフトパック情報
+          </p>
+        </div>
         <div class="space-y-3">
           <div class="bg-gray-100 p-3 rounded">
             <p class="font-semibold">ギフト使用回数</p>
