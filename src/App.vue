@@ -130,15 +130,11 @@ onMounted(() => {
   // RubyfulV2の初期化（Vueマウント後に実行）
   if (typeof (window as any).RubyfulV2 !== 'undefined') {
     (window as any).RubyfulV2.init({
-      selector: '.content p, .content span',
+      selector: '.content p, .content span .content input',
       defaultDisplay: true,
       observeChanges: true,
       styles: {
         toggleButtonClass: 'my-toggle',
-        toggleButtonText: {
-          on: 'ルビ ON',
-          off: 'ルビ OFF'
-        }
       }
     });
   }
