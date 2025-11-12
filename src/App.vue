@@ -133,6 +133,13 @@ onMounted(() => {
       selector: '.content p, .content span',
       defaultDisplay: true,
       observeChanges: true,
+      styles: {
+        toggleButtonClass: 'my-toggle',
+        toggleButtonText: {
+          on: 'ルビ ON',
+          off: 'ルビ OFF'
+        }
+      }
     });
   }
 });
