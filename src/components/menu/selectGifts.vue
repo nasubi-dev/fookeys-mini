@@ -22,7 +22,7 @@ const useTap1 = useSound(tap1);
             <img :src="giftSelectBackground" style="width: 25vw" />
             <div class="overText flex flex-col justify-start text-left align-text-bottom ml-3">
               <p class="w-full text-lg text-gray-800 break-words font-bold ml-5">{{ gift.name }}</p>
-              <p class="w-full text-xs text-gray-900 break-words">{{ gift.description }}</p>
+              <p class="w-full text-xs text-gray-900 break-words" v-html="gift.description"></p>
             </div>
           </div>
         </div>

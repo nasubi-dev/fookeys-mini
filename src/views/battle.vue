@@ -404,7 +404,7 @@ const closeTutorial = () => {
               <p>通常カード使用数: {{ giftPackCounter.usedCard }}</p>
               <p>セールカード使用数: {{ giftPackCounter.usedSaleCard }}</p>
               <p>一度に3社カード使用数: {{ giftPackCounter.used3CompanyCard }}</p>
-              <p>手札を0枚にした: {{ giftPackCounter.hand0Card }}</p>
+              <p><ruby>手札<rt>てふだ</rt></ruby>を0枚にした: {{ giftPackCounter.hand0Card }}</p>
               <p>同じ会社カード非所持数: {{ giftPackCounter.haveNotSameCompanyCard }}</p>
               <p>腐らせたカード数: {{ giftPackCounter.rottenCard }}</p>
               <p>腐ったカード保持数: {{ giftPackCounter.haveRottenCard }}</p>
@@ -454,7 +454,7 @@ const closeTutorial = () => {
               <p>通常カード使用数: {{ enemyPlayer.giftPackCounter.usedCard }}</p>
               <p>セールカード使用数: {{ enemyPlayer.giftPackCounter.usedSaleCard }}</p>
               <p>一度に3社カード使用数: {{ enemyPlayer.giftPackCounter.used3CompanyCard }}</p>
-              <p>手札を0枚にした: {{ enemyPlayer.giftPackCounter.hand0Card }}</p>
+              <p><ruby>手札<rt>てふだ</rt></ruby>を0枚にした: {{ enemyPlayer.giftPackCounter.hand0Card }}</p>
               <p>同じ会社カード非所持数: {{ enemyPlayer.giftPackCounter.haveNotSameCompanyCard }}</p>
               <p>腐らせたカード数: {{ enemyPlayer.giftPackCounter.rottenCard }}</p>
               <p>腐ったカード保持数: {{ enemyPlayer.giftPackCounter.haveRottenCard }}</p>

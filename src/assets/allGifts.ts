@@ -18,13 +18,13 @@ const allGifts: Gift[] = [
   {
     id: 2,
     name: "冷凍保存",
-    description: "手札にあるカードの消費期限を🦠+1する。",
+    description: "<ruby>手札<rt>てふだ</rt></ruby>にあるカードの消費期限を🦠+1する。",
     effect: () => changeHandValue("waste", 1),
   },
   {
     id: 3,
     name: "つまみ食い",
-    description: "手札にあるカードの満腹度を🍖-10する。",
+    description: "<ruby>手札<rt>てふだ</rt></ruby>にあるカードの満腹度を🍖-10する。",
     effect: () => changeHandValue("hungry", -10),
   },
   {

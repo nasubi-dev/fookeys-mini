@@ -168,16 +168,13 @@ watch(
     <!-- Portal-like approach for dropdown - completely escapes parent containers -->
     <Teleport to="body" v-if="dropDown">
       <div class="fixed inset-0 pointer-events-none z-[10000]">
-        <div
-          class="absolute pointer-events-auto text-gray-900 text-left shadow-lg"
-          :class="isWideMode ? 'w-[350px]' : dynamicWidthClass"
-          :style="getDropDownStyle()"
-        >
+        <div class="absolute pointer-events-auto text-gray-900 text-left shadow-lg"
+          :class="isWideMode ? 'w-[350px]' : dynamicWidthClass" :style="getDropDownStyle()">
           <div :class="isWideMode ? 'w-[350px]' : dynamicWidthClass">
             <img :src="bg" class="absolute" style="pointer-events: auto !important; overflow: visible !important" />
             <div v-if="card.description" ref="descriptionRef" class="absolute pb-4 pt-5 px-5">
               <p class="font-bold">{{ card.company + " : " + card.name }}</p>
-              <p>{{ card.description }}</p>
+              <p v-html="card.description"></p>
             </div>
             <div v-else class="absolute pb-4 pt-2 px-4">
               <p class="font-bold">{{ card.company }}</p>
@@ -187,36 +184,27 @@ watch(
         </div>
       </div>
     </Teleport>
-    <div ref="cardElementRef" class="relative" :class="size === 'normal' ? `w-[min(20vw,100px)]` : `w-[min(30vw,150px)]`">
+    <div ref="cardElementRef" class="relative"
+      :class="size === 'normal' ? `w-[min(20vw,100px)]` : `w-[min(30vw,150px)]`">
       <VDuringPress :onKeyDown="onLongPressCallbackHook" :onKeyUp="onKeyUpCallbackHook" :delay="250">
         <img :src="`/img/companys/${card.company}.webp`" />
         <div class="overText">
-          <div
-            v-if="card.waste"
-            class="font-bold text-center select-none"
-            :class="[
-              size === 'normal'
-                ? `text-[min(120%,1.5rem)] -translate-x-[min(7vw,1.9rem)] translate-y-[min(4.2vw,1.3rem)]`
-                : `text-[min(170%,1.8rem)] -translate-x-[min(11vw,2.9rem)] translate-y-[min(7vw,2.2rem)]`,
-              card.waste === 1 ? `-translate-x-[380%]` : null,
-            ]"
-          >
+          <div v-if="card.waste" class="font-bold text-center select-none" :class="[
+            size === 'normal'
+              ? `text-[min(120%,1.5rem)] -translate-x-[min(7vw,1.9rem)] translate-y-[min(4.2vw,1.3rem)]`
+              : `text-[min(170%,1.8rem)] -translate-x-[min(11vw,2.9rem)] translate-y-[min(7vw,2.2rem)]`,
+            card.waste === 1 ? `-translate-x-[380%]` : null,
+          ]">
             <div :class="wastedClass" class="absolute">
               {{ card.waste }}
             </div>
           </div>
           <div class="p-2" />
-          <img
-            v-if="card.waste"
-            :src="`/img/foods/${card.id}.webp`"
-            class="transform"
-            :class="size === 'normal' ? `-translate-x-1 translate-y-2` : `-translate-x-[10%] translate-y-[20%]`"
-          />
+          <img v-if="card.waste" :src="`/img/foods/${card.id}.webp`" class="transform"
+            :class="size === 'normal' ? `-translate-x-1 translate-y-2` : `-translate-x-[10%] translate-y-[20%]`" />
 
-          <div
-            class="flex font-black text-border-thin transform select-none"
-            :class="size === 'normal' ? `text-[min(70%,1rem)] -translate-x-[10%]` : `text-[min(130%,1.5rem)] -translate-x-[10%]`"
-          >
+          <div class="flex font-black text-border-thin transform select-none"
+            :class="size === 'normal' ? `text-[min(70%,1rem)] -translate-x-[10%]` : `text-[min(130%,1.5rem)] -translate-x-[10%]`">
             <p v-if="card.hungry !== undefined && card.id !== 0">{{ "🍖" + card.hungry }}</p>
             <p v-if="card.atk">{{ "💪" + card.atk }}</p>
             <p v-if="card.def">{{ "🛡" + card.def }}</p>
@@ -225,18 +213,12 @@ watch(
           </div>
         </div>
         <div v-if="card.description && card.id !== 0" class="relative">
-          <img
-            :src="`/img/showSpecial/${card.company}.webp`"
-            class="absolute"
-            :class="size === 'normal' ? `w-6 -top-20 left-16` : `w-8 -top-32 right-2`"
-          />
+          <img :src="`/img/showSpecial/${card.company}.webp`" class="absolute"
+            :class="size === 'normal' ? `w-6 -top-20 left-16` : `w-8 -top-32 right-2`" />
         </div>
         <div v-if="card.isSale" class="relative">
-          <img
-            :src="`/img/sale/${card.company}.webp`"
-            class="absolute"
-            :class="size === 'normal' ? `w-7 -top-24 left-0` : `w-10 -top-36 left-0`"
-          />
+          <img :src="`/img/sale/${card.company}.webp`" class="absolute"
+            :class="size === 'normal' ? `w-7 -top-24 left-0` : `w-10 -top-36 left-0`" />
         </div>
       </VDuringPress>
     </div>

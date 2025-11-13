@@ -16,7 +16,7 @@ const allCards: Card[] = [
     hungry: 30,
     company: "unlimit",
     attribute: "atk",
-    description: "自分の手札にあるすべてのマッスルカードのマッスルダメージを💪+20する。",
+    description: "自分の<ruby>手札<rt>てふだ</rt></ruby>にあるすべてのマッスルカードのマッスルダメージを💪+20する。",
     atk: 10,
   },
   {
@@ -138,7 +138,7 @@ const allCards: Card[] = [
     hungry: 10,
     company: "unlimit",
     attribute: "def",
-    description: "このカードが手札にあるとき、ラウンド開始時に自分のシールドを🛡️+30する。",
+    description: "このカードが<ruby>手札<rt>てふだ</rt></ruby>にあるとき、ラウンド開始時に自分のシールドを🛡️+30する。",
     def: 30,
   },
   {
@@ -224,7 +224,7 @@ const allCards: Card[] = [
     hungry: 10,
     company: "hanamie",
     attribute: "sup",
-    description: "自分の手札にあるカードの消費期限を🦠+1する。",
+    description: "自分の<ruby>手札<rt>てふだ</rt></ruby>にあるカードの消費期限を🦠+1する。",
   },
   {
     id: 24,
@@ -251,7 +251,7 @@ const allCards: Card[] = [
     hungry: 20,
     company: "hanamie",
     attribute: "sup",
-    description: "自分の手札にある腐ったカード以外のカードをすべて戻し、ランダムなカードを3枚ドローする。",
+    description: "自分の<ruby>手札<rt>てふだ</rt></ruby>にある腐ったカード以外のカードをすべて戻し、ランダムなカードを3枚ドローする。",
   },
   {
     id: 27,
