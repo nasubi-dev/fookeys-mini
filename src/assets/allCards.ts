@@ -17,6 +17,7 @@ const allCards: Card[] = [
     company: "unlimit",
     attribute: "atk",
     description: "自分の<ruby>手札<rt>てふだ</rt></ruby>にあるすべてのマッスルカードのマッスルダメージを💪+20する。",
+    logDescription: "自分の手札にあるすべてのマッスルカードのマッスルダメージを💪+20する。",
     atk: 10,
   },
   {
@@ -35,7 +36,8 @@ const allCards: Card[] = [
     hungry: 20,
     company: "galdaybee",
     attribute: "atk",
-    description: "後攻のとき、このカードのマッスルダメージは💪0になる。",
+    description: "<ruby>後攻<rt>こうこう</rt></ruby>のとき、このカードのマッスルダメージは💪0になる。",
+    logDescription: "後攻のとき、このカードのマッスルダメージは💪0になる。",
     atk: 50,
   },
   {
@@ -55,6 +57,7 @@ const allCards: Card[] = [
     company: "galdaybee",
     attribute: "atk",
     description: "相手の満腹度が🍖50以上のとき、このカードのマッスルダメージを💪+15する。",
+    logDescription: "相手の満腹度が🍖50以上のとき、このカードのマッスルダメージを💪+15する。",
     atk: 30,
   },
   {
@@ -65,6 +68,7 @@ const allCards: Card[] = [
     company: "galdaybee",
     attribute: "atk",
     description: "1枚だけで使用したとき、このカードのマッスルダメージを💪+20する。",
+    logDescription: "1枚だけで使用したとき、このカードのマッスルダメージを💪+20する。",
     atk: 30,
   },
   {
@@ -93,6 +97,7 @@ const allCards: Card[] = [
     company: "galdaybee",
     attribute: "atk",
     description: "このカードがセールカードのとき、このカードの満腹度を🍖-10する。",
+    logDescription: "このカードがセールカードのとき、このカードの満腹度を🍖-10する。",
     atk: 45,
   },
   {
@@ -139,6 +144,7 @@ const allCards: Card[] = [
     company: "unlimit",
     attribute: "def",
     description: "このカードが<ruby>手札<rt>てふだ</rt></ruby>にあるとき、ラウンド開始時に自分のシールドを🛡️+30する。",
+    logDescription: "このカードが手札にあるとき、ラウンド開始時に自分のシールドを🛡️+30する。",
     def: 30,
   },
   {
@@ -149,6 +155,7 @@ const allCards: Card[] = [
     company: "norma",
     attribute: "def",
     description: "unlimitのカードと同時に使用したとき、必ず先制する。",
+    logDescription: "unlimitのカードと同時に使用したとき、必ず先制する。",
     def: 15,
   },
   {
@@ -168,6 +175,7 @@ const allCards: Card[] = [
     company: "norma",
     attribute: "def",
     description: "1枚だけで使用したとき、このカードのシールドを🛡️+40する。",
+    logDescription: "1枚だけで使用したとき、このカードのシールドを🛡️+40する。",
     def: 25,
   },
   {
@@ -186,7 +194,8 @@ const allCards: Card[] = [
     hungry: 25,
     company: "norma",
     attribute: "def",
-    description: "後攻のとき、このカードの満腹度は🍖0になる。",
+    description: "<ruby>後攻<rt>こうこう</rt></ruby>のとき、このカードの満腹度は🍖0になる。",
+    logDescription: "後攻のとき、このカードの満腹度は🍖0になる。",
     def: 30,
   },
   {
@@ -206,6 +215,7 @@ const allCards: Card[] = [
     company: "norma",
     attribute: "def",
     description: "このカードがセールカードのとき、このカードの満腹度を🍖-10する。",
+    logDescription: "このカードがセールカードのとき、このカードの満腹度を🍖-10する。",
     def: 55,
   },
   {
@@ -225,6 +235,7 @@ const allCards: Card[] = [
     company: "hanamie",
     attribute: "sup",
     description: "自分の<ruby>手札<rt>てふだ</rt></ruby>にあるカードの消費期限を🦠+1する。",
+    logDescription: "自分の手札にあるカードの消費期限を🦠+1する。",
   },
   {
     id: 24,
@@ -234,6 +245,7 @@ const allCards: Card[] = [
     company: "unlimit",
     attribute: "sup",
     description: "次のラウンド、自分が使うセールカードの満腹度を🍖0にする。",
+    logDescription: "次のラウンド、自分が使うセールカードの満腹度を🍖0にする。",
   },
   {
     id: 25,
@@ -243,6 +255,7 @@ const allCards: Card[] = [
     company: "hanamie",
     attribute: "sup",
     description: "次のラウンド、ショップに並ぶカードがすべてセールカードになる。",
+    logDescription: "次のラウンド、ショップに並ぶカードがすべてセールカードになる。",
   },
   {
     id: 26,
@@ -252,6 +265,7 @@ const allCards: Card[] = [
     company: "hanamie",
     attribute: "sup",
     description: "自分の<ruby>手札<rt>てふだ</rt></ruby>にある腐ったカード以外のカードをすべて戻し、ランダムなカードを3枚ドローする。",
+    logDescription: "自分の手札にある腐ったカード以外のカードをすべて戻し、ランダムなカードを3枚ドローする。",
   },
   {
     id: 27,

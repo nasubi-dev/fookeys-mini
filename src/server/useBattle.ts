@@ -119,8 +119,9 @@ async function processSupport(
         // リストの中にcard.idが含まれているかを確認
         if (SPECIAL_SUP_CARD_IDS.includes(card.id as (typeof SPECIAL_SUP_CARD_IDS)[number])) {
           if (!(card.id === 23 || card.id === 24 || card.id === 25 || card.id === 26 || card.id === 27)) return;
-          if (myId !== id.value) enemyLog.value = card.name + "の効果!" + card.description;
-          else myLog.value = card.name + "の効果!" + card.description;
+          const logDesc = card.logDescription ? card.logDescription : card.description;
+          if (myId !== id.value) enemyLog.value = card.name + "の効果!" + logDesc;
+          else myLog.value = card.name + "の効果!" + logDesc;
 
           if (myId !== id.value) return;
           if (card.id === 24) {
@@ -205,7 +206,8 @@ async function processDefense(
             )
           )
             return;
-          if (enemy.hand.find((c) => c.id === 14)) enemyLog.value = card.name + "の効果!" + card.description;
+          const logDesc = card.logDescription ? card.logDescription : card.description;
+          if (enemy.hand.find((c) => c.id === 14)) enemyLog.value = card.name + "の効果!" + logDesc;
 
           if (card.id === 17 && enemy.field.length === 1) enemy.sumFields.def += 40;
         },
@@ -234,8 +236,9 @@ async function processDefense(
           )
         )
           return;
-        if (myId !== id.value) enemyLog.value = card.name + "の効果!" + card.description;
-        else myLog.value = card.name + "の効果!" + card.description;
+        const logDesc = card.logDescription ? card.logDescription : card.description;
+        if (myId !== id.value) enemyLog.value = card.name + "の効果!" + logDesc;
+        else myLog.value = card.name + "の効果!" + logDesc;
 
         if (card.id === 17 && my.field.length === 1) my.sumFields.def += 40;
       },
@@ -296,9 +299,9 @@ async function processAttack(
         )
           return;
 
-        if (myId !== id.value) enemyLog.value = card.name + "の効果!" + card.description;
-        else myLog.value = card.name + "の効果!" + card.description;
-
+        const logDesc = card.logDescription ? card.logDescription : card.description;
+        if (myId !== id.value) enemyLog.value = card.name + "の効果!" + logDesc;
+        else myLog.value = card.name + "の効果!" + logDesc;
         if (card.id === 6 && my.field.length === 1) my.sumFields.atk += 20;
         if (card.id === 3 && which === "second") my.sumFields.atk -= 50;
         console.log(i, enemy.sumFields.hungry, my.sumFields.atk);

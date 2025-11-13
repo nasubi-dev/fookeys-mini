@@ -7,6 +7,7 @@ type Card = {
   company: string;
   attribute?: Attribute;
   description?: string;
+  logDescription?: string;
   atk?: number;
   def?: number;
   tech?: number;
@@ -31,6 +32,7 @@ type Gift = {
   id: number;
   name: string;
   description: string;
+  logDescription?: string;
   effect: () => void;
 };
 

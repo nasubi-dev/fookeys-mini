@@ -219,13 +219,15 @@ function giftCheck(order: "primary" | "second"): number {
 
   if (order === "primary") {
     if (giftActiveId.value !== -1) {
-      myLog.value = `${allGifts[giftActiveId.value].name}: ${allGifts[giftActiveId.value].description}`;
+      const gift = allGifts[giftActiveId.value];
+      myLog.value = `${gift.name}: ${gift.logDescription ? gift.logDescription : gift.description}`;
       return 1;
     }
   }
   if (order === "second") {
     if (enemyGiftActiveId.value !== -1) {
-      enemyLog.value = `${allGifts[enemyGiftActiveId.value].name}: ${allGifts[enemyGiftActiveId.value].description}`;
+      const gift = allGifts[enemyGiftActiveId.value];
+      enemyLog.value = `${gift.name}: ${gift.logDescription ? gift.logDescription : gift.description}`;
       return 2;
     }
   }

@@ -14,7 +14,6 @@ createApp(App)
   .use(pinia)
   .use(notivue, {
     limit: 5,
-    dangerouslyUseHtmlString: true, // HTMLレンダリングを有効化
   })
   .mount("#app");
 
